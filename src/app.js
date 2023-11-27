@@ -1,27 +1,30 @@
 import dotenv from "dotenv";
 import express from "express";
-import { data } from "./controllers/mockData.js";
-import { authMiddleware } from "./middlewares/authMiddleware.js";
+
+import { router as assignment3Router } from "./routes/Assignment3.js";
 
 const app = express();
 
 // dot config
 dotenv.config();
 
+// middlewares
 app.use(express.json());
 
+// PORT
+const PORT = process.env.PORT || 3000;
+
+// routes
 app.get("/", function (req, res) {
   res.send("Home Page");
 });
 
-app.get("/mock", authMiddleware, function (req, res) {
-  res.json(data);
-});
+// Assignment-3
+app.use("/assignment3", assignment3Router);
 
-app.post("/add-user", function (req, res) {
-  const newData = req.body;
-  data.users.push(newData);
-  res.json(data);
+// listen
+app.listen(PORT, () => {
+  console.log(
+    `Node Server Running In ${process.env.DEV_MODE} On Port http://localhost:${PORT}`
+  );
 });
-
-app.listen(3000);
