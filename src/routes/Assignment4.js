@@ -1,4 +1,6 @@
 import express from "express";
+import { addValidatedUserController } from "../controllers/dataController.js";
+
 import {
   dynamicValidationMiddleware,
   inputValidateMiddleware,
@@ -15,6 +17,9 @@ router.get("/", function (req, res) {
     message: "Assignment-4 HomePage",
   });
 });
+
+// Task-2
+router.post("/add-user", addValidatedUserController);
 
 // Task-4
 // Register user [Req. fields - name, email, password]

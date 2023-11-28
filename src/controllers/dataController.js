@@ -1,3 +1,4 @@
+import { userSchema } from "../models/userModel.js";
 import { data } from "./mockData.js";
 
 const getDataController = async (req, res) => {
@@ -10,7 +11,7 @@ const addUserController = async (req, res) => {
   res.json(data);
 };
 
-const addValidatedUserController = async (req, res) => {
+const addValidatedUserController = (req, res) => {
   const newData = req.body;
   const validationResult = userSchema.validate(newData);
 
@@ -25,4 +26,4 @@ const addValidatedUserController = async (req, res) => {
   res.json(data);
 };
 
-export { getDataController, addUserController, addValidatedUserController };
+export { addUserController, addValidatedUserController, getDataController };
