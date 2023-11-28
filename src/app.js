@@ -1,37 +1,34 @@
 import dotenv from "dotenv";
 import express from "express";
-import { data } from "./controllers/mockData.js";
-import { authMiddleware } from "./middlewares/authMiddleware.js";
-import { userSchema } from "./models/userModel.js";
+
+import { router as assignment3Router } from "./routes/Assignment3.js";
+import { router as assignment4Router } from "./routes/Assignment4.js";
 
 const app = express();
 
-// to access process.env
+// dot config
 dotenv.config();
 
+// middlewares
 app.use(express.json());
 
+// PORT
+const PORT = process.env.PORT || 3000;
+
+// routes
 app.get("/", function (req, res) {
   res.send("Home Page");
 });
 
-app.get("/mock", authMiddleware, function (req, res) {
-  res.json(data);
+// Assignment-3
+app.use("/assignment3", assignment3Router);
+
+// Assignment-4
+app.use("/assignment4", assignment4Router);
+
+// listen
+app.listen(PORT, () => {
+  console.log(
+    `Node Server Running In ${process.env.DEV_MODE} On Port http://localhost:${PORT}`
+  );
 });
-
-app.post("/add-user", function (req, res) {
-  const newData = req.body;
-  const validationResult = userSchema.validate(newData);
-
-  if (validationResult.error) {
-    return res.status(400).json({
-      status: "Validation failed",
-      error: validationResult.error.message,
-    });
-  }
-
-  data.users.push(newData);
-  res.json(data);
-});
-
-app.listen(3000);
