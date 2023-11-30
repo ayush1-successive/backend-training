@@ -1,14 +1,16 @@
-const isStrongPassword = (value) => {
+import { Request, Response, NextFunction } from "express";
+
+const isStrongPassword = (value:string) => {
   const strongRegex = new RegExp("^[a-zA-Z0-9]{3,30}$");
   return strongRegex.test(value);
 };
 
-const correctEmailFormat = (value) => {
+const correctEmailFormat = (value:string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(value);
 };
 
-const inputValidateMiddleware = async (req, res, next) => {
+const inputValidateMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, password } = req.body;
 

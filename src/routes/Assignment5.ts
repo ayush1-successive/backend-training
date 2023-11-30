@@ -1,6 +1,6 @@
 import express from "express";
-import { asyncOperationController } from "../controllers/asyncOperationController.js";
-import { paramValidationController } from "../controllers/validationController.js";
+import { asyncOperationController } from "../controllers/asyncOperationController";
+import { paramValidationController } from "../controllers/validationController";
 
 const router = express.Router();
 

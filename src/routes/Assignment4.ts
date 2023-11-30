@@ -1,12 +1,12 @@
 import express from "express";
-import { addValidatedUserController } from "../controllers/dataController.js";
+import { addValidatedUserController } from "../controllers/dataController";
 
 import {
   dynamicValidationMiddleware,
   inputValidateMiddleware,
   ipCheckMiddleware,
   validateNumericParamsMiddleware,
-} from "../middlewares/Assignment-4/index.js";
+} from "../middlewares/Assignment-4/index";
 
 const router = express.Router();
 

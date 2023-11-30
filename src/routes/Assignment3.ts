@@ -3,14 +3,14 @@ import express from "express";
 import {
   getDataController,
   addUserController,
-} from "../controllers/dataController.js";
+} from "../controllers/dataController";
 
 import {
   authMiddleware,
   headerMiddleware,
   logMiddleware,
   rateLimitMiddleware,
-} from "../middlewares/Assignment-3/index.js";
+} from "../middlewares/Assignment-3/index";
 
 const router = express.Router();
 
