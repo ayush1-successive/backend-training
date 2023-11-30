@@ -13,7 +13,9 @@ const addUserController = async (req, res) => {
 
 const addValidatedUserController = (req, res) => {
   const newData = req.body;
-  const validationResult = userSchema.validate(newData);
+  const validationResult = userSchema.validate(newData, {
+    abortEarly: false,
+  });
 
   if (validationResult.error) {
     return res.status(400).json({

@@ -2,7 +2,9 @@ import { userSchema } from "../models/userModel.js";
 
 const paramValidationController = (req, res) => {
   try {
-    const validationResult = userSchema.validate(req.body);
+    const validationResult = userSchema.validate(req.body, {
+      abortEarly: false,
+    });
 
     if (validationResult.error) {
       console.log(validationResult.error);
