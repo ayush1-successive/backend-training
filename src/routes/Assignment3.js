@@ -1,17 +1,17 @@
 import express from "express";
 
 import {
-  getDataController,
   addUserController,
+  getDataController,
 } from "../controllers/dataController.js";
 
 import {
   authMiddleware,
+  errorHandlerMiddlerware,
   headerMiddleware,
   logMiddleware,
   rateLimitMiddleware,
 } from "../middlewares/index.js";
-import { errorHandlerMiddlerware } from "../middlewares/errorHandlerMiddleware.js";
 
 const router = express.Router();
 
