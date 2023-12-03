@@ -8,7 +8,7 @@ const isNumeric = (value) => {
 };
 
 const validateNumericParamsMiddleware = async (req, res, next) => {
-  const { name, quantity, price } = req.body;
+  const { name, quantity, price } = req.query;
 
   if (!name || !quantity || !price) {
     return res.status(400).send({

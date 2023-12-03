@@ -1,5 +1,7 @@
 const isStrongPassword = (value) => {
-  const strongRegex = new RegExp("^[a-zA-Z0-9]{3,30}$");
+  const strongRegex = new RegExp(
+    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}"
+  );
   return strongRegex.test(value);
 };
 
