@@ -1,11 +1,8 @@
-const headerConfig = {
-  assignmentNo: 3,
-  taskNo: 12,
-};
-
-const headerMiddleware = async (req, res, next) => {
-  res.setHeader("Content-type", headerConfig);
-  next();
+const headerMiddleware = (headerName, headerValue) => {
+  return (req, res, next) => {
+    res.setHeader(headerName, headerValue);
+    next();
+  };
 };
 
 export { headerMiddleware };
