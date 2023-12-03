@@ -1,6 +1,7 @@
 import express from "express";
 import { asyncOperationController } from "../controllers/asyncOperationController.js";
 import { paramValidationController } from "../controllers/validationController.js";
+import { errorHandlerMiddlerware } from "../middlewares/Assignment-3/index.js";
 
 const router = express.Router();
 
@@ -17,5 +18,8 @@ router.get("/async-route", asyncOperationController);
 
 // Task-6
 router.post("/param-validation", paramValidationController);
+
+// Error catching middleware
+router.use(errorHandlerMiddlerware);
 
 export { router };
