@@ -7,5 +7,5 @@ export {
   dynamicValidationMiddleware,
   inputValidateMiddleware,
   ipCheckMiddleware,
-  validateNumericParamsMiddleware,
+  validateNumericParamsMiddleware
 };

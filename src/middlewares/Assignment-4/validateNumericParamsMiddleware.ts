@@ -11,7 +11,7 @@ const isNumeric = (value: any) => {
 };
 
 const validateNumericParamsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const { name, quantity, price } = req.body;
+  const { name, quantity, price } = req.query;
 
   if (!name || !quantity || !price) {
     return res.status(400).send({
