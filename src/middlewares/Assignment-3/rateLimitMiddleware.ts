@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-class rateLimiter {
+export class RateLimitMiddleware {
   maxRequests: number;
   currentRequestCounter: number;
   intervalMs: number;
@@ -11,6 +11,10 @@ class rateLimiter {
     this.currentRequestCounter = 0;
     this.intervalMs = intervalMs;
     this.startClock = new Date().getTime();
+
+    this.isInInterval = this.isInInterval.bind(this);
+    this.check = this.check.bind(this);
+    this.fetch = this.fetch.bind(this);
   }
 
   // Check if query limit exceeded in current interval
@@ -34,14 +38,9 @@ class rateLimiter {
     this.currentRequestCounter = 1;
     return true;
   }
-}
 
-const rateLimitMiddleware = (rate:number, intervalMs:number) => {
-  const limiter = new rateLimiter(rate, intervalMs);
-
-  return (req: Request, res:Response, next:NextFunction) => {
-    console.log("rate =", limiter.maxRequests, limiter.intervalMs);
-    if (limiter.check()) {
+  async fetch(req: Request, res: Response, next: NextFunction) {
+    if (this.check()) {
       console.log("Query within interval!");
       next();
     } else {
@@ -52,7 +51,5 @@ const rateLimitMiddleware = (rate:number, intervalMs:number) => {
         message: "Too many requests!",
       });
     }
-  };
-};
-
-export { rateLimitMiddleware };
+  }
+}

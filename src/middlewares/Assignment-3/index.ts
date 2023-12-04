@@ -1,6 +1,13 @@
-import { authMiddleware } from "./authMiddleware";
-import { headerMiddleware } from "./headerMiddleware";
-import { logMiddleware } from "./logMiddleware";
-import { rateLimitMiddleware } from "./rateLimitMiddleware";
+import { AuthMiddleware } from "./authMiddleware";
+import { ErrorHandlerMiddlerware } from "./errorHandlerMiddleware";
+import { HeaderMiddleware } from "./headerMiddleware";
+import { LogMiddleware } from "./logMiddleware";
+import { RateLimitMiddleware } from "./rateLimitMiddleware";
 
-export { authMiddleware, headerMiddleware, logMiddleware, rateLimitMiddleware };
+export {
+  AuthMiddleware,
+  ErrorHandlerMiddlerware,
+  HeaderMiddleware,
+  LogMiddleware,
+  RateLimitMiddleware,
+};

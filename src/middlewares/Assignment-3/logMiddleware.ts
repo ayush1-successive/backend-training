@@ -1,14 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { serverConfig } from "../../config";
 
-// PORT
-const PORT = process.env.PORT || 3000;
+export class LogMiddleware {
+  private port: number;
 
-const logMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(`Method = ${req.method}`);
-  console.log(`Current path = http://localhost:${PORT}${req.url}`);
-  console.log(`Time = ${new Date().toUTCString()}`);
+  constructor() {
+    this.port = serverConfig.PORT;
 
-  next();
-};
+    //? Why this fixes the issue of this.port in log function????
+    this.log = this.log.bind(this);
+  }
 
-export { logMiddleware };
+  public log(req: Request, res: Response, next: NextFunction): void {
+    console.log(`Method = ${req.method}`);
+    console.log(`Current path = http://localhost:${this.port} ${req.url}`);
+    console.log(`Time = ${new Date().toUTCString()}`);
+    next();
+  }
+}

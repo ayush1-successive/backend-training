@@ -1,51 +1,63 @@
-import express from "express";
+import express, { Request, Response } from "express";
+
+import { UserController } from "../controllers/dataController";
+import { HomePageController } from "../controllers/HomePageController";
 
 import {
-  getDataController,
-  addUserController,
-} from "../controllers/dataController";
-
-import {
-  authMiddleware,
-  headerMiddleware,
-  logMiddleware,
-  rateLimitMiddleware,
+  AuthMiddleware,
+  ErrorHandlerMiddlerware,
+  HeaderMiddleware,
+  LogMiddleware,
+  RateLimitMiddleware,
 } from "../middlewares/Assignment-3/index";
 
 const router = express.Router();
 
+const homepage = new HomePageController();
+const userController = new UserController();
+const authMiddleware = new AuthMiddleware();
+const headerMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
+const logMiddleware = new LogMiddleware();
+const rateLimitMiddleware = new RateLimitMiddleware(2, 5000);
+const errorHandler = new ErrorHandlerMiddlerware();
+
 // Home Page
-router.get("/", function (req, res) {
-  res.status(200).send({
-    status: true,
-    message: "Assignment-3 HomePage",
-  });
-});
+router.get("/", homepage.assignment3);
 
-// Get data
-router.get("/mock", authMiddleware, getDataController);
+// Task-4,7
+// Get data with authentication
+router.get("/mock", authMiddleware.authenticate, userController.getData);
 
+// Task-5
 // Add new user to data
-router.post("/add-user", addUserController);
+router.post("/add-user", userController.addUser);
 
+// Task-9
 // Log middleware
-router.get("/mock-log", logMiddleware, getDataController);
+router.get("/mock-log", logMiddleware.log, userController.getData);
 
+// Task-10
+// Route handler with intentional error
+router.get("/example", errorHandler.example);
+
+// Task-11
 // Multiple chained middleware
-router.use("/mock-log-auth", logMiddleware, authMiddleware, getDataController);
+router.use(
+  "/mock-log-auth",
+  logMiddleware.log,
+  authMiddleware.authenticate,
+  userController.getData
+);
 
+// Task-12
 // Header Middleware
-router.use("/mock-header", headerMiddleware, getDataController);
+router.use("/mock-header", headerMiddleware.setHeader, userController.getData);
 
+// Task-13
 // Rate-Limited Middleware
-router.use("/mock-rate", rateLimitMiddleware(2, 5000), getDataController);
+router.use("/mock-rate", rateLimitMiddleware.fetch, userController.getData);
 
-// Middleware to handle '404 not found' errors
-router.use((req, res, next) => {
-  res.status(404).send({
-    status: false,
-    message: "404 not found!",
-  });
-});
+// Error catching middleware
+router.use(errorHandler.handle);
 
 export { router };

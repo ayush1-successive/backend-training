@@ -1,13 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 
-const headerConfig = {
-  assignmentNo: 3,
-  taskNo: 12,
-};
+export class HeaderMiddleware {
+  headerName: any;
+  headerValue: any;
 
-const headerMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  (res as any).setHeader("Content-type", headerConfig);
-  next();
-};
+  constructor(headerName: any, headerValue: any) {
+    this.headerName = headerName;
+    this.headerValue = headerValue;
 
-export { headerMiddleware };
+    this.setHeader = this.setHeader.bind(this);
+  }
+
+  setHeader(req: Request, res: Response, next: NextFunction) {
+    res.setHeader(this.headerName, this.headerValue);
+    next();
+  }
+}
