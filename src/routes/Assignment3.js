@@ -53,7 +53,7 @@ router.use("/mock-log-auth", logMiddleware, authMiddleware, getDataController);
 router.use(
   "/mock-header",
   headerMiddleware("Author", "Ayush Sinha"),
-  getDataController
+  getDataController,
 );
 
 // Task-13
