@@ -11,7 +11,7 @@ import {
   headerMiddleware,
   logMiddleware,
   rateLimitMiddleware,
-} from "../middlewares/index.js";
+} from "../middlewares/Assignment-3/index.js";
 
 const router = express.Router();
 
@@ -53,7 +53,7 @@ router.use("/mock-log-auth", logMiddleware, authMiddleware, getDataController);
 router.use(
   "/mock-header",
   headerMiddleware("Author", "Ayush Sinha"),
-  getDataController
+  getDataController,
 );
 
 // Task-13
