@@ -3,7 +3,7 @@ const data = {
     {
       userId: 101,
       name: "Alice",
-      age: undefined,
+      age: 22,
       email: "alice@email.com",
       country: "USA",
     },
