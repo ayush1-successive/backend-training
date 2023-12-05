@@ -9,7 +9,7 @@ export class AuthMiddleware {
     this.verifyToken = serverConfig.JWT_SECRET;
   }
 
-  async authenticate(req: Request, res: Response, next: NextFunction) {
+  authenticate = (req: Request, res: Response, next: NextFunction): void => {
     try {
       const token = req.headers["authorization"]?.split(" ")[1];
 
@@ -27,15 +27,16 @@ export class AuthMiddleware {
             req.body.userId = decode.userId;
             next();
           }
-        }
+        },
       );
     } catch (error) {
       console.log(error);
-      return res.status(501).send({
+      res.status(501).send({
         status: false,
         error,
         message: "Auth failed",
       });
+      return;
     }
-  }
+  };
 }

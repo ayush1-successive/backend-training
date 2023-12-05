@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 
 class HealthController {
   private static instance: HealthController;
@@ -10,12 +10,12 @@ class HealthController {
     return HealthController.instance;
   }
 
-  check(req: Request, res: Response) {
+  check = (req: Request, res: Response): void => {
     res.send({
       status: true,
       message: "Health OK!",
     });
-  }
+  };
 }
 
 export default HealthController.getInstance();

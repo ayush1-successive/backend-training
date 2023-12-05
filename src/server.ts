@@ -1,7 +1,7 @@
 // server.ts
 
-import express, { Request, Response } from "express";
-import { IServerConfig } from "./config";
+import express, { type Request, type Response } from "express";
+import { type IServerConfig } from "./config";
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
 
@@ -12,8 +12,8 @@ import {
 } from "./routes";
 
 class Server {
-  private app: express.Application;
-  private config: IServerConfig;
+  private readonly app: express.Application;
+  private readonly config: IServerConfig;
 
   constructor(config: IServerConfig) {
     this.config = config;
@@ -23,7 +23,7 @@ class Server {
     this.configureRoutes();
   }
 
-  private configureRoutes() {
+  private configureRoutes(): void {
     const errorHandler = new ErrorHandlerMiddlerware();
 
     // HomePage
@@ -47,10 +47,10 @@ class Server {
     this.app.use(errorHandler.notFound);
   }
 
-  run() {
+  run(): void {
     this.app.listen(this.config.PORT, () => {
       console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`
+        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
       );
     });
   }

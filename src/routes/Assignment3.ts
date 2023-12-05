@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
 
-import { UserController } from "../controllers/dataController";
 import { HomePageController } from "../controllers/HomePageController";
+import { UserController } from "../controllers/userController";
 
 import {
   AuthMiddleware,
@@ -27,35 +27,72 @@ router.get("/", homepage.assignment3);
 // Task-4,7
 // Get data with authentication
 router.get("/mock", authMiddleware.authenticate, userController.getData);
+// router.get(
+//   "/mock",
+//   (req, res, next) => {
+//     authMiddleware.authenticate(req, res, next);
+//   },
+//   (req, res) => {
+//     userController.getData(req, res);
+//   },
+// );
 
 // Task-5
 // Add new user to data
-router.post("/add-user", userController.addUser);
+router.post("/add-user", (req, res) => {
+  userController.addUser(req, res);
+});
 
 // Task-9
 // Log middleware
-router.get("/mock-log", logMiddleware.log, userController.getData);
+router.get(
+  "/mock-log",
+  (req, res, next) => {
+    logMiddleware.log(req, res, next);
+  },
+  (req, res) => {
+    userController.getData(req, res);
+  },
+);
 
 // Task-10
 // Route handler with intentional error
-router.get("/example", errorHandler.example);
+router.get("/example", (req, res) => {
+  errorHandler.example(req, res);
+});
 
 // Task-11
 // Multiple chained middleware
 router.use(
   "/mock-log-auth",
-  logMiddleware.log,
-  authMiddleware.authenticate,
-  userController.getData
+  (req, res, next) => {
+    logMiddleware.log(req, res, next);
+  },
+  (req, res, next) => {
+    authMiddleware.authenticate(req, res, next);
+  },
+  (req, res) => {
+    userController.getData(req, res);
+  },
 );
 
 // Task-12
 // Header Middleware
-router.use("/mock-header", headerMiddleware.setHeader, userController.getData);
+router.use(
+  "/mock-header",
+  (req, res, next) => {
+    headerMiddleware.setHeader(req, res, next);
+  },
+  (req, res) => {
+    userController.getData(req, res);
+  },
+);
 
 // Task-13
 // Rate-Limited Middleware
-router.use("/mock-rate", rateLimitMiddleware.fetch, userController.getData);
+router.use("/mock-rate", rateLimitMiddleware.fetch, (req, res) => {
+  userController.getData(req, res);
+});
 
 // Error catching middleware
 router.use(errorHandler.handle);

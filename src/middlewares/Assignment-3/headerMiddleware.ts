@@ -11,8 +11,8 @@ export class HeaderMiddleware {
     this.setHeader = this.setHeader.bind(this);
   }
 
-  setHeader(req: Request, res: Response, next: NextFunction) {
+  setHeader = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader(this.headerName, this.headerValue);
     next();
-  }
+  };
 }

@@ -10,7 +10,7 @@ export class ValidationMiddleware {
 
   private isStrongPassword(value: string) {
     const strongRegex = new RegExp(
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}"
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}",
     );
     return strongRegex.test(value);
   }
@@ -30,7 +30,11 @@ export class ValidationMiddleware {
     return false;
   }
 
-  async dynamicValidation(req: Request, res: Response, next: NextFunction) {
+  dynamicValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const param = req.url.slice(1);
       const validationResult = validationConfig[param].validate(req.body, {
@@ -56,9 +60,9 @@ export class ValidationMiddleware {
         error,
       });
     }
-  }
+  };
 
-  async inputValidation(req: Request, res: Response, next: NextFunction) {
+  inputValidation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, email, password } = req.body;
 
@@ -95,13 +99,13 @@ export class ValidationMiddleware {
         message: "Validation error!",
       });
     }
-  }
+  };
 
-  async numericParamsValidation(
+  numericParamsValidation = async (
     req: Request,
     res: Response,
-    next: NextFunction
-  ) {
+    next: NextFunction,
+  ) => {
     try {
       const { name, quantity, price } = req.query;
 
@@ -129,5 +133,5 @@ export class ValidationMiddleware {
         error,
       });
     }
-  }
+  };
 }

@@ -1,6 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { type Request, type Response } from "express";
 
-import { UserController } from "../controllers/dataController";
+import { UserController } from "../controllers/userController";
 import { HomePageController } from "../controllers/HomePageController";
 import {
   IpMiddleware,
@@ -25,12 +25,12 @@ router.post("/add-user", userController.addValidatedUser);
 router.post(
   "/register",
   validationMiddleware.inputValidation,
-  function (req: Request, res: Response) {
+  (req: Request, res: Response) => {
     res.status(201).json({
       status: true,
       message: "Registration successful!",
     });
-  }
+  },
 );
 
 // Task-5
@@ -39,17 +39,17 @@ router.post(
 router.post(
   "/add-item",
   validationMiddleware.numericParamsValidation,
-  function (req: Request, res: Response) {
+  (req: Request, res: Response) => {
     res.status(201).json({
       status: true,
       message: "Item successfully added to product list",
     });
-  }
+  },
 );
 
 // Task-6
 // Middleware to validate IP
-router.get("/ip", ipMiddleware.check, function (req: Request, res: Response) {
+router.get("/ip", ipMiddleware.check, (req: Request, res: Response) => {
   res.status(200).send({
     status: true,
     message: "IP test completed!",
@@ -62,24 +62,24 @@ router.get("/ip", ipMiddleware.check, function (req: Request, res: Response) {
 router.get(
   "/registration",
   validationMiddleware.dynamicValidation,
-  function (req: Request, res: Response) {
+  (req: Request, res: Response) => {
     res.json({
       status: true,
       message: "User registered successfully!",
     });
-  }
+  },
 );
 
 // Task-7
 router.get(
   "/product",
   validationMiddleware.dynamicValidation,
-  function (req: Request, res: Response) {
+  (req: Request, res: Response) => {
     res.json({
       status: true,
       message: "Product added to list successfully!",
     });
-  }
+  },
 );
 
 export { router };

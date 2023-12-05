@@ -39,7 +39,7 @@ export class RateLimitMiddleware {
     return true;
   }
 
-  async fetch(req: Request, res: Response, next: NextFunction) {
+  fetch = (req: Request, res: Response, next: NextFunction): void => {
     if (this.check()) {
       console.log("Query within interval!");
       next();
@@ -51,5 +51,5 @@ export class RateLimitMiddleware {
         message: "Too many requests!",
       });
     }
-  }
+  };
 }

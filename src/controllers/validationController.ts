@@ -1,8 +1,8 @@
 import { userSchema } from "../models/userModel";
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 
 export class ValidationController {
-  async paramValidation(req: Request, res: Response) {
+  paramValidation = async (req: Request, res: Response): Promise<Response> => {
     try {
       const validationResult = userSchema.validate(req.body, {
         abortEarly: false,
@@ -31,5 +31,5 @@ export class ValidationController {
         error,
       });
     }
-  }
+  };
 }

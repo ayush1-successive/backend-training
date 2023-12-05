@@ -1,7 +1,7 @@
 import joi from "joi";
 import { data } from "../controllers/mockData";
 
-function isUserIdUnique(userId:number, users:Array<any>) {
+function isUserIdUnique(userId: number, users: any[]): boolean {
   return !users.some((user) => user.userId === userId);
 }
 
