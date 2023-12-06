@@ -1,0 +1,38 @@
+[
+  {
+    "name": "John Doe",
+    "age": 28,
+    "email": "john.doe@example.com",
+    "address": {
+      "city": "Random City",
+      "state": "Random State",
+      "country": "Random Country"
+    },
+    "interests": ["coding", "reading", "traveling"],
+    "timestamp": 1678412800000
+  },
+  {
+    "name": "Jane Smith",
+    "age": 35,
+    "email": "jane.smith@example.com",
+    "address": {
+      "city": "Another City",
+      "state": "Another State",
+      "country": "Another Country"
+    },
+    "interests": ["painting", "gardening", "music"],
+    "timestamp": 1678499200000
+  },
+  {
+    "name": "Bob Johnson",
+    "age": 22,
+    "email": "bob.johnson@example.com",
+    "address": {
+      "city": "Yet Another City",
+      "state": "Yet Another State",
+      "country": "Yet Another Country"
+    },
+    "interests": ["sports", "cooking", "photography"],
+    "timestamp": 1678585600000
+  }
+]

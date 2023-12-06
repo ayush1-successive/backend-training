@@ -8,6 +8,7 @@ interface IServerConfig {
   PORT: number;
   DUMMY_TOKEN: string;
   JWT_SECRET: string;
+  MONGO_URL: string;
 }
 
 // Load configuration from .env file
@@ -16,6 +17,7 @@ const serverConfig: IServerConfig = {
   PORT: parseInt(process.env.PORT ?? "3000"),
   DUMMY_TOKEN: process.env.DUMMY_TOKEN ?? "",
   JWT_SECRET: process.env.JWT_SECRET ?? "",
+  MONGO_URL: process.env.MONGO_URL ?? "",
 };
 
 export { serverConfig, type IServerConfig };

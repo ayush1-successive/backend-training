@@ -2,6 +2,8 @@
 
 import express, { type Request, type Response } from "express";
 import { type IServerConfig } from "./config";
+import Database from "./lib/database";
+
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
 
@@ -14,11 +16,13 @@ import {
 class Server {
   private readonly app: express.Application;
   private readonly config: IServerConfig;
+  private readonly database: Database;
 
   constructor(config: IServerConfig) {
     this.config = config;
     this.app = express();
     this.app.use(express.json());
+    this.database = new Database(this.config.MONGO_URL);
 
     this.configureRoutes();
   }
@@ -47,13 +51,17 @@ class Server {
     this.app.use(errorHandler.notFound);
   }
 
-  run(): void {
+  run = async (): Promise<void> => {
+    // Database connect
+    await this.database.connect();
+    await this.database.seedCountries();
+
     this.app.listen(this.config.PORT, () => {
       console.log(
         `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
       );
     });
-  }
+  };
 }
 
 export { Server };
