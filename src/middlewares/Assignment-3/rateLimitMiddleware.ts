@@ -38,6 +38,7 @@ class rateLimiter {
 
 const rateLimitMiddleware = (rate:number, intervalMs:number) => {
   const limiter = new rateLimiter(rate, intervalMs);
+  console.log(limiter);
 
   return (req: Request, res:Response, next:NextFunction) => {
     console.log("rate =", limiter.maxRequests, limiter.intervalMs);

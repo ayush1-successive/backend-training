@@ -10,7 +10,11 @@ const isNumeric = (value: any) => {
   return false;
 };
 
-const validateNumericParamsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const validateNumericParamsMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, quantity, price } = req.query;
 
   if (!name || !quantity || !price) {
