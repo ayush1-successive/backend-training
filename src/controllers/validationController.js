@@ -1,9 +1,8 @@
-import { validationConfig } from "../../utils/config.js";
+import { userSchema } from "../models/userModel.js";
 
-const dynamicValidationMiddleware = (req, res, next) => {
+const paramValidationController = (req, res) => {
   try {
-    const param = req.url.slice(1);
-    const validationResult = validationConfig[param].validate(req.body, {
+    const validationResult = userSchema.validate(req.body, {
       abortEarly: false,
     });
 
@@ -11,13 +10,17 @@ const dynamicValidationMiddleware = (req, res, next) => {
       console.log(validationResult.error);
       return res.status(400).send({
         status: false,
-        message: "Bad request!",
+        message: "Validation error!",
         error: validationResult.error,
       });
     }
 
     console.log("Validation successful!");
-    next();
+    return res.status(200).send({
+      status: true,
+      message: "Validation successful!",
+      body: req.body,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -28,4 +31,4 @@ const dynamicValidationMiddleware = (req, res, next) => {
   }
 };
 
-export { dynamicValidationMiddleware };
+export { paramValidationController };

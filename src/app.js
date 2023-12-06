@@ -3,6 +3,7 @@ import express from "express";
 
 import { router as assignment3Router } from "./routes/Assignment3.js";
 import { router as assignment4Router } from "./routes/Assignment4.js";
+import { router as assignment5Router } from "./routes/Assignment5.js";
 
 const app = express();
 
@@ -25,6 +26,9 @@ app.use("/assignment3", assignment3Router);
 
 // Assignment-4
 app.use("/assignment4", assignment4Router);
+
+// Assignment-5
+app.use("/assignment5", assignment5Router);
 
 // listen
 app.listen(PORT, () => {
