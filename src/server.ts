@@ -4,6 +4,7 @@ import express, { type Request, type Response } from "express";
 import { type IServerConfig } from "./config";
 import Database from "./lib/database";
 
+import CountryController from "./api/controllers/CountryController";
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
 
@@ -11,6 +12,7 @@ import {
   assignment3Router,
   assignment4Router,
   assignment5Router,
+  countryRouter,
 } from "./routes";
 
 class Server {
@@ -47,6 +49,8 @@ class Server {
     // Assignment-5
     this.app.use("/assignment5", assignment5Router);
 
+    this.app.use("/country", countryRouter);
+
     // Handles '404 not found'
     this.app.use(errorHandler.notFound);
   }
@@ -54,7 +58,9 @@ class Server {
   run = async (): Promise<void> => {
     // Database connect
     await this.database.connect();
-    await this.database.seedCountries();
+
+    const countryController = new CountryController();
+    await countryController.seedCountries();
 
     this.app.listen(this.config.PORT, () => {
       console.log(
