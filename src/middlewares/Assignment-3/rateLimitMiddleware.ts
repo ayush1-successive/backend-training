@@ -1,5 +1,12 @@
+import { Request, Response, NextFunction } from "express";
+
 class rateLimiter {
-  constructor(maxRequests, intervalMs) {
+  maxRequests: number;
+  currentRequestCounter: number;
+  intervalMs: number;
+  startClock: number;
+
+  constructor(maxRequests: number, intervalMs: number) {
     this.maxRequests = maxRequests;
     this.currentRequestCounter = 0;
     this.intervalMs = intervalMs;
@@ -29,11 +36,11 @@ class rateLimiter {
   }
 }
 
-const rateLimitMiddleware = (rate, intervalMs) => {
+const rateLimitMiddleware = (rate:number, intervalMs:number) => {
   const limiter = new rateLimiter(rate, intervalMs);
   console.log(limiter);
 
-  return (req, res, next) => {
+  return (req: Request, res:Response, next:NextFunction) => {
     console.log("rate =", limiter.maxRequests, limiter.intervalMs);
     if (limiter.check()) {
       console.log("Query within interval!");

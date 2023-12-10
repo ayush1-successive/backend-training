@@ -1,6 +1,11 @@
-import joi from "joi";
+import joi, {ObjectSchema} from "joi";
 
-const validationConfig = {
+interface ValidationConfig {
+  [key: string]: ObjectSchema<any>;
+}
+
+
+const validationConfig: ValidationConfig = {
   registration: joi.object({
     name: joi.string().alphanum().min(3).max(30).required(),
     age: joi.number().integer().positive(),

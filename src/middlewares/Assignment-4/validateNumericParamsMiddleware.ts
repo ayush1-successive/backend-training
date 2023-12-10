@@ -1,13 +1,20 @@
-const isNumeric = (value) => {
+import { Request, Response, NextFunction } from "express";
+
+const isNumeric = (value: any) => {
   if (typeof value === "number") return true;
 
   if (typeof value === "string") {
-    return !isNaN(value) && !isNaN(parseFloat(value));
+    const numericValue = parseFloat(value);
+    return !isNaN(numericValue);
   }
   return false;
 };
 
-const validateNumericParamsMiddleware = async (req, res, next) => {
+const validateNumericParamsMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, quantity, price } = req.query;
 
   if (!name || !quantity || !price) {

@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import express from "express";
 
-import { router as assignment3Router } from "./routes/Assignment3.js";
-import { router as assignment4Router } from "./routes/Assignment4.js";
-import { router as assignment5Router } from "./routes/Assignment5.js";
+import { router as assignment3Router } from "./routes/Assignment3";
+import { router as assignment4Router } from "./routes/Assignment4";
+import { router as assignment5Router } from "./routes/Assignment5";
 
 const app = express();
 

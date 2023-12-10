@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from "express";
+
 const someAsyncOperation = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -6,11 +8,11 @@ const someAsyncOperation = async () => {
   });
 };
 
-const asyncOperationController = async (req, res) => {
+const asyncOperationController = async (req: Request, res: Response) => {
   try {
     const result = await someAsyncOperation();
 
-    return res.status(200).json({
+    return res.status(200).send({
       status: true,
       message: "Data fetch successfully!",
       result,

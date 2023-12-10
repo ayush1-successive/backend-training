@@ -1,17 +1,18 @@
-import { userSchema } from "../models/userModel.js";
-import { data } from "./mockData.js";
+import { Request, Response } from "express";
+import { userSchema } from "../models/userModel";
+import { data } from "./mockData";
 
-const getDataController = async (req, res) => {
+const getDataController = (req: Request, res: Response)=> {
   res.json(data);
 };
 
-const addUserController = async (req, res) => {
+const addUserController = async (req: Request, res: Response) => {
   const newData = req.body;
   data.users.push(newData);
   res.json(data);
 };
 
-const addValidatedUserController = (req, res) => {
+const addValidatedUserController = (req: Request, res: Response) => {
   const newData = req.body;
   const validationResult = userSchema.validate(newData, {
     abortEarly: false,
