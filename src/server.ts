@@ -4,12 +4,11 @@ import express, { Request, Response } from "express";
 import { IServerConfig } from "./config";
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-
 import {
   assignment3Router,
   assignment4Router,
   assignment5Router,
-} from "./routes";
+} from "./routes/index";
 
 class Server {
   private app: express.Application;
