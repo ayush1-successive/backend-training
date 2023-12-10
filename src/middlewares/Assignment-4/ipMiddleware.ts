@@ -5,10 +5,9 @@ export class IpMiddleware {
 
   constructor() {
     this.expectedIp = "::1";
-    this.check = this.check.bind(this);
   }
 
-  async check(req: Request, res: Response, next: NextFunction) {
+  check = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const clientIp = req.ip;
 
@@ -28,5 +27,5 @@ export class IpMiddleware {
         message: "Internal Server Error",
       });
     }
-  }
+  };
 }

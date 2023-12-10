@@ -9,13 +9,13 @@ export class AuthMiddleware {
     this.verifyToken = serverConfig.JWT_SECRET;
   }
 
-  async authenticate(req: Request, res: Response, next: NextFunction) {
+  authenticate = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers["authorization"]?.split(" ")[1];
 
       JWT.verify(
         token ?? "",
-        process.env.JWT_SECRET ?? "",
+        this.verifyToken ?? "",
         (err: any, decode: any) => {
           if (err) {
             res.status(401).send({
@@ -37,5 +37,5 @@ export class AuthMiddleware {
         message: "Auth failed",
       });
     }
-  }
+  };
 }

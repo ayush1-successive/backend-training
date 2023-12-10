@@ -11,19 +11,15 @@ export class RateLimitMiddleware {
     this.currentRequestCounter = 0;
     this.intervalMs = intervalMs;
     this.startClock = new Date().getTime();
-
-    this.isInInterval = this.isInInterval.bind(this);
-    this.check = this.check.bind(this);
-    this.fetch = this.fetch.bind(this);
   }
 
   // Check if query limit exceeded in current interval
-  isInInterval() {
+  private isInInterval = () => {
     const endClock = new Date().getTime();
     return endClock - this.startClock < this.intervalMs;
-  }
+  };
 
-  check() {
+  private check = () => {
     if (this.currentRequestCounter < this.maxRequests) {
       this.currentRequestCounter++;
       return true;
@@ -37,9 +33,9 @@ export class RateLimitMiddleware {
     this.startClock = new Date().getTime();
     this.currentRequestCounter = 1;
     return true;
-  }
+  };
 
-  async fetch(req: Request, res: Response, next: NextFunction) {
+  fetch = async (req: Request, res: Response, next: NextFunction) => {
     if (this.check()) {
       console.log("Query within interval!");
       next();
@@ -51,5 +47,5 @@ export class RateLimitMiddleware {
         message: "Too many requests!",
       });
     }
-  }
+  };
 }

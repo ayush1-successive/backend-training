@@ -2,25 +2,19 @@ import { Request, Response, NextFunction } from "express";
 import { validationConfig } from "../../utils/config";
 
 export class ValidationMiddleware {
-  constructor() {
-    this.dynamicValidation = this.dynamicValidation.bind(this);
-    this.inputValidation = this.inputValidation.bind(this);
-    this.numericParamsValidation = this.numericParamsValidation.bind(this);
-  }
+  private isStrongPassword = (value: string) => {
+    const strongRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}/;
 
-  private isStrongPassword(value: string) {
-    const strongRegex = new RegExp(
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}"
-    );
     return strongRegex.test(value);
-  }
+  };
 
-  private correctEmailFormat(value: string) {
+  private correctEmailFormat = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
-  }
+  };
 
-  private isNumeric(value: any) {
+  private isNumeric = (value: any) => {
     if (typeof value === "number") return true;
 
     if (typeof value === "string") {
@@ -28,9 +22,13 @@ export class ValidationMiddleware {
       return !isNaN(numericValue);
     }
     return false;
-  }
+  };
 
-  async dynamicValidation(req: Request, res: Response, next: NextFunction) {
+  dynamicValidation = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const param = req.url.slice(1);
       const validationResult = validationConfig[param].validate(req.body, {
@@ -56,9 +54,9 @@ export class ValidationMiddleware {
         error,
       });
     }
-  }
+  };
 
-  async inputValidation(req: Request, res: Response, next: NextFunction) {
+  inputValidation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, email, password } = req.body;
 
@@ -95,13 +93,13 @@ export class ValidationMiddleware {
         message: "Validation error!",
       });
     }
-  }
+  };
 
-  async numericParamsValidation(
+  numericParamsValidation = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const { name, quantity, price } = req.query;
 
@@ -129,5 +127,5 @@ export class ValidationMiddleware {
         error,
       });
     }
-  }
+  };
 }
