@@ -1,23 +1,27 @@
 import { type Request, type Response } from "express";
+import { type ValidationResult } from "joi";
 import { userSchema } from "../models/userModel";
-import { data } from "./mockData";
+import { type IUser, userData } from "../utils/mockData";
 
 export class UserController {
   getData = (req: Request, res: Response): void => {
-    res.json(data);
+    res.status(200).json(userData);
   };
 
   addUser = (req: Request, res: Response): void => {
-    const newData = req.body;
-    data.users.push(newData);
-    res.json(data);
+    const newUser: IUser = req.body;
+    userData.push(newUser);
+    res.status(201).json(userData);
   };
 
-  addValidatedUser = (req: Request, res: Response): void => {
-    const newData = req.body;
-    const validationResult = userSchema.validate(newData, {
-      abortEarly: false,
-    });
+  addValidatedUser = async (req: Request, res: Response): Promise<void> => {
+    const newUser: IUser = req.body;
+    const validationResult: ValidationResult<any> = userSchema.validate(
+      newUser,
+      {
+        abortEarly: false,
+      },
+    );
 
     if (validationResult.error) {
       res.status(400).json({
@@ -27,7 +31,7 @@ export class UserController {
       return;
     }
 
-    data.users.push(newData);
-    res.json(data);
+    userData.push(newUser);
+    res.status(201).json(userData);
   };
 }

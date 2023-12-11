@@ -1,18 +1,18 @@
-import joi from "joi";
-import { data } from "../controllers/mockData";
+import joi, { type ObjectSchema } from "joi";
+import { userData, type IUser } from "../utils/mockData";
 
-function isUserIdUnique(userId: number, users: any[]): boolean {
-  return !users.some((user) => user.userId === userId);
+function isUserIdUnique(userId: number, users: IUser[]): boolean {
+  return !users.some((user: IUser) => user.userId === userId);
 }
 
-const userSchema = joi.object({
+const userSchema: ObjectSchema = joi.object({
   userId: joi
     .number()
     .integer()
     .positive()
     .required()
     .custom((value, helpers) => {
-      if (isUserIdUnique(value, data.users)) {
+      if (isUserIdUnique(value, userData)) {
         return value;
       } else {
         return helpers.error("any.custom", {

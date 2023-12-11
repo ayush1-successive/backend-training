@@ -11,15 +11,21 @@ import {
   RateLimitMiddleware,
 } from "../middlewares/Assignment-3/index";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
-const homepage = new HomePageController();
-const userController = new UserController();
-const authMiddleware = new AuthMiddleware();
-const headerMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
-const logMiddleware = new LogMiddleware();
-const rateLimitMiddleware = new RateLimitMiddleware(2, 5000);
-const errorHandler = new ErrorHandlerMiddlerware();
+const homepage: HomePageController = new HomePageController();
+const userController: UserController = new UserController();
+const authMiddleware: AuthMiddleware = new AuthMiddleware();
+const headerMiddleware: HeaderMiddleware = new HeaderMiddleware(
+  "Author",
+  "Ayush Sinha",
+);
+const logMiddleware: LogMiddleware = new LogMiddleware();
+const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(
+  2,
+  5000,
+);
+const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
 // Home Page
 router.get("/", homepage.assignment3);
@@ -27,72 +33,35 @@ router.get("/", homepage.assignment3);
 // Task-4,7
 // Get data with authentication
 router.get("/mock", authMiddleware.authenticate, userController.getData);
-// router.get(
-//   "/mock",
-//   (req, res, next) => {
-//     authMiddleware.authenticate(req, res, next);
-//   },
-//   (req, res) => {
-//     userController.getData(req, res);
-//   },
-// );
 
 // Task-5
 // Add new user to data
-router.post("/add-user", (req, res) => {
-  userController.addUser(req, res);
-});
+router.post("/add-user", userController.addUser);
 
 // Task-9
 // Log middleware
-router.get(
-  "/mock-log",
-  (req, res, next) => {
-    logMiddleware.log(req, res, next);
-  },
-  (req, res) => {
-    userController.getData(req, res);
-  },
-);
+router.get("/mock-log", logMiddleware.log, userController.getData);
 
 // Task-10
 // Route handler with intentional error
-router.get("/example", (req, res) => {
-  errorHandler.example(req, res);
-});
+router.get("/example", errorHandler.example);
 
 // Task-11
 // Multiple chained middleware
 router.use(
   "/mock-log-auth",
-  (req, res, next) => {
-    logMiddleware.log(req, res, next);
-  },
-  (req, res, next) => {
-    authMiddleware.authenticate(req, res, next);
-  },
-  (req, res) => {
-    userController.getData(req, res);
-  },
+  logMiddleware.log,
+  authMiddleware.authenticate,
+  userController.getData,
 );
 
 // Task-12
 // Header Middleware
-router.use(
-  "/mock-header",
-  (req, res, next) => {
-    headerMiddleware.setHeader(req, res, next);
-  },
-  (req, res) => {
-    userController.getData(req, res);
-  },
-);
+router.use("/mock-header", headerMiddleware.setHeader, userController.getData);
 
 // Task-13
 // Rate-Limited Middleware
-router.use("/mock-rate", rateLimitMiddleware.fetch, (req, res) => {
-  userController.getData(req, res);
-});
+router.use("/mock-rate", rateLimitMiddleware.fetch, userController.getData);
 
 // Error catching middleware
 router.use(errorHandler.handle);

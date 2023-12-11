@@ -4,12 +4,11 @@ import express, { type Request, type Response } from "express";
 import { type IServerConfig } from "./config";
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-
 import {
   assignment3Router,
   assignment4Router,
   assignment5Router,
-} from "./routes";
+} from "./routes/index";
 
 class Server {
   private readonly app: express.Application;
@@ -18,13 +17,17 @@ class Server {
   constructor(config: IServerConfig) {
     this.config = config;
     this.app = express();
-    this.app.use(express.json());
 
+    this.configureMiddlewares();
     this.configureRoutes();
   }
 
+  private configureMiddlewares(): void {
+    this.app.use(express.json());
+  }
+
   private configureRoutes(): void {
-    const errorHandler = new ErrorHandlerMiddlerware();
+    const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
     // HomePage
     this.app.get("/", (req: Request, res: Response) => {
@@ -48,9 +51,9 @@ class Server {
   }
 
   run(): void {
-    this.app.listen(this.config.PORT, () => {
+    this.app.listen(this.config.port, () => {
       console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
+        `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
       );
     });
   }

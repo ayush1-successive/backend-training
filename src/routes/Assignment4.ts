@@ -7,12 +7,12 @@ import {
   ValidationMiddleware,
 } from "../middlewares/Assignment-4/index";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
-const homepage = new HomePageController();
-const userController = new UserController();
-const ipMiddleware = new IpMiddleware();
-const validationMiddleware = new ValidationMiddleware();
+const homepage: HomePageController = new HomePageController();
+const userController: UserController = new UserController();
+const ipMiddleware: IpMiddleware = new IpMiddleware();
+const validationMiddleware: ValidationMiddleware = new ValidationMiddleware();
 
 // Home Page
 router.get("/", homepage.assignment4);
@@ -59,7 +59,7 @@ router.get("/ip", ipMiddleware.check, (req: Request, res: Response) => {
 // Task-7
 // Middleware with dynamically fetch validation
 // rules from a configuration file based on route.
-router.get(
+router.post(
   "/registration",
   validationMiddleware.dynamicValidation,
   (req: Request, res: Response) => {
@@ -71,7 +71,7 @@ router.get(
 );
 
 // Task-7
-router.get(
+router.post(
   "/product",
   validationMiddleware.dynamicValidation,
   (req: Request, res: Response) => {

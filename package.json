@@ -8,9 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --exec 'npx tsc && node dist/index.js'",
-    "lint": "eslint src/**/*.ts src/index.ts src/server.ts src/config.ts",
-    "lint:fix": "eslint --fix src/**/*.ts src/index.ts src/server.ts src/config.ts",
+    "lint": "eslint src/**/*.ts src/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts src/*.ts",
     "prepare": "husky install"
   },
   "author": "",
