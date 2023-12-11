@@ -59,7 +59,7 @@ router.get("/ip", ipMiddleware.check, (req: Request, res: Response) => {
 // Task-7
 // Middleware with dynamically fetch validation
 // rules from a configuration file based on route.
-router.get(
+router.post(
   "/registration",
   validationMiddleware.dynamicValidation,
   (req: Request, res: Response) => {
@@ -71,7 +71,7 @@ router.get(
 );
 
 // Task-7
-router.get(
+router.post(
   "/product",
   validationMiddleware.dynamicValidation,
   (req: Request, res: Response) => {

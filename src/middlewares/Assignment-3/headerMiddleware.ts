@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
 export class HeaderMiddleware {
-  headerName: any;
-  headerValue: any;
+  headerName: string;
+  headerValue: string;
 
-  constructor(headerName: any, headerValue: any) {
+  constructor(headerName: string, headerValue: string) {
     this.headerName = headerName;
     this.headerValue = headerValue;
   }

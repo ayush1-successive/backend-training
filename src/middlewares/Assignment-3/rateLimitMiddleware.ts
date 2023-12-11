@@ -14,12 +14,12 @@ export class RateLimitMiddleware {
   }
 
   // Check if query limit exceeded in current interval
-  private isInInterval = () => {
-    const endClock = new Date().getTime();
+  private isInInterval = (): boolean => {
+    const endClock: number = new Date().getTime();
     return endClock - this.startClock < this.intervalMs;
   };
 
-  private check = () => {
+  private check = (): boolean => {
     if (this.currentRequestCounter < this.maxRequests) {
       this.currentRequestCounter++;
       return true;
@@ -35,7 +35,11 @@ export class RateLimitMiddleware {
     return true;
   };
 
-  fetch = async (req: Request, res: Response, next: NextFunction) => {
+  fetch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     if (this.check()) {
       console.log("Query within interval!");
       next();

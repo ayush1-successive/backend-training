@@ -17,9 +17,13 @@ class Server {
   constructor(config: IServerConfig) {
     this.config = config;
     this.app = express();
-    this.app.use(express.json());
 
+    this.configureMiddlewares();
     this.configureRoutes();
+  }
+
+  private configureMiddlewares() {
+    this.app.use(express.json());
   }
 
   private configureRoutes() {
@@ -47,9 +51,9 @@ class Server {
   }
 
   run() {
-    this.app.listen(this.config.PORT, () => {
+    this.app.listen(this.config.port, () => {
       console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`
+        `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`
       );
     });
   }

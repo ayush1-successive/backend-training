@@ -1,8 +1,8 @@
 import joi from "joi";
-import { data } from "../controllers/mockData";
+import { IUser, userData } from "../utils/mockData";
 
-function isUserIdUnique(userId:number, users:Array<any>) {
-  return !users.some((user) => user.userId === userId);
+function isUserIdUnique(userId: number, users: Array<IUser>) {
+  return !users.some((user: IUser) => user.userId === userId);
 }
 
 const userSchema = joi.object({
@@ -12,7 +12,7 @@ const userSchema = joi.object({
     .positive()
     .required()
     .custom((value, helpers) => {
-      if (isUserIdUnique(value, data.users)) {
+      if (isUserIdUnique(value, userData)) {
         return value;
       } else {
         return helpers.error("any.custom", {
