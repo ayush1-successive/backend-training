@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import { Request, Response } from "express";
 
 import { router as assignment3Router } from "./routes/Assignment3";
 import { router as assignment4Router } from "./routes/Assignment4";
@@ -17,8 +18,8 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 // routes
-app.get("/", function (req, res) {
-  res.send("Home Page");
+app.get("/", function (req: Request, res: Response) {
+  res.status(200).send("Home Page");
 });
 
 // Assignment-3

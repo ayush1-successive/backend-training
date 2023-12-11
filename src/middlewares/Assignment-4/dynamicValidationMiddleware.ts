@@ -1,28 +1,37 @@
 import { Request, Response, NextFunction } from "express";
 import { validationConfig } from "../../utils/config";
+import { ValidationResult } from "joi";
 
-
-const dynamicValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const dynamicValidationMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   try {
-    const param = req.url.slice(1);
-    const validationResult = validationConfig[param].validate(req.body, {
+    const param: string = req.url.slice(1);
+    const validationResult: ValidationResult<any> = validationConfig[
+      param
+    ].validate(req.body, {
       abortEarly: false,
     });
 
     if (validationResult.error) {
-      console.log(validationResult.error);
-      return res.status(400).send({
+      console.error(validationResult.error);
+
+      res.status(400).send({
         status: false,
         message: "Bad request!",
         error: validationResult.error,
       });
+      return;
     }
 
     console.log("Validation successful!");
     next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+  } catch (error: unknown) {
+    console.error(error);
+
+    res.status(500).send({
       status: false,
       message: "Internal server error!",
       error,

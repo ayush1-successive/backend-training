@@ -1,11 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 
-const headerMiddleware = (headerName: any, headerValue: any) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+interface IHeaderMiddleware {
+  (
+    headerName: string,
+    headerValue: string
+  ): (req: Request, res: Response, next: NextFunction) => void;
+}
+
+const headerMiddleware: IHeaderMiddleware = (
+  headerName: string,
+  headerValue: string
+) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     res.setHeader(headerName, headerValue);
     next();
   };
 };
 
 export { headerMiddleware };
-

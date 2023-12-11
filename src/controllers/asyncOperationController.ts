@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
-const someAsyncOperation = async () => {
+const someAsyncOperation = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       reject("An intentional error occured!");
@@ -8,18 +8,22 @@ const someAsyncOperation = async () => {
   });
 };
 
-const asyncOperationController = async (req: Request, res: Response) => {
+const asyncOperationController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const result = await someAsyncOperation();
+    const result: void = await someAsyncOperation();
 
-    return res.status(200).send({
+    res.status(200).send({
       status: true,
       message: "Data fetch successfully!",
       result,
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+  } catch (error: unknown) {
+    console.error(error);
+
+    res.status(500).send({
       status: false,
       message: "Internal server error!",
       error,

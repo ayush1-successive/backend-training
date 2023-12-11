@@ -1,32 +1,34 @@
 import { Request, Response } from "express";
+import { ValidationResult } from "joi";
 import { userSchema } from "../models/userModel";
-import { data } from "./mockData";
+import { IUser, userData } from "./mockData";
 
-const getDataController = (req: Request, res: Response)=> {
-  res.json(data);
+const getDataController = (req: Request, res: Response): void => {
+  res.status(200).json(userData);
 };
 
-const addUserController = async (req: Request, res: Response) => {
-  const newData = req.body;
-  data.users.push(newData);
-  res.json(data);
+const addUserController = (req: Request, res: Response): void => {
+  const newUser: IUser = req.body;
+  userData.push(newUser);
+  res.status(201).json(userData);
 };
 
-const addValidatedUserController = (req: Request, res: Response) => {
-  const newData = req.body;
-  const validationResult = userSchema.validate(newData, {
+const addValidatedUserController = (req: Request, res: Response): void => {
+  const newUser: IUser = req.body;
+  const validationResult: ValidationResult<any> = userSchema.validate(newUser, {
     abortEarly: false,
   });
 
   if (validationResult.error) {
-    return res.status(400).json({
+    res.status(400).json({
       status: "Validation failed",
       error: validationResult.error.message,
     });
+    return;
   }
 
-  data.users.push(newData);
-  res.json(data);
+  userData.push(newUser);
+  res.status(201).json(userData);
 };
 
 export { addUserController, addValidatedUserController, getDataController };
