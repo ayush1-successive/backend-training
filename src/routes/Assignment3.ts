@@ -13,7 +13,7 @@ import {
   rateLimitMiddleware,
 } from "../middlewares/Assignment-3/index";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
 // Home Page
 router.get("/", function (req: Request, res: Response) {

@@ -1,4 +1,12 @@
-const userData = [
+interface IUser {
+  userId: number;
+  name: string;
+  age: number;
+  email: string;
+  country: string;
+}
+
+const userData: IUser[] = [
   {
     userId: 101,
     name: "Alice",
@@ -71,12 +79,6 @@ const userData = [
   },
 ];
 
-interface IUser {
-  userId: number;
-  name: string;
-  age: number;
-  email: string;
-  country: string;
-}
+
 
 export { IUser, userData };

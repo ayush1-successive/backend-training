@@ -1,10 +1,10 @@
+import { Request, Response } from "express";
 import { ValidationResult } from "joi";
 import { userSchema } from "../models/userModel";
-import { Request, Response } from "express";
 
 const paramValidationController = (req: Request, res: Response): void => {
   try {
-    const validationResult: ValidationResult<any> = userSchema.validate(
+    const validationResult: ValidationResult = userSchema.validate(
       req.body,
       {
         abortEarly: false,

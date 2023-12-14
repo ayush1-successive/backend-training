@@ -15,7 +15,7 @@ const addUserController = (req: Request, res: Response): void => {
 
 const addValidatedUserController = (req: Request, res: Response): void => {
   const newUser: IUser = req.body;
-  const validationResult: ValidationResult<any> = userSchema.validate(newUser, {
+  const validationResult: ValidationResult = userSchema.validate(newUser, {
     abortEarly: false,
   });
 
