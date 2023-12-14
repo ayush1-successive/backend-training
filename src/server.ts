@@ -30,7 +30,7 @@ class Server {
     const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
     // HomePage
-    this.app.get("/", (req: Request, res: Response) => {
+    this.app.get("/", (req: Request, res: Response): void => {
       res.send("Home Page");
     });
 
@@ -51,7 +51,7 @@ class Server {
   }
 
   run(): void {
-    this.app.listen(this.config.port, () => {
+    this.app.listen(this.config.port, (): void => {
       console.log(
         `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
       );

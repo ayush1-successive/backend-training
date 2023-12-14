@@ -16,12 +16,9 @@ export class UserController {
 
   addValidatedUser = async (req: Request, res: Response): Promise<void> => {
     const newUser: IUser = req.body;
-    const validationResult: ValidationResult<any> = userSchema.validate(
-      newUser,
-      {
-        abortEarly: false,
-      },
-    );
+    const validationResult: ValidationResult = userSchema.validate(newUser, {
+      abortEarly: false,
+    });
 
     if (validationResult.error) {
       res.status(400).json({

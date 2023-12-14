@@ -44,7 +44,7 @@ export class ValidationMiddleware {
   ): Promise<void> => {
     try {
       const param: string = req.url.slice(1);
-      const validationResult: ValidationResult<any> = validationConfig[
+      const validationResult: ValidationResult = validationConfig[
         param
       ].validate(req.body, {
         abortEarly: false,

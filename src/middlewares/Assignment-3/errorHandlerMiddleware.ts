@@ -14,7 +14,7 @@ export class ErrorHandlerMiddlerware {
   example = (req: Request, res: Response): void => {
     // Simulating an error (e.g., accessing a property of an undefined variable)
     let undefinedVariable: any;
-    const result = undefinedVariable.property; // This will throw an error
+    const result: any = undefinedVariable.property; // This will throw an error
     res.send(`This will not be reached due to the error. ${result}`);
   };
 

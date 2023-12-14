@@ -25,7 +25,7 @@ router.post("/add-user", userController.addValidatedUser);
 router.post(
   "/register",
   validationMiddleware.inputValidation,
-  (req: Request, res: Response) => {
+  (req: Request, res: Response): void => {
     res.status(201).json({
       status: true,
       message: "Registration successful!",
@@ -39,7 +39,7 @@ router.post(
 router.post(
   "/add-item",
   validationMiddleware.numericParamsValidation,
-  (req: Request, res: Response) => {
+  (req: Request, res: Response): void => {
     res.status(201).json({
       status: true,
       message: "Item successfully added to product list",
@@ -49,7 +49,7 @@ router.post(
 
 // Task-6
 // Middleware to validate IP
-router.get("/ip", ipMiddleware.check, (req: Request, res: Response) => {
+router.get("/ip", ipMiddleware.check, (req: Request, res: Response): void => {
   res.status(200).send({
     status: true,
     message: "IP test completed!",
@@ -62,7 +62,7 @@ router.get("/ip", ipMiddleware.check, (req: Request, res: Response) => {
 router.post(
   "/registration",
   validationMiddleware.dynamicValidation,
-  (req: Request, res: Response) => {
+  (req: Request, res: Response): void => {
     res.json({
       status: true,
       message: "User registered successfully!",
@@ -74,7 +74,7 @@ router.post(
 router.post(
   "/product",
   validationMiddleware.dynamicValidation,
-  (req: Request, res: Response) => {
+  (req: Request, res: Response): void => {
     res.json({
       status: true,
       message: "Product added to list successfully!",
