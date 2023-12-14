@@ -11,15 +11,15 @@ import {
   RateLimitMiddleware,
 } from "../middlewares/Assignment-3/index";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
-const homepage = new HomePageController();
-const userController = new UserController();
-const authMiddleware = new AuthMiddleware();
-const headerMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
-const logMiddleware = new LogMiddleware();
-const rateLimitMiddleware = new RateLimitMiddleware(2, 5000);
-const errorHandler = new ErrorHandlerMiddlerware();
+const homepage: HomePageController = new HomePageController();
+const userController: UserController = new UserController();
+const authMiddleware: AuthMiddleware = new AuthMiddleware();
+const headerMiddleware: HeaderMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
+const logMiddleware: LogMiddleware = new LogMiddleware();
+const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(2, 5000);
+const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
 // Home Page
 router.get("/", homepage.assignment3);

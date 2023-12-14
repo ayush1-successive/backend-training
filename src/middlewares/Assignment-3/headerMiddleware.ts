@@ -9,7 +9,7 @@ export class HeaderMiddleware {
     this.headerValue = headerValue;
   }
 
-  setHeader = (req: Request, res: Response, next: NextFunction) => {
+  setHeader = (req: Request, res: Response, next: NextFunction): void => {
     res.setHeader(this.headerName, this.headerValue);
     next();
   };

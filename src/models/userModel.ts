@@ -1,7 +1,7 @@
 import joi from "joi";
 import { IUser, userData } from "../utils/mockData";
 
-function isUserIdUnique(userId: number, users: Array<IUser>) {
+function isUserIdUnique(userId: number, users: Array<IUser>): boolean {
   return !users.some((user: IUser) => user.userId === userId);
 }
 

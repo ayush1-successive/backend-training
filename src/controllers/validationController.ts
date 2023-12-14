@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 export class ValidationController {
   paramValidation = async (req: Request, res: Response): Promise<void> => {
     try {
-      const validationResult: ValidationResult<any> = userSchema.validate(
+      const validationResult: ValidationResult = userSchema.validate(
         req.body,
         {
           abortEarly: false,

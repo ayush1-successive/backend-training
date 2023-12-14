@@ -9,6 +9,8 @@ export class ErrorHandlerMiddlerware {
   ): void => {
     console.error(err.message);
     res.status(500).json({ error: "Internal Server Error" });
+
+    next();
   };
 
   example = (req: Request, res: Response): void => {

@@ -27,10 +27,10 @@ class Server {
   }
 
   private configureRoutes() {
-    const errorHandler = new ErrorHandlerMiddlerware();
+    const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
     // HomePage
-    this.app.get("/", (req: Request, res: Response) => {
+    this.app.get("/", (req: Request, res: Response): void => {
       res.send("Home Page");
     });
 
