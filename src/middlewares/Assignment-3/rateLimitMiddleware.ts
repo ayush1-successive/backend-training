@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
-class rateLimiter {
+interface IRateLimitMiddleware {
+  (req: Request, res: Response, next: NextFunction): void;
+}
+
+class RateLimiter {
   maxRequests: number;
   currentRequestCounter: number;
   intervalMs: number;
@@ -14,12 +18,12 @@ class rateLimiter {
   }
 
   // Check if query limit exceeded in current interval
-  isInInterval() {
-    const endClock = new Date().getTime();
+  private isInInterval(): boolean {
+    const endClock: number = new Date().getTime();
     return endClock - this.startClock < this.intervalMs;
   }
 
-  check() {
+  check(): boolean {
     if (this.currentRequestCounter < this.maxRequests) {
       this.currentRequestCounter++;
       return true;
@@ -36,11 +40,13 @@ class rateLimiter {
   }
 }
 
-const rateLimitMiddleware = (rate:number, intervalMs:number) => {
-  const limiter = new rateLimiter(rate, intervalMs);
-  console.log(limiter);
+const rateLimitMiddleware = (
+  rate: number,
+  intervalMs: number
+): IRateLimitMiddleware => {
+  const limiter: RateLimiter = new RateLimiter(rate, intervalMs);
 
-  return (req: Request, res:Response, next:NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     console.log("rate =", limiter.maxRequests, limiter.intervalMs);
     if (limiter.check()) {
       console.log("Query within interval!");

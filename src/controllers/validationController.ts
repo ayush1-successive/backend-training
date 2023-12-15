@@ -1,30 +1,37 @@
-import { userSchema } from "../models/userModel";
 import { Request, Response } from "express";
+import { ValidationResult } from "joi";
+import { userSchema } from "../models/userModel";
 
-const paramValidationController = (req: Request, res: Response) => {
+const paramValidationController = (req: Request, res: Response): void => {
   try {
-    const validationResult = userSchema.validate(req.body, {
-      abortEarly: false,
-    });
+    const validationResult: ValidationResult = userSchema.validate(
+      req.body,
+      {
+        abortEarly: false,
+      }
+    );
 
     if (validationResult.error) {
       console.log(validationResult.error);
-      return res.status(400).send({
+
+      res.status(400).send({
         status: false,
         message: "Validation error!",
         error: validationResult.error,
       });
+      return;
     }
 
     console.log("Validation successful!");
-    return res.status(200).send({
+    res.status(200).send({
       status: true,
       message: "Validation successful!",
       body: req.body,
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({
+  } catch (error: unknown) {
+    console.error(error);
+
+    res.status(500).send({
       status: false,
       message: "Internal server error!",
       error,

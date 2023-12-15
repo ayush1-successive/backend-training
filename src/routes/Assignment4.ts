@@ -8,10 +8,10 @@ import {
   validateNumericParamsMiddleware,
 } from "../middlewares/Assignment-4/index";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
 // Home Page
-router.get("/", function (req: Request, res: Response) {
+router.get("/", function (req: Request, res: Response): void {
   res.status(200).send({
     status: true,
     message: "Assignment-4 HomePage",
@@ -26,7 +26,7 @@ router.post("/add-user", addValidatedUserController);
 router.post(
   "/register",
   inputValidateMiddleware,
-  function (req: Request, res: Response) {
+  function (req: Request, res: Response): void {
     res.status(201).json({
       status: true,
       message: "Registration successful!",
@@ -40,7 +40,7 @@ router.post(
 router.post(
   "/add-item",
   validateNumericParamsMiddleware,
-  function (req: Request, res: Response) {
+  function (req: Request, res: Response): void {
     res.status(201).json({
       status: true,
       message: "Item successfully added to product list",
@@ -50,7 +50,7 @@ router.post(
 
 // Task-6
 // Middleware to validate IP
-router.get("/ip", ipCheckMiddleware, function (req: Request, res: Response) {
+router.get("/ip", ipCheckMiddleware, function (req: Request, res: Response): void {
   res.status(200).send({
     status: true,
     message: "IP test completed!",
@@ -60,10 +60,10 @@ router.get("/ip", ipCheckMiddleware, function (req: Request, res: Response) {
 // Task-7
 // Middleware with dynamically fetch validation
 // rules from a configuration file based on route.
-router.get(
+router.post(
   "/registration",
   dynamicValidationMiddleware,
-  function (req: Request, res: Response) {
+  function (req: Request, res: Response): void {
     res.json({
       status: true,
       message: "User registered successfully!",
@@ -72,10 +72,10 @@ router.get(
 );
 
 // Task-7
-router.get(
+router.post(
   "/product",
   dynamicValidationMiddleware,
-  function (req: Request, res: Response) {
+  function (req: Request, res: Response): void {
     res.json({
       status: true,
       message: "Product added to list successfully!",
