@@ -1,20 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 
-interface IHeaderMiddleware {
-  (
-    headerName: string,
-    headerValue: string
-  ): (req: Request, res: Response, next: NextFunction) => void;
-}
+export class HeaderMiddleware {
+  headerName: string;
+  headerValue: string;
 
-const headerMiddleware: IHeaderMiddleware = (
-  headerName: string,
-  headerValue: string
-) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    res.setHeader(headerName, headerValue);
+  constructor(headerName: string, headerValue: string) {
+    this.headerName = headerName;
+    this.headerValue = headerValue;
+  }
+
+  setHeader = (req: Request, res: Response, next: NextFunction): void => {
+    res.setHeader(this.headerName, this.headerValue);
     next();
   };
-};
-
-export { headerMiddleware };
+}

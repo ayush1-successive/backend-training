@@ -1,11 +1,4 @@
-import { dynamicValidationMiddleware } from "./dynamicValidationMiddleware";
-import { inputValidateMiddleware } from "./inputValidateMiddleware";
-import { ipCheckMiddleware } from "./ipCheckMiddleware";
-import { validateNumericParamsMiddleware } from "./validateNumericParamsMiddleware";
+import { IpMiddleware } from "./ipMiddleware";
+import { ValidationMiddleware } from "./validationMiddleware";
 
-export {
-  dynamicValidationMiddleware,
-  inputValidateMiddleware,
-  ipCheckMiddleware,
-  validateNumericParamsMiddleware
-};
+export { IpMiddleware, ValidationMiddleware };

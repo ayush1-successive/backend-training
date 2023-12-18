@@ -1,66 +1,63 @@
 import express, { Request, Response } from "express";
 
-import {
-  addUserController,
-  getDataController,
-} from "../controllers/dataController";
+import { UserController } from "../controllers/dataController";
+import { HomePageController } from "../controllers/HomePageController";
 
 import {
-  authMiddleware,
-  errorHandlerMiddlerware,
-  headerMiddleware,
-  logMiddleware,
-  rateLimitMiddleware,
+  AuthMiddleware,
+  ErrorHandlerMiddlerware,
+  HeaderMiddleware,
+  LogMiddleware,
+  RateLimitMiddleware,
 } from "../middlewares/Assignment-3/index";
 
 const router: express.Router = express.Router();
 
+const homepage: HomePageController = new HomePageController();
+const userController: UserController = new UserController();
+const authMiddleware: AuthMiddleware = new AuthMiddleware();
+const headerMiddleware: HeaderMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
+const logMiddleware: LogMiddleware = new LogMiddleware();
+const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(2, 5000);
+const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
+
 // Home Page
-router.get("/", function (req: Request, res: Response) {
-  res.status(200).send({
-    status: true,
-    message: "Assignment-3 HomePage",
-  });
-});
+router.get("/", homepage.assignment3);
 
 // Task-4,7
 // Get data with authentication
-router.get("/mock", authMiddleware, getDataController);
+router.get("/mock", authMiddleware.authenticate, userController.getData);
 
 // Task-5
 // Add new user to data
-router.post("/add-user", addUserController);
+router.post("/add-user", userController.addUser);
 
 // Task-9
 // Log middleware
-router.get("/mock-log", logMiddleware, getDataController);
+router.get("/mock-log", logMiddleware.log, userController.getData);
 
 // Task-10
 // Route handler with intentional error
-router.get("/example", (req: Request, res: Response) => {
-  // Simulating an error (e.g., accessing a property of an undefined variable)
-  let undefinedVariable: any;
-  const result = undefinedVariable.property; // This will throw an error
-  res.send("This will not be reached due to the error");
-});
+router.get("/example", errorHandler.example);
 
 // Task-11
 // Multiple chained middleware
-router.use("/mock-log-auth", logMiddleware, authMiddleware, getDataController);
+router.use(
+  "/mock-log-auth",
+  logMiddleware.log,
+  authMiddleware.authenticate,
+  userController.getData
+);
 
 // Task-12
 // Header Middleware
-router.use(
-  "/mock-header",
-  headerMiddleware("Author", "Ayush Sinha"),
-  getDataController
-);
+router.use("/mock-header", headerMiddleware.setHeader, userController.getData);
 
 // Task-13
 // Rate-Limited Middleware
-router.use("/mock-rate", rateLimitMiddleware(2, 5000), getDataController);
+router.use("/mock-rate", rateLimitMiddleware.fetch, userController.getData);
 
 // Error catching middleware
-router.use(errorHandlerMiddlerware);
+router.use(errorHandler.handle);
 
 export { router };

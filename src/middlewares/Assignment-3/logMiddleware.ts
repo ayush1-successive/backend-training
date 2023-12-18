@@ -1,17 +1,17 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import { serverConfig } from "../../config";
 
-const logMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const port: number = parseInt(process.env.PORT ?? "3000");
+export class LogMiddleware {
+  private port: number;
 
-  console.log(`Method = ${req.method}`);
-  console.log(`Current path = http://localhost:${port}${req.url}`);
-  console.log(`Time = ${new Date().toUTCString()}`);
+  constructor() {
+    this.port = serverConfig.port;
+  }
 
-  next();
-};
-
-export { logMiddleware };
+  log = (req: Request, res: Response, next: NextFunction): void => {
+    console.log(`Method = ${req.method}`);
+    console.log(`Current path = http://localhost:${this.port}${req.url}`);
+    console.log(`Time = ${new Date().toUTCString()}`);
+    next();
+  };
+}

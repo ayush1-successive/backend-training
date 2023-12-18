@@ -6,6 +6,8 @@
 - [Setting Up TypeScript](#setting-up-typescript)
 - [Basic Types](#basic-types)
 - [Variables](#variables)
+- [Classes](#classes)
+- [Interfaces](#interfaces)
 
 ## Introduction
 
@@ -173,4 +175,62 @@ Declare neither value not type. In this case, the data type of the variable will
 ```typescript
 // The variable’s data type is any. Its value is set to undefined by default.
 var name;
+```
+
+## Classes
+
+In TypeScript, classes are a fundamental building block for object-oriented programming. They provide a way to create blueprints for objects with properties and methods. Here's a example of a class:
+
+```typescript
+class Animal {
+  // Properties
+  name: string;
+  age: number;
+
+  // Constructor
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  // Method
+  makeSound() {
+    console.log("Some generic sound");
+  }
+}
+
+// Creating an instance of the Animal class
+const myAnimal = new Animal("Lion", 5);
+myAnimal.makeSound(); // Output: Some generic sound
+```
+
+## Interfaces
+
+Interfaces in TypeScript provide a way to define contracts for the shape of objects. They can be used to enforce a specific structure for classes, ensuring that they have certain properties or methods. Here's a simple example:
+
+```typescript
+interface Person {
+  firstName: string;
+  lastName: string;
+  sayHello(): void;
+}
+
+// Implementing the Person interface in a class
+class Greeter implements Person {
+  firstName: string;
+  lastName: string;
+
+  constructor(firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  sayHello() {
+    console.log(`Hello, ${this.firstName} ${this.lastName}!`);
+  }
+}
+
+// Creating an instance of the Greeter class
+const greeter = new Greeter("John", "Doe");
+greeter.sayHello(); // Output: Hello, John Doe!
 ```
