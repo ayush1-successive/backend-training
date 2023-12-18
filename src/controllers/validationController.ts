@@ -5,12 +5,9 @@ import { userSchema } from "../models/userModel";
 export class ValidationController {
   paramValidation = async (req: Request, res: Response): Promise<void> => {
     try {
-      const validationResult: ValidationResult<any> = userSchema.validate(
-        req.body,
-        {
-          abortEarly: false,
-        },
-      );
+      const validationResult: ValidationResult = userSchema.validate(req.body, {
+        abortEarly: false,
+      });
 
       if (validationResult.error) {
         console.error(validationResult.error);
