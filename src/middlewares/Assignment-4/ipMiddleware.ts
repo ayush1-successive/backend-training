@@ -1,29 +1,34 @@
-import { Request, Response, NextFunction } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 
 export class IpMiddleware {
-  private expectedIp: string;
+  private readonly expectedIp: string;
 
   constructor() {
     this.expectedIp = "::1";
-    this.check = this.check.bind(this);
   }
 
-  check = async (req: Request, res: Response, next: NextFunction) => {
+  check = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
-      const clientIp = req.ip;
+      const clientIp: string | undefined = req.ip;
 
       if (clientIp !== this.expectedIp) {
-        return res.status(403).send({
+        res.status(403).send({
           status: false,
           message: "Forbidden: Access denied. Invalid IP address.",
         });
+        return;
       }
 
       console.log("Valid Ip address!");
       next();
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({
+    } catch (error: unknown) {
+      console.error(error);
+
+      res.status(500).send({
         status: false,
         message: "Internal Server Error",
       });

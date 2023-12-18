@@ -6,12 +6,11 @@ import Database from "./lib/database";
 
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-
 import {
   assignment3Router,
   assignment4Router,
   assignment5Router,
-} from "./routes";
+} from "./routes/index";
 
 class Server {
   private readonly app: express.Application;
@@ -22,16 +21,21 @@ class Server {
     this.config = config;
     this.app = express();
     this.app.use(express.json());
-    this.database = new Database(this.config.MONGO_URL);
+    this.database = new Database(this.config.mongoUrl);
 
+    this.configureMiddlewares();
     this.configureRoutes();
   }
 
+  private configureMiddlewares(): void {
+    this.app.use(express.json());
+  }
+
   private configureRoutes(): void {
-    const errorHandler = new ErrorHandlerMiddlerware();
+    const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
     // HomePage
-    this.app.get("/", (req: Request, res: Response) => {
+    this.app.get("/", (req: Request, res: Response): void => {
       res.send("Home Page");
     });
 
@@ -56,9 +60,9 @@ class Server {
     await this.database.connect();
     await this.database.seedCountries();
 
-    this.app.listen(this.config.PORT, () => {
+    this.app.listen(this.config.port, () => {
       console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
+        `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
       );
     });
   };

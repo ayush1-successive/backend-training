@@ -8,9 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --exec 'npx tsc && node dist/index.js'",
-    "lint": "eslint src/**/*.ts src/index.ts src/server.ts src/config.ts",
-    "lint:fix": "eslint --fix src/**/*.ts src/index.ts src/server.ts src/config.ts",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint --fix 'src/**/*.ts'",
     "prepare": "husky install"
   },
   "author": "",
@@ -34,8 +33,6 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.3.1",
     "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2",
     "husky": "^8.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.2"

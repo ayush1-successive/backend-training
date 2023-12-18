@@ -11,8 +11,7 @@ class Database {
 
   connect = async (): Promise<void> => {
     try {
-      const databaseName = "backend";
-      await mongoose.connect(`${this.mongoUrl}/${databaseName}`);
+      await mongoose.connect(this.mongoUrl);
       console.log(`Connected to MongoDB Database ${mongoose.connection.host}`);
     } catch (error: any) {
       console.log(`MongoDB Database Error ${error}`);
@@ -22,12 +21,15 @@ class Database {
   seedCountries = async (): Promise<void> => {
     try {
       // Read the country data from the JSON file
-      const countryData = await fs.readFile("src/utils/country.json", "utf-8");
-      const countries = JSON.parse(countryData);
+      const countryData: string = await fs.readFile(
+        "src/utils/country.json",
+        "utf-8",
+      );
+      const countries: ICountry[] | null = JSON.parse(countryData);
 
-      countries.forEach(async (country: ICountry) => {
+      countries?.forEach(async (country: ICountry) => {
         // Seed each country
-        const existingCountry = await CountryModel.findOne({
+        const existingCountry: ICountry | null = await CountryModel.findOne({
           name: country.name,
         });
 

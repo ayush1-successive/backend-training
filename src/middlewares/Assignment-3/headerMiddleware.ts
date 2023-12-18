@@ -1,17 +1,15 @@
-import { Request, Response, NextFunction } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 
 export class HeaderMiddleware {
-  headerName: any;
-  headerValue: any;
+  headerName: string;
+  headerValue: string;
 
-  constructor(headerName: any, headerValue: any) {
+  constructor(headerName: string, headerValue: string) {
     this.headerName = headerName;
     this.headerValue = headerValue;
-
-    this.setHeader = this.setHeader.bind(this);
   }
 
-  setHeader = (req: Request, res: Response, next: NextFunction) => {
+  setHeader = (req: Request, res: Response, next: NextFunction): void => {
     res.setHeader(this.headerName, this.headerValue);
     next();
   };

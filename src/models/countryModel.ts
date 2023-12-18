@@ -8,7 +8,7 @@ interface ICountry extends Document {
   language: string;
 }
 
-const CountrySchema = new Schema<ICountry>(
+const CountrySchema: Schema<ICountry> = new Schema<ICountry>(
   {
     name: { type: String, required: true },
     code: { type: String, required: true },
@@ -19,6 +19,9 @@ const CountrySchema = new Schema<ICountry>(
   { timestamps: true },
 );
 
-const CountryModel = mongoose.model<ICountry>("Country", CountrySchema);
+const CountryModel: mongoose.Model<ICountry> = mongoose.model<ICountry>(
+  "Country",
+  CountrySchema,
+);
 
 export { type ICountry, CountryModel };
