@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 
 export class HomePageController {
   assignment3 = (req: Request, res: Response): void => {

@@ -1,6 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { type Request, type Response } from "express";
 
-import { UserController } from "../controllers/dataController";
+import { UserController } from "../controllers/userController";
 import { HomePageController } from "../controllers/HomePageController";
 import {
   IpMiddleware,
@@ -30,7 +30,7 @@ router.post(
       status: true,
       message: "Registration successful!",
     });
-  }
+  },
 );
 
 // Task-5
@@ -44,7 +44,7 @@ router.post(
       status: true,
       message: "Item successfully added to product list",
     });
-  }
+  },
 );
 
 // Task-6
@@ -67,7 +67,7 @@ router.post(
       status: true,
       message: "User registered successfully!",
     });
-  }
+  },
 );
 
 // Task-7
@@ -79,7 +79,7 @@ router.post(
       status: true,
       message: "Product added to list successfully!",
     });
-  }
+  },
 );
 
 export { router };

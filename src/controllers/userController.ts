@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { ValidationResult } from "joi";
+import { type Request, type Response } from "express";
+import { type ValidationResult } from "joi";
 import { userSchema } from "../models/userModel";
-import { IUser, userData } from "../utils/mockData";
+import { type IUser, userData } from "../utils/mockData";
 
 export class UserController {
   getData = (req: Request, res: Response): void => {
@@ -16,12 +16,9 @@ export class UserController {
 
   addValidatedUser = async (req: Request, res: Response): Promise<void> => {
     const newUser: IUser = req.body;
-    const validationResult: ValidationResult = userSchema.validate(
-      newUser,
-      {
-        abortEarly: false,
-      }
-    );
+    const validationResult: ValidationResult = userSchema.validate(newUser, {
+      abortEarly: false,
+    });
 
     if (validationResult.error) {
       res.status(400).json({

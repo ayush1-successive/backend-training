@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 
 export class IpMiddleware {
-  private expectedIp: string;
+  private readonly expectedIp: string;
 
   constructor() {
     this.expectedIp = "::1";
@@ -10,7 +10,7 @@ export class IpMiddleware {
   check = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const clientIp: string | undefined = req.ip;

@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { ValidationResult } from "joi";
+import { type NextFunction, type Request, type Response } from "express";
+import { type ValidationResult } from "joi";
 import { validationConfig } from "../../utils/config";
 
 interface IUserRequestBody {
@@ -15,19 +15,19 @@ interface IProductQueryParams {
 }
 
 export class ValidationMiddleware {
-  private isStrongPassword = (value: string): boolean => {
+  private readonly isStrongPassword = (value: string): boolean => {
     const strongRegex: RegExp =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}/;
 
     return strongRegex.test(value);
   };
 
-  private correctEmailFormat = (value: string): boolean => {
+  private readonly correctEmailFormat = (value: string): boolean => {
     const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
   };
 
-  private isNumeric = (value: string | number): boolean => {
+  private readonly isNumeric = (value: string | number): boolean => {
     if (typeof value === "number") return true;
 
     if (typeof value === "string") {
@@ -40,7 +40,7 @@ export class ValidationMiddleware {
   dynamicValidation = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const param: string = req.url.slice(1);
@@ -77,7 +77,7 @@ export class ValidationMiddleware {
   inputValidation = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { name, email, password }: IUserRequestBody = req.body;
@@ -123,7 +123,7 @@ export class ValidationMiddleware {
   numericParamsValidation = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { name, quantity, price }: IProductQueryParams = req.query;

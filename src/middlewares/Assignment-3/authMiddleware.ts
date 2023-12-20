@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import JWT from "jsonwebtoken";
 import { serverConfig } from "../../config";
 
@@ -12,11 +12,11 @@ export class AuthMiddleware {
   authenticate = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const token: string | undefined =
-        req.headers["authorization"]?.split(" ")[1];
+        req.headers.authorization?.split(" ")[1];
 
       JWT.verify(
         token ?? "",
@@ -32,7 +32,7 @@ export class AuthMiddleware {
             req.body.userId = decode.userId;
             next();
           }
-        }
+        },
       );
     } catch (error: unknown) {
       console.error(error);

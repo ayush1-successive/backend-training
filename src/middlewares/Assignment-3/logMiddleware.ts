@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import { serverConfig } from "../../config";
 
 export class LogMiddleware {
-  private port: number;
+  private readonly port: number;
 
   constructor() {
     this.port = serverConfig.port;

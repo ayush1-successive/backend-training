@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
 
-import { UserController } from "../controllers/dataController";
 import { HomePageController } from "../controllers/HomePageController";
+import { UserController } from "../controllers/userController";
 
 import {
   AuthMiddleware,
@@ -16,9 +16,15 @@ const router: express.Router = express.Router();
 const homepage: HomePageController = new HomePageController();
 const userController: UserController = new UserController();
 const authMiddleware: AuthMiddleware = new AuthMiddleware();
-const headerMiddleware: HeaderMiddleware = new HeaderMiddleware("Author", "Ayush Sinha");
+const headerMiddleware: HeaderMiddleware = new HeaderMiddleware(
+  "Author",
+  "Ayush Sinha",
+);
 const logMiddleware: LogMiddleware = new LogMiddleware();
-const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(2, 5000);
+const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(
+  2,
+  5000,
+);
 const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
 // Home Page
@@ -46,7 +52,7 @@ router.use(
   "/mock-log-auth",
   logMiddleware.log,
   authMiddleware.authenticate,
-  userController.getData
+  userController.getData,
 );
 
 // Task-12

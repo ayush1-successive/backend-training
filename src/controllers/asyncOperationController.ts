@@ -1,17 +1,17 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 
 export class AsyncOperationController {
-  someAsyncOperation = async (): Promise<void> => {
-    return new Promise((resolve, reject) => {
+  someAsyncOperation = async (): Promise<Error> => {
+    return await new Promise((resolve, reject) => {
       setTimeout(() => {
-        reject("An intentional error occured!");
+        reject(new Error("An intentional error occured!"));
       }, 1000);
     });
   };
 
   doAsyncOperation = async (req: Request, res: Response): Promise<void> => {
     try {
-      const result: void = await this.someAsyncOperation();
+      const result: Error = await this.someAsyncOperation();
 
       res.status(200).send({
         status: true,

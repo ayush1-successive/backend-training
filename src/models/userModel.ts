@@ -1,11 +1,11 @@
-import joi from "joi";
-import { IUser, userData } from "../utils/mockData";
+import joi, { type ObjectSchema } from "joi";
+import { userData, type IUser } from "../utils/mockData";
 
-function isUserIdUnique(userId: number, users: Array<IUser>): boolean {
+function isUserIdUnique(userId: number, users: IUser[]): boolean {
   return !users.some((user: IUser) => user.userId === userId);
 }
 
-const userSchema = joi.object({
+const userSchema: ObjectSchema = joi.object({
   userId: joi
     .number()
     .integer()

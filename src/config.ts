@@ -12,10 +12,10 @@ interface IServerConfig {
 
 // Load configuration from .env file
 const serverConfig: IServerConfig = {
-  devMode: process.env.DEV_MODE || "development",
-  port: parseInt(process.env.PORT || "3000"),
-  dummyToken: process.env.DUMMY_TOKEN || "",
-  jwtSecret: process.env.JWT_SECRET || "",
+  devMode: process.env.DEV_MODE ?? "development",
+  port: parseInt(process.env.PORT ?? "3000"),
+  dummyToken: process.env.DUMMY_TOKEN ?? "",
+  jwtSecret: process.env.JWT_SECRET ?? "",
 };
 
-export { serverConfig, IServerConfig };
+export { serverConfig, type IServerConfig };

@@ -8,7 +8,8 @@ import { ErrorHandlerMiddlerware } from "../middlewares/Assignment-3";
 const router: express.Router = express.Router();
 
 const homepage: HomePageController = new HomePageController();
-const asyncOperationController: AsyncOperationController = new AsyncOperationController();
+const asyncOperationController: AsyncOperationController =
+  new AsyncOperationController();
 const validationController: ValidationController = new ValidationController();
 const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 

@@ -1,9 +1,6 @@
-import joi, {ObjectSchema} from "joi";
+import joi, { type ObjectSchema } from "joi";
 
-interface ValidationConfig {
-  [key: string]: ObjectSchema<any>;
-}
-
+type ValidationConfig = Record<string, ObjectSchema<any>>;
 
 const validationConfig: ValidationConfig = {
   registration: joi.object({

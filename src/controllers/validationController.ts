@@ -1,16 +1,13 @@
-import { ValidationResult } from "joi";
+import { type Request, type Response } from "express";
+import { type ValidationResult } from "joi";
 import { userSchema } from "../models/userModel";
-import { Request, Response } from "express";
 
 export class ValidationController {
   paramValidation = async (req: Request, res: Response): Promise<void> => {
     try {
-      const validationResult: ValidationResult = userSchema.validate(
-        req.body,
-        {
-          abortEarly: false,
-        }
-      );
+      const validationResult: ValidationResult = userSchema.validate(req.body, {
+        abortEarly: false,
+      });
 
       if (validationResult.error) {
         console.error(validationResult.error);
