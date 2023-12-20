@@ -1,24 +1,26 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 
 export class ErrorHandlerMiddlerware {
-  constructor() {
-    this.handle = this.handle.bind(this);
-    this.example = this.example.bind(this);
-  }
-
-  handle = (err: any, req: Request, res: Response, next: NextFunction) => {
+  handle = (
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
     console.error(err.message);
     res.status(500).json({ error: "Internal Server Error" });
+
+    next();
   };
 
-  example = (req: Request, res: Response) => {
+  example = (req: Request, res: Response): void => {
     // Simulating an error (e.g., accessing a property of an undefined variable)
     let undefinedVariable: any;
-    const result = undefinedVariable.property; // This will throw an error
-    res.send("This will not be reached due to the error");
+    const result: any = undefinedVariable.property; // This will throw an error
+    res.send(`This will not be reached due to the error. ${result}`);
   };
 
-  notFound = (req: Request, res: Response) => {
+  notFound = (req: Request, res: Response): void => {
     res.status(404).send({
       status: false,
       message: "404 not found!",

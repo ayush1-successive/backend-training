@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { type mongo } from "mongoose";
 import type ICountry from "../interfaces/ICountry";
 import BaseRepository from "./BaseRepository";
 
 // Define the schema for the 'Country' collection
-const countrySchema = new mongoose.Schema<ICountry>({
+const countrySchema: mongoose.Schema<ICountry> = new mongoose.Schema<ICountry>({
   name: { type: String, required: true, unique: true },
   code: { type: String, required: true, unique: true },
   continent: { type: String, required: true },
@@ -19,19 +19,23 @@ class CountryRepository extends BaseRepository<ICountry> {
 
   // Get all countries
   getAllCountries = async (): Promise<ICountry[]> => {
-    const countries = await this.model.find({});
+    const countries: ICountry[] = await this.model.find({});
     return countries;
   };
 
   // Get a country by its name
   getCountryByName = async (countryName: string): Promise<ICountry | null> => {
-    const country = await this.model.findOne({ name: countryName });
+    const country: ICountry | null = await this.model.findOne({
+      name: countryName,
+    });
     return country;
   };
 
   // Delete a country by its name
   deleteCountryByName = async (countryName: string): Promise<any> => {
-    const result = await this.model.deleteOne({ name: countryName });
+    const result: mongo.DeleteResult = await this.model.deleteOne({
+      name: countryName,
+    });
 
     if (result.deletedCount === 0) {
       throw new Error(`Country with name ${countryName} not found.`);
@@ -39,22 +43,30 @@ class CountryRepository extends BaseRepository<ICountry> {
   };
 
   // Add a country to the collection
-  createCountry = async (country: ICountry): Promise<any> => {
-    const existingCountry = await this.model.findOne({ name: country.name });
+  createCountry = async (country: ICountry): Promise<Error | ICountry> => {
+    const existingCountry: ICountry | null = await this.model.findOne({
+      name: country.name,
+    });
 
     if (existingCountry) {
       throw new Error(`Country '${country.name}' already exists in DB!`);
     }
 
-    await this.model.create(country);
+    const result: ICountry = await this.model.create(country);
+    return result;
   };
 
-  seedCountry = async (country: ICountry): Promise<any> => {
-    const existingCountry = await this.model.findOne({ name: country.name });
+  seedCountry = async (country: ICountry): Promise<ICountry | undefined> => {
+    const existingCountry: ICountry | null = await this.model.findOne({
+      name: country.name,
+    });
 
-    if (!existingCountry) {
-      await this.model.create(country);
+    if (existingCountry) {
+      return;
     }
+
+    const result: ICountry = await this.model.create(country);
+    return result;
   };
 }
 

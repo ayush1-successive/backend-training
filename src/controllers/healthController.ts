@@ -3,12 +3,12 @@ import { type Request, type Response } from "express";
 class HealthController {
   private static instance: HealthController;
 
-  public static getInstance(): HealthController {
+  static getInstance = (): HealthController => {
     if (!HealthController.instance) {
       HealthController.instance = new HealthController();
     }
     return HealthController.instance;
-  }
+  };
 
   check = (req: Request, res: Response): void => {
     res.send({

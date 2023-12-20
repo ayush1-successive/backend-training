@@ -5,12 +5,13 @@ import { AsyncOperationController } from "../controllers/asyncOperationControlle
 import { ValidationController } from "../controllers/validationController";
 import { ErrorHandlerMiddlerware } from "../middlewares/Assignment-3";
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
-const homepage = new HomePageController();
-const asyncOperationController = new AsyncOperationController();
-const validationController = new ValidationController();
-const errorHandler = new ErrorHandlerMiddlerware();
+const homepage: HomePageController = new HomePageController();
+const asyncOperationController: AsyncOperationController =
+  new AsyncOperationController();
+const validationController: ValidationController = new ValidationController();
+const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
 // Home Page
 router.get("/", homepage.assignment5);

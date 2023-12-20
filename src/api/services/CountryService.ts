@@ -15,8 +15,9 @@ class CountryService {
     }
   };
 
-  getCountry = async (name: string): Promise<any> => {
-    const country = await this.countryRepository.getCountryByName(name);
+  getCountry = async (name: string): Promise<ICountry | null> => {
+    const country: ICountry | null =
+      await this.countryRepository.getCountryByName(name);
     return country;
   };
 
@@ -24,8 +25,10 @@ class CountryService {
     return await this.countryRepository.getAllCountries();
   };
 
-  createCountry = async (country: ICountry): Promise<any> => {
-    return await this.countryRepository.createCountry(country);
+  createCountry = async (country: ICountry): Promise<ICountry | Error> => {
+    const result: ICountry | Error =
+      await this.countryRepository.createCountry(country);
+    return result;
   };
 
   deleteCountry = async (countryName: string): Promise<any> => {

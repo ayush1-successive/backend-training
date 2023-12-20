@@ -7,7 +7,6 @@ import Database from "./lib/database";
 import CountryController from "./api/controllers/CountryController";
 import healthController from "./controllers/healthController";
 import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-
 import {
   assignment3Router,
   assignment4Router,
@@ -23,17 +22,21 @@ class Server {
   constructor(config: IServerConfig) {
     this.config = config;
     this.app = express();
-    this.app.use(express.json());
-    this.database = new Database(this.config.MONGO_URL);
+    this.database = new Database(this.config.mongoUrl);
 
+    this.configureMiddlewares();
     this.configureRoutes();
   }
 
+  private configureMiddlewares(): void {
+    this.app.use(express.json());
+  }
+
   private configureRoutes(): void {
-    const errorHandler = new ErrorHandlerMiddlerware();
+    const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
 
     // HomePage
-    this.app.get("/", (req: Request, res: Response) => {
+    this.app.get("/", (req: Request, res: Response): void => {
       res.send("Home Page");
     });
 
@@ -59,12 +62,12 @@ class Server {
     // Database connect
     await this.database.connect();
 
-    const countryController = new CountryController();
+    const countryController: CountryController = new CountryController();
     await countryController.seedCountries();
 
-    this.app.listen(this.config.PORT, () => {
+    this.app.listen(this.config.port, () => {
       console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
+        `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
       );
     });
   };

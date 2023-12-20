@@ -4,6 +4,7 @@ import CountryService from "../services/CountryService";
 
 import { type Request, type Response } from "express";
 import { countryValidationSchema } from "../validators/CountryValidator";
+import { type ValidationResult } from "joi";
 
 class CountryController {
   countryService: CountryService;
@@ -13,8 +14,11 @@ class CountryController {
   }
 
   seedCountries = async (): Promise<void> => {
-    const countryData = await fs.readFile("src/utils/country.json", "utf-8");
-    const countries = JSON.parse(countryData);
+    const countryData: string = await fs.readFile(
+      "src/utils/country.json",
+      "utf-8",
+    );
+    const countries: ICountry[] = JSON.parse(countryData);
 
     await this.countryService.seedCountries(countries);
   };
@@ -28,7 +32,9 @@ class CountryController {
 
   getCountry = async (req: Request, res: Response): Promise<void> => {
     try {
-      const country = await this.countryService.getCountry(req.params.name);
+      const country: ICountry = await this.countryService.getCountry(
+        req.params.name,
+      );
 
       if (!country) {
         res.status(404).send({
@@ -56,7 +62,7 @@ class CountryController {
 
   getAllCountries = async (req: Request, res: Response): Promise<void> => {
     try {
-      const countries = await this.countryService.getAllCountries();
+      const countries: ICountry[] = await this.countryService.getAllCountries();
 
       res.status(200).send({
         status: true,
@@ -78,9 +84,10 @@ class CountryController {
     try {
       const country: ICountry = req.body;
 
-      const validationResult = countryValidationSchema.validate(country, {
-        abortEarly: false,
-      });
+      const validationResult: ValidationResult =
+        countryValidationSchema.validate(country, {
+          abortEarly: false,
+        });
 
       if (validationResult.error) {
         res.status(400).json({
@@ -108,7 +115,7 @@ class CountryController {
 
   deleteCountry = async (req: Request, res: Response): Promise<void> => {
     try {
-      const countryName = req.params.name;
+      const countryName: string = req.params.name;
       await this.countryService.deleteCountry(countryName);
 
       res.status(200).send({

@@ -1,8 +1,8 @@
 import express from "express";
 import CountryController from "../api/controllers/CountryController";
 
-const router = express.Router();
-const countryController = new CountryController();
+const router: express.Router = express.Router();
+const countryController: CountryController = new CountryController();
 
 router.get("/", countryController.homePage);
 
