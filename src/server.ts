@@ -1,73 +1,52 @@
-// server.ts
-
-import express, { type Request, type Response } from "express";
-import { type IServerConfig } from "./config";
-import Database from "./lib/database";
-
-import CountryController from "./api/controllers/CountryController";
-import healthController from "./controllers/healthController";
-import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-
-import {
-  assignment3Router,
-  assignment4Router,
-  assignment5Router,
-  countryRouter,
-} from "./routes";
+import express from 'express';
+import cors from 'cors';
+import { type IServerConfig } from './config';
+import Database from './lib/database';
+import router from './routes';
+import CountryController from './module/country/controller';
 
 class Server {
-  private readonly app: express.Application;
-  private readonly config: IServerConfig;
-  private readonly database: Database;
+    private readonly app: express.Application;
 
-  constructor(config: IServerConfig) {
-    this.config = config;
-    this.app = express();
-    this.app.use(express.json());
-    this.database = new Database(this.config.MONGO_URL);
+    private readonly config: IServerConfig;
 
-    this.configureRoutes();
-  }
+    private readonly database: Database;
 
-  private configureRoutes(): void {
-    const errorHandler = new ErrorHandlerMiddlerware();
+    constructor(config: IServerConfig) {
+        this.app = express();
+        this.config = config;
+        this.database = Database.getInstance(this.config.mongoUrl);
+    }
 
-    // HomePage
-    this.app.get("/", (req: Request, res: Response) => {
-      res.send("Home Page");
-    });
+    bootStrap(): void {
+        this.configureMiddlewares();
+        this.configureRoutes();
+    }
 
-    // health-check
-    this.app.get("/health", healthController.check);
+    private configureMiddlewares(): void {
+        this.app.use(express.json());
+        this.app.use(cors());
+    }
 
-    // assignment-3
-    this.app.use("/assignment3", assignment3Router);
+    private configureRoutes(): void {
+        this.app.use(router);
+    }
 
-    // Assignment-4
-    this.app.use("/assignment4", assignment4Router);
+    run = async (): Promise<void> => {
+        // connect to DB
+        await this.database.connect();
 
-    // Assignment-5
-    this.app.use("/assignment5", assignment5Router);
+        // seed the country database
+        const countryController: CountryController = new CountryController();
+        await countryController.initialSeed();
 
-    this.app.use("/country", countryRouter);
-
-    // Handles '404 not found'
-    this.app.use(errorHandler.notFound);
-  }
-
-  run = async (): Promise<void> => {
-    // Database connect
-    await this.database.connect();
-
-    const countryController = new CountryController();
-    await countryController.seedCountries();
-
-    this.app.listen(this.config.PORT, () => {
-      console.log(
-        `Node Server Running In ${this.config.DEV_MODE} On Port http://localhost:${this.config.PORT}`,
-      );
-    });
-  };
+        this.app.listen(this.config.port, () => {
+            // eslint-disable-next-line no-console
+            console.log(
+                `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
+            );
+        });
+    };
 }
 
-export { Server };
+export default Server;

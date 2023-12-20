@@ -1,33 +1,43 @@
-import { type Request, type Response } from "express";
-import { userSchema } from "../models/userModel";
-import { data } from "./mockData";
+import { type Request, type Response } from 'express';
+import { type ValidationResult } from 'joi';
 
-export class UserController {
-  getData = (req: Request, res: Response): void => {
-    res.json(data);
-  };
+import userData from '../lib/userData';
+import IUser from '../module/user/entities/IUser';
+import { userValidation } from '../module/user/validation';
+import { SystemResponse } from '../lib/response-handler';
 
-  addUser = (req: Request, res: Response): void => {
-    const newData = req.body;
-    data.users.push(newData);
-    res.json(data);
-  };
+class UserController {
+    static getData = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'user list found!', userData).ok();
+    };
 
-  addValidatedUser = (req: Request, res: Response): void => {
-    const newData = req.body;
-    const validationResult = userSchema.validate(newData, {
-      abortEarly: false,
-    });
+    static addUser = (req: Request, res: Response): void => {
+        const newUser: IUser = req.body;
+        userData.push(newUser);
+        new SystemResponse(res, 'new user created!', newUser).created();
+    };
 
-    if (validationResult.error) {
-      res.status(400).json({
-        status: "Validation failed",
-        error: validationResult.error.message,
-      });
-      return;
-    }
+    static addValidatedUser = (req: Request, res: Response): void => {
+        const newUser: IUser = req.body;
+        const validationResult: ValidationResult = userValidation.validate(
+            newUser,
+            {
+                abortEarly: false,
+            },
+        );
 
-    data.users.push(newData);
-    res.json(data);
-  };
+        if (validationResult.error) {
+            new SystemResponse(
+                res,
+                'new user validation failed!',
+                validationResult.error,
+            ).badRequest();
+            return;
+        }
+
+        userData.push(newUser);
+        new SystemResponse(res, 'new user created!', userData).created();
+    };
 }
+
+export default UserController;

@@ -1,35 +1,39 @@
-import { userSchema } from "../models/userModel";
-import { type Request, type Response } from "express";
+import { type Request, type Response } from 'express';
+import { type ValidationResult } from 'joi';
+import { userValidation } from '../module/user/validation';
+import { SystemResponse } from '../lib/response-handler';
 
-export class ValidationController {
-  paramValidation = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const validationResult = userSchema.validate(req.body, {
-        abortEarly: false,
-      });
+class ValidationController {
+    static paramValidation = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const validationResult: ValidationResult = userValidation.validate(
+                req.body,
+                {
+                    abortEarly: false,
+                },
+            );
 
-      if (validationResult.error) {
-        console.log(validationResult.error);
-        return res.status(400).send({
-          status: false,
-          message: "Validation error!",
-          error: validationResult.error,
-        });
-      }
+            if (validationResult.error) {
+                new SystemResponse(
+                    res,
+                    'Validation error!',
+                    validationResult.error,
+                ).badRequest();
+                return;
+            }
 
-      console.log("Validation successful!");
-      return res.status(200).send({
-        status: true,
-        message: "Validation successful!",
-        body: req.body,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({
-        status: false,
-        message: "Internal server error!",
-        error,
-      });
-    }
-  };
+            // console.log('Validation successful!');
+            new SystemResponse(res, 'Validation successful!', req.body).ok();
+        } catch (error) {
+            // console.error(error);
+
+            new SystemResponse(
+                res,
+                'Error occured in params validation',
+                error,
+            ).internalServerError();
+        }
+    };
 }
+
+export default ValidationController;
