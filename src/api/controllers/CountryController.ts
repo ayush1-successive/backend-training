@@ -32,7 +32,7 @@ class CountryController {
 
   getCountry = async (req: Request, res: Response): Promise<void> => {
     try {
-      const country: ICountry = await this.countryService.getCountry(
+      const country: ICountry | null = await this.countryService.getCountry(
         req.params.name,
       );
 
