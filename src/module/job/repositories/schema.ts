@@ -18,7 +18,8 @@ const jobListingSchema: mongoose.Schema<IJobListing> = new mongoose.Schema<IJobL
     responsibilities: { type: [String] },
     qualifications: {
         education: { type: String },
-        experienceYears: { type: Number, min: 0 },
+        minExperience: { type: Number, min: 0, max: 100 },
+        maxExperience: { type: Number, min: 0, max: 100 },
         skills: { type: [String] },
     },
     salary: {
