@@ -1,22 +1,13 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
-import { type IBase } from '../../../lib/base';
+import { IBase } from '../../../lib/base';
 import IAddress from './IAddress';
-
-enum JobType {
-  FullTime = 'Full-time',
-  PartTime = 'Part-time',
-  Contract = 'Contract',
-  Freelance = 'Freelance',
-  Internship = 'Internship',
-  Temporary = 'Temporary',
-  Other = 'Other',
-}
+import JobType from './JobType';
 
 interface IJobListing extends IBase {
   jobId: string,
   title: string;
   company: string;
+  logo: string;
+  openings: number;
   address: IAddress;
   jobType: JobType;
   industry: string;
@@ -40,4 +31,4 @@ interface IJobListing extends IBase {
   applicationLink?: string;
 }
 
-export { JobType, IJobListing };
+export default IJobListing;

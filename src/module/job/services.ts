@@ -1,5 +1,5 @@
 import JobRepository from './repositories/repository';
-import { IJobListing } from './entities/IJobListing';
+import IJobListing from './entities/IJobListing';
 
 class JobService {
     jobRepository: JobRepository;

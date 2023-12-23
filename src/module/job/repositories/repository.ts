@@ -1,5 +1,5 @@
 import { BaseRepository } from '../../../lib/base';
-import { IJobListing } from '../entities/IJobListing';
+import IJobListing from '../entities/IJobListing';
 import jobListingModel from './model';
 
 class JobRepository extends BaseRepository<IJobListing> {

@@ -22,10 +22,12 @@ class Database {
     connect = async (): Promise<void> => {
         try {
             await mongoose.connect(this.mongoUrl);
-            // console.log(`Connected to MongoDB Database ${mongoose.connection.host}`);
+
+            // eslint-disable-next-line no-console
+            console.log(`Connected to MongoDB Database ${mongoose.connection.host}`);
         } catch (error: unknown) {
             // eslint-disable-next-line no-console
-            console.log(`MongoDB Database Error ${error}`);
+            console.error(`MongoDB Database Error ${error}`);
         }
     };
 }

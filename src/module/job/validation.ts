@@ -1,5 +1,5 @@
 import joi, { type ObjectSchema } from 'joi';
-import { IJobListing } from './entities/IJobListing';
+import IJobListing from './entities/IJobListing';
 
 const jobValidation: ObjectSchema<IJobListing> = joi.object({
     title: joi.string().required(),

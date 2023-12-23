@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ValidationResult } from 'joi';
 import { SystemResponse } from '../../lib/response-handler';
 
-import { IJobListing } from './entities/IJobListing';
+import IJobListing from './entities/IJobListing';
 import JobService from './services';
 import jobValidation from './validation';
 
