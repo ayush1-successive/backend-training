@@ -11,8 +11,6 @@ import {
     RateLimitMiddleware,
 } from '../lib/middlewares/Assignment-3';
 
-// import * as assignment3Middleware from '../lib/middlewares/Assignment-3';
-
 const router: express.Router = express.Router();
 
 const authMiddleware: AuthMiddleware = new AuthMiddleware();
