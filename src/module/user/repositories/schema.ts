@@ -8,7 +8,7 @@ const userSchema: mongoose.Schema<IUser> = new mongoose.Schema<IUser>(
         password: { type: String, required: true },
         dateOfBirth: { type: String },
         address: { type: String },
-        phoneNumber: { type: String, required: true },
+        phoneNumber: { type: String },
         isAdmin: { type: Boolean },
         interests: { type: [String], default: [] },
     },

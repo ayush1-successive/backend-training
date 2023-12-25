@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import morgan from 'morgan';
 import { type IServerConfig } from './config';
 import Database from './lib/database';
 import router from './routes';
@@ -26,6 +27,7 @@ class Server {
     private configureMiddlewares(): void {
         this.app.use(express.json());
         this.app.use(cors());
+        this.app.use(morgan('dev'));
     }
 
     private configureRoutes(): void {

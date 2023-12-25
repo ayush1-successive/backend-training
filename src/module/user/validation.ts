@@ -3,17 +3,14 @@ import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 
 const userValidation: ObjectSchema<IUser> = joi.object({
-    name: joi.string().alphanum().min(3).max(30)
-        .trim()
+    name: joi.string().min(3).max(30).trim()
         .required(),
     email: joi.string().email({ tlds: { allow: false } }).trim().required(),
     password: joi
         .string()
         .custom((value, helper) => {
             if (value.length < 8) {
-                return helper.error('Length error', {
-                    message: 'Password must be at least 8 characters long',
-                });
+                return helper.message({ custom: 'Password must be at least 8 characters long' });
             }
             return value;
         })

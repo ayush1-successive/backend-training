@@ -147,7 +147,8 @@ class UserController {
             }
 
             // Correct password check
-            if (!UserService.verifyPassword(existingUser, user)) {
+            const comparePassword = await UserService.verifyPassword(existingUser, user);
+            if (!comparePassword) {
                 new SystemResponse(res, 'Invalid credentials!', user).unauthorized();
                 return;
             }
