@@ -1,5 +1,6 @@
 import express from 'express';
 import JobListingController from './controller';
+import upload from './helpers';
 
 class JobListingRouter {
     // eslint-disable-next-line no-use-before-define
@@ -29,6 +30,9 @@ class JobListingRouter {
         // Get all joblistings according to filters
         this.router.get('/', this.jobListingController.getAll);
 
+        // Get job by title and company
+        this.router.get('/details', this.jobListingController.getByTitleAndCompany);
+
         // Get a job by jobId
         this.router.get('/:jobId', this.jobListingController.getById);
 
@@ -40,6 +44,9 @@ class JobListingRouter {
 
         // Delete a job listing by its id
         // this.router.delete('/jobs/jobId', this.jobListingController.delete);
+
+        // Upload a job through csv
+        this.router.post('/upload', upload.single('file'), this.jobListingController.uploadByFile);
     }
 }
 

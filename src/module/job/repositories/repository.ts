@@ -7,11 +7,27 @@ class JobRepository extends BaseRepository<IJobListing> {
         super(jobListingModel);
     }
 
+    findByTitleAndCompany = async (title: string, company: string): Promise<IJobListing | null> => {
+        const result: IJobListing | null = await this.model.findOne({ title, company });
+        return result;
+    };
+
     // TODO: Assign a unique jobId when a creating a new job listing
     // Use mongoose Id to be jobId for now.
     create = async (job: IJobListing): Promise<IJobListing> => {
         const result: IJobListing = await this.createOne(job);
         return result;
+    };
+
+    seed = async (job: IJobListing): Promise<void> => {
+        const existingJob: IJobListing | null = await this.model.findOne({
+            title: job.title,
+            company: job.company,
+        });
+
+        if (!existingJob) {
+            await this.createOne(job);
+        }
     };
 }
 

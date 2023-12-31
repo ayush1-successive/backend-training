@@ -2,8 +2,10 @@ import { faker } from '@faker-js/faker';
 import academicDegrees from './education';
 import industryOptions from './industry';
 import JobType from '../../../module/job/entities/JobType';
+import IJobListing from '../../../module/job/entities/IJobListing';
 
-const generateFakeJobListing = () => {
+// Generate fake JobListing data using @faker-js/faker
+const generateFakeJobListing = (): IJobListing => {
     const minExperience = faker.number.int({ min: 0, max: 10 });
     const maxExperience = faker.number.int({ min: minExperience, max: 15 });
 
@@ -22,8 +24,8 @@ const generateFakeJobListing = () => {
         jobType: faker.helpers.enumValue(JobType),
         industry: faker.helpers.arrayElement(industryOptions),
         description: faker.lorem.paragraph(),
-        requirements: faker.lorem.sentences(3),
-        responsibilities: faker.lorem.sentences(2),
+        requirements: faker.lorem.sentences(3).split('. '),
+        responsibilities: faker.lorem.sentences(3).split('. '),
         qualifications: {
             education: faker.helpers.arrayElement(academicDegrees),
             minExperience,

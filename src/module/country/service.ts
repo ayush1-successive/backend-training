@@ -14,10 +14,6 @@ class CountryService {
             (country: ICountry) => this.countryRepository.seed(country),
         );
         await Promise.all(tasks);
-
-        // for (const country of countryList) {
-        //     await this.countryRepository.seed(country);
-        // }
     };
 
     getByName = async (countryName: string): Promise<ICountry | null> => {

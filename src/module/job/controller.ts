@@ -22,10 +22,16 @@ class JobListingController {
             // TODO: Assign type-check
             const { jobId } = req.params;
 
-            const job: IJobListing | null = await this.jobListingService.getById(jobId);
+            const job: IJobListing | null = await this.jobListingService.getById(
+                jobId,
+            );
 
             if (!job) {
-                new SystemResponse(res, 'No job found for the provided ID!', {}).notFound();
+                new SystemResponse(
+                    res,
+                    'No job found for the provided ID!',
+                    {},
+                ).notFound();
                 return;
             }
 
@@ -41,10 +47,28 @@ class JobListingController {
         }
     };
 
+    getByTitleAndCompany = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { title, company } = req.query;
+            const job: IJobListing | null = await this.jobListingService.getByTitleAndCompany(
+                title as string,
+                company as string,
+            );
+
+            if (!job) {
+                new SystemResponse(res, 'no joblisting found for title and company!', req.query).notFound();
+                return;
+            }
+
+            new SystemResponse(res, 'job found successfully', job).ok();
+        } catch (error: unknown) {
+            new SystemResponse(res, 'internal server error', error).internalServerError();
+        }
+    };
+
     getAll = async (req: Request, res: Response): Promise<void> => {
         try {
             const jobList: IJobListing[] | null = await this.jobListingService.getAll();
-
             new SystemResponse(res, 'Job listing found!', jobList).ok();
         } catch (error: unknown) {
             new SystemResponse(
@@ -80,6 +104,17 @@ class JobListingController {
                 'error creating new user!',
                 error.message,
             ).internalServerError();
+        }
+    };
+
+    uploadByFile = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const filePath: string = req.file?.path ?? '';
+
+            await this.jobListingService.writeBulkData(filePath);
+            new SystemResponse(res, 'File uploaded successfully', req.file).created();
+        } catch (error: unknown) {
+            new SystemResponse(res, 'Internal Server Error!', error).badRequest();
         }
     };
 }

@@ -3,7 +3,6 @@ import IAddress from './IAddress';
 import JobType from './JobType';
 
 interface IJobListing extends IBase {
-  jobId: string,
   title: string;
   company: string;
   logo: string;
@@ -23,7 +22,7 @@ interface IJobListing extends IBase {
   salary: {
     amount: number;
     currency: string;
-    periodicity: 'hour' | 'day' | 'week' | 'month' | 'year';
+    periodicity: 'Hourly' | 'Daily' | 'Weekly' | 'Monthly' | 'Annually';
   };
   applicationDeadline: Date;
   isRemote: boolean;
