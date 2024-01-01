@@ -5,6 +5,7 @@ import { type IServerConfig } from './config';
 import Database from './lib/database';
 import router from './routes';
 import CountryController from './module/country/controller';
+import logger from './lib/logger';
 
 class Server {
     private readonly app: express.Application;
@@ -43,10 +44,7 @@ class Server {
         await countryController.initialSeed();
 
         this.app.listen(this.config.port, () => {
-            // eslint-disable-next-line no-console
-            console.log(
-                `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
-            );
+            logger.info(`Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`);
         });
     };
 }

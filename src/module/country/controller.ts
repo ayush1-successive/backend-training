@@ -6,6 +6,7 @@ import type ICountry from './entities/ICountry';
 import CountryService from './service';
 import countryValidation from './validation';
 import { SystemResponse } from '../../lib/response-handler';
+import logger from '../../lib/logger';
 
 class CountryController {
     private readonly countryService: CountryService;
@@ -15,7 +16,6 @@ class CountryController {
     }
 
     initialSeed = async (): Promise<void> => {
-        // console.log('Initial seeding!');
         await this.countryService.seedAll(countryData);
     };
 
@@ -35,7 +35,7 @@ class CountryController {
             }
             new SystemResponse(res, 'country found!', country).ok();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in getByName API', error);
 
             new SystemResponse(
                 res,
@@ -50,7 +50,7 @@ class CountryController {
             const countryList: ICountry[] | null = await this.countryService.getAll();
             new SystemResponse(res, 'country list found!', countryList).ok();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in getAll API', error);
 
             new SystemResponse(
                 res,
@@ -86,7 +86,7 @@ class CountryController {
                 req.body,
             ).created();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in create API', error);
 
             new SystemResponse(
                 res,

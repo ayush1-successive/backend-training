@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
 import fs from 'fs';
 import csv from 'csvtojson';
 import JobRepository from './repositories/repository';
 import IJobListing from './entities/IJobListing';
+import logger from '../../lib/logger';
 
 class JobService {
     jobRepository: JobRepository;
@@ -46,7 +46,7 @@ class JobService {
     };
 
     writeBulkData = async (filePath: string): Promise<void> => {
-        console.time('CSV write');
+        logger.info('csv write to mongodb started!');
 
         let successEntries = 0;
         let errorEntries = 0;
@@ -62,19 +62,18 @@ class JobService {
                         })
                         .catch((error) => {
                             errorEntries += 1;
-                            console.error('Error seeding data:', error.message);
+                            logger.error('mongodb upload error!', error.message);
                             resolve();
                         });
                 }),
 
                 (error: any) => {
-                    console.error('Error:', error);
+                    logger.error('mongodb upload error!', error);
                 },
                 () => {
-                    console.log('CSV processing complete');
-                    console.timeEnd('CSV write');
-                    console.log('successEntries =', successEntries);
-                    console.log('errorEntries =', errorEntries);
+                    logger.info('csv write to mongodb completed!');
+                    logger.info(`successful writes: ${successEntries}`);
+                    logger.info(`unsuccessful writes: ${errorEntries}`);
                     fs.unlinkSync(filePath);
                 },
             );

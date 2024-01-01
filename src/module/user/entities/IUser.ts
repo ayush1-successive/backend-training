@@ -13,10 +13,7 @@ interface IUser extends IBase {
   interests: string[];
 }
 
-// TODO: Fields
-// Gender
-// Address (Complete)
-//
+//? : Fields
 
 /*
  * Name

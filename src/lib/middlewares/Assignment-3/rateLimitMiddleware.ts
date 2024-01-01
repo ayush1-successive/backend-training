@@ -1,5 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { SystemResponse } from '../../response-handler';
+import logger from '../../logger';
 
 class RateLimitMiddleware {
     maxRequests: number;
@@ -41,10 +42,10 @@ class RateLimitMiddleware {
 
     fetch = (req: Request, res: Response, next: NextFunction): void => {
         if (this.check()) {
-            // console.log('Query within interval!');
+            logger.info('Query within interval!');
             next();
         } else {
-            // console.log('Query rate exceeded!');
+            logger.warn('Query rate exceeded!');
 
             new SystemResponse(
                 res,

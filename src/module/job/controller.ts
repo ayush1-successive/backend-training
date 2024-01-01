@@ -5,6 +5,7 @@ import { SystemResponse } from '../../lib/response-handler';
 import IJobListing from './entities/IJobListing';
 import JobService from './services';
 import jobValidation from './validation';
+import logger from '../../lib/logger';
 
 class JobListingController {
     private readonly jobListingService: JobService;
@@ -37,7 +38,7 @@ class JobListingController {
 
             new SystemResponse(res, 'Job found successfully.', job).ok();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in getById', error);
 
             new SystemResponse(
                 res,

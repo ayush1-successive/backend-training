@@ -1,5 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { SystemResponse } from '../../response-handler';
+import logger from '../../logger';
 
 class IpMiddleware {
     private readonly expectedIp: string;
@@ -25,10 +26,10 @@ class IpMiddleware {
                 return;
             }
 
-            // console.log('Valid Ip address!');
+            logger.info('valid ip address');
             next();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in ip middleware!', error);
 
             new SystemResponse(
                 res,

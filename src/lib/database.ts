@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from './logger';
 
 class Database {
     // eslint-disable-next-line no-use-before-define
@@ -23,11 +24,9 @@ class Database {
         try {
             await mongoose.connect(this.mongoUrl);
 
-            // eslint-disable-next-line no-console
-            console.log(`Connected to MongoDB Database ${mongoose.connection.host}`);
+            logger.info(`Connected to MongoDB Database ${mongoose.connection.host}`);
         } catch (error: unknown) {
-            // eslint-disable-next-line no-console
-            console.error(`MongoDB Database Error ${error}`);
+            logger.error('MongoDB Database Error', error);
         }
     };
 }

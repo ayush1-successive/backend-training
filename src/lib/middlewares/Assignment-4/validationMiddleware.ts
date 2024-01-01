@@ -2,6 +2,7 @@ import { type Request, type Response, type NextFunction } from 'express';
 import { type ValidationResult } from 'joi';
 import validationConfig from '../../utils/ValidationConfig';
 import { SystemResponse } from '../../response-handler';
+import logger from '../../logger';
 
 interface IProductQueryParams {
   name?: string;
@@ -44,7 +45,7 @@ class ValidationMiddleware {
             });
 
             if (validationResult.error) {
-                // console.error(validationResult.error);
+                logger.error('dynamic validation error!', validationResult.error);
 
                 new SystemResponse(
                     res,
@@ -54,10 +55,9 @@ class ValidationMiddleware {
                 return;
             }
 
-            // console.log('Validation successful!');
             next();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('dynamic validation error!', error);
 
             new SystemResponse(
                 res,
@@ -102,10 +102,10 @@ class ValidationMiddleware {
                 return;
             }
 
-            // console.log('Validation successful!');
+            logger.info('input validation successful!');
             next();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in input validation', error);
 
             new SystemResponse(res, 'Validation error!', error).badRequest();
         }
@@ -138,10 +138,10 @@ class ValidationMiddleware {
                 return;
             }
 
-            // console.log('Numeric validation successful!');
+            logger.info('Numeric validation successful!');
             next();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in numeric validation!', error);
 
             new SystemResponse(res, 'Numeric validation failed!', error).badRequest();
         }

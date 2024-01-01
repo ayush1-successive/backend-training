@@ -2,6 +2,7 @@ import { type NextFunction, type Request, type Response } from 'express';
 import JWT from 'jsonwebtoken';
 import { serverConfig } from '../../../config';
 import { SystemResponse } from '../../response-handler';
+import logger from '../../logger';
 
 class AuthMiddleware {
     verifyToken: string;
@@ -25,14 +26,13 @@ class AuthMiddleware {
                             error,
                         ).unauthorized();
                     } else {
-                        // console.log(decode.userId);
                         req.body.userId = decode.userId;
                         next();
                     }
                 },
             );
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in auth middleware', error);
 
             new SystemResponse(
                 res,

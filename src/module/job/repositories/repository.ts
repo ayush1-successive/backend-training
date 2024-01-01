@@ -12,8 +12,6 @@ class JobRepository extends BaseRepository<IJobListing> {
         return result;
     };
 
-    // TODO: Assign a unique jobId when a creating a new job listing
-    // Use mongoose Id to be jobId for now.
     create = async (job: IJobListing): Promise<IJobListing> => {
         const result: IJobListing = await this.createOne(job);
         return result;

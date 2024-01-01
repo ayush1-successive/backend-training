@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express';
 import { type ValidationResult } from 'joi';
 import { userValidation } from '../module/user/validation';
 import { SystemResponse } from '../lib/response-handler';
+import logger from '../lib/logger';
 
 class ValidationController {
     static paramValidation = async (req: Request, res: Response): Promise<void> => {
@@ -22,10 +23,10 @@ class ValidationController {
                 return;
             }
 
-            // console.log('Validation successful!');
+            logger.info('Validation successful!');
             new SystemResponse(res, 'Validation successful!', req.body).ok();
         } catch (error) {
-            // console.error(error);
+            logger.error('error in validation controller!', error);
 
             new SystemResponse(
                 res,

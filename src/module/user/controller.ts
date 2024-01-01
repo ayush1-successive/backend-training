@@ -7,6 +7,7 @@ import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 import UserService from './services';
 import { userLoginRequestValidation, userValidation } from './validation';
+import logger from '../../lib/logger';
 
 class UserController {
     private readonly userService: UserService;
@@ -32,7 +33,7 @@ class UserController {
 
             new SystemResponse(res, 'user found!', user).ok();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in getByUserName API', error);
 
             new SystemResponse(
                 res,
@@ -55,7 +56,7 @@ class UserController {
 
             new SystemResponse(res, 'User found!', user).ok();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in getByEmail API', error);
 
             new SystemResponse(
                 res,
@@ -70,7 +71,7 @@ class UserController {
             const userList: IUser[] | null = await this.userService.getAll();
             new SystemResponse(res, 'User found!', userList).ok();
         } catch (error: unknown) {
-            // console.error(error);
+            logger.error('error in getAll API', error);
 
             new SystemResponse(
                 res,
@@ -110,7 +111,7 @@ class UserController {
             await this.userService.create(newUser);
             new SystemResponse(res, 'new user added!', newUser).created();
         } catch (error: any) {
-            // console.error(error);
+            logger.error('error in register API', error);
 
             new SystemResponse(
                 res,
