@@ -25,10 +25,10 @@ class JobListingRouter {
     }
 
     private setupRoutes(): void {
-        // this.router.get('/', JobListingController.index);
-
         // Get all joblistings according to filters
         this.router.get('/', this.jobListingController.getAll);
+
+        this.router.get('/filters', this.jobListingController.getAllByFilters);
 
         // Get job by title and company
         this.router.get('/details', this.jobListingController.getByTitleAndCompany);
@@ -43,7 +43,7 @@ class JobListingRouter {
         // this.router.patch('/jobs/jobId', this.jobListingController.update);
 
         // Delete a job listing by its id
-        // this.router.delete('/jobs/jobId', this.jobListingController.delete);
+        this.router.delete('/:jobId', this.jobListingController.deleteById);
 
         // Upload a job through csv
         this.router.post('/upload', upload.single('file'), this.jobListingController.uploadByFile);

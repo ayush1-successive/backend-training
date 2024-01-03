@@ -1,7 +1,6 @@
 import { type Request, type Response } from 'express';
 import { type ValidationResult } from 'joi';
 
-import countryData from '../../lib/countryData';
 import type ICountry from './entities/ICountry';
 import CountryService from './service';
 import countryValidation from './validation';
@@ -14,10 +13,6 @@ class CountryController {
     constructor() {
         this.countryService = new CountryService();
     }
-
-    initialSeed = async (): Promise<void> => {
-        await this.countryService.seedAll(countryData);
-    };
 
     static index = (req: Request, res: Response): void => {
         new SystemResponse(res, 'Country HomePage', {}).ok();
@@ -93,6 +88,18 @@ class CountryController {
                 'error creating new country!',
                 error,
             ).internalServerError();
+        }
+    };
+
+    deleteAll = async (req: Request, res: Response): Promise<void> => {
+        try {
+            await this.countryService.deleteAll();
+
+            logger.info('entries deleted successfully.');
+            new SystemResponse(res, 'entries deleted successfully.', {}).ok();
+        } catch (error: unknown) {
+            logger.error('error in deleteAll API');
+            new SystemResponse(res, 'internal server error!', error).internalServerError();
         }
     };
 }

@@ -69,7 +69,7 @@ class UserController {
     getAll = async (req: Request, res: Response): Promise<void> => {
         try {
             const userList: IUser[] | null = await this.userService.getAll();
-            new SystemResponse(res, 'User found!', userList).ok();
+            new SystemResponse(res, 'users list found!', userList).ok();
         } catch (error: unknown) {
             logger.error('error in getAll API', error);
 

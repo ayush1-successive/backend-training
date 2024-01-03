@@ -12,7 +12,7 @@ interface IProductQueryParams {
 
 class ValidationMiddleware {
     private static isStrongPassword = (value: string): boolean => {
-        const strongRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}/;
+        const strongRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}/;
         return strongRegex.test(value);
     };
 

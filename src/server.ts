@@ -4,23 +4,38 @@ import morgan from 'morgan';
 import { type IServerConfig } from './config';
 import Database from './lib/database';
 import router from './routes';
-import CountryController from './module/country/controller';
 import logger from './lib/logger';
+import CountryService from './module/country/service';
 
 class Server {
+    // eslint-disable-next-line no-use-before-define
+    private static instance: Server;
+
     private readonly app: express.Application;
 
     private readonly config: IServerConfig;
 
     private readonly database: Database;
 
-    constructor(config: IServerConfig) {
+    private constructor(config: IServerConfig) {
         this.app = express();
         this.config = config;
         this.database = Database.getInstance(this.config.mongoUrl);
     }
 
-    bootStrap(): void {
+    public static getInstance(config: IServerConfig): Server {
+        if (!Server.instance) {
+            Server.instance = new Server(config);
+            Server.instance.bootStrap();
+        }
+        return Server.instance;
+    }
+
+    getApp(): express.Application {
+        return this.app;
+    }
+
+    private bootStrap(): void {
         this.configureMiddlewares();
         this.configureRoutes();
     }
@@ -35,13 +50,17 @@ class Server {
         this.app.use(router);
     }
 
+    connectDB = async (): Promise<void> => {
+        await this.database.connect();
+    };
+
     run = async (): Promise<void> => {
         // connect to DB
-        await this.database.connect();
+        await this.connectDB();
 
         // seed the country database
-        const countryController: CountryController = new CountryController();
-        await countryController.initialSeed();
+        const countryService: CountryService = new CountryService();
+        await countryService.initialSeed();
 
         this.app.listen(this.config.port, () => {
             logger.info(`Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`);

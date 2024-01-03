@@ -25,6 +25,14 @@ class BaseRepository<T> {
         const result: T = await this.model.create(data);
         return result;
     };
+
+    deleteById = async (id: string): Promise<void> => {
+        await this.model.deleteOne({ _id: id });
+    };
+
+    deleteAll = async (): Promise<void> => {
+        await this.model.deleteMany({});
+    };
 }
 
 export default BaseRepository;

@@ -78,6 +78,10 @@ class JobService {
                 },
             );
     };
+
+    deleteById = async (id: string): Promise<void> => {
+        await this.jobRepository.deleteById(id);
+    };
 }
 
 export default JobService;
