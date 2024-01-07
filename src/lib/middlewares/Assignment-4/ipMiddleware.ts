@@ -14,29 +14,19 @@ class IpMiddleware {
         res: Response,
         next: NextFunction,
     ): Promise<void> => {
-        try {
-            const clientIp: string | undefined = req.ip;
+        const clientIp: string | undefined = req.ip;
 
-            if (clientIp !== this.expectedIp) {
-                new SystemResponse(
-                    res,
-                    'access denied! invalid IP address.',
-                    {},
-                ).forbidden();
-                return;
-            }
-
-            logger.info('valid ip address');
-            next();
-        } catch (error: unknown) {
-            logger.error('error in ip middleware!', error);
-
+        if (clientIp !== this.expectedIp) {
             new SystemResponse(
                 res,
-                'error validating ip!',
-                error,
-            ).internalServerError();
+                'access denied! invalid IP address.',
+                {},
+            ).forbidden();
+            return;
         }
+
+        logger.info('valid ip address');
+        next();
     };
 }
 

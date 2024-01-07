@@ -90,18 +90,6 @@ class CountryController {
             ).internalServerError();
         }
     };
-
-    deleteAll = async (req: Request, res: Response): Promise<void> => {
-        try {
-            await this.countryService.deleteAll();
-
-            logger.info('entries deleted successfully.');
-            new SystemResponse(res, 'entries deleted successfully.', {}).ok();
-        } catch (error: unknown) {
-            logger.error('error in deleteAll API');
-            new SystemResponse(res, 'internal server error!', error).internalServerError();
-        }
-    };
 }
 
 export default CountryController;

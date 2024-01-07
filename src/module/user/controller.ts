@@ -16,41 +16,14 @@ class UserController {
         this.userService = new UserService();
     }
 
-    static index = (req: Request, res: Response): void => {
-        new SystemResponse(res, 'User HomePage', {}).ok();
-    };
-
-    getByUserName = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const user: IUser | null = await this.userService.getByUserName(
-                req.params.username,
-            );
-
-            if (!user) {
-                new SystemResponse(res, 'user not found!', {}).notFound();
-                return;
-            }
-
-            new SystemResponse(res, 'user found!', user).ok();
-        } catch (error: unknown) {
-            logger.error('error in getByUserName API', error);
-
-            new SystemResponse(
-                res,
-                'error retrieving user by username!',
-                error,
-            ).internalServerError();
-        }
-    };
-
     getByEmail = async (req: Request, res: Response): Promise<void> => {
         try {
             const user: IUser | null = await this.userService.getByEmail(
-                req.params.email,
+                req.params.emailId,
             );
 
             if (!user) {
-                new SystemResponse(res, 'User not found!', {}).notFound();
+                new SystemResponse(res, 'User not found!', req.params).notFound();
                 return;
             }
 
@@ -63,6 +36,28 @@ class UserController {
                 'error retrieving user by email!',
                 error,
             ).internalServerError();
+        }
+    };
+
+    deleteByEmail = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { emailId } = req.params;
+
+            const result = await this.userService.deleteByEmail(emailId);
+
+            if (result.deletedCount === 0) {
+                logger.error(`User with email '${emailId}' doesn't exists!`);
+
+                new SystemResponse(res, `User with email '${emailId}' doesn't exists!`, req.params).notFound();
+                return;
+            }
+
+            logger.info('user deleted successfully!');
+            new SystemResponse(res, 'user deleted successfully!', result).ok();
+        } catch (error: unknown) {
+            logger.info('error in deleteByEmail API', error);
+
+            new SystemResponse(res, 'error deleting user!', error).internalServerError();
         }
     };
 
@@ -143,7 +138,7 @@ class UserController {
             const existingUser: IUser | null = await this.userService.getByEmail(user.email);
 
             if (!existingUser) {
-                new SystemResponse(res, 'no user found for current email!', user).badRequest();
+                new SystemResponse(res, 'no user found for current email!', user).notFound();
                 return;
             }
 
@@ -163,21 +158,8 @@ class UserController {
         } catch (error: any) {
             new SystemResponse(
                 res,
-                'error loging existing user!',
+                'error logging existing user!',
                 error.message,
-            ).internalServerError();
-        }
-    };
-
-    deleteAll = async (req: Request, res: Response): Promise<void> => {
-        try {
-            await this.userService.deleteAll();
-            new SystemResponse(res, 'user list deleted!', {}).ok();
-        } catch (error: unknown) {
-            new SystemResponse(
-                res,
-                'error deleting all users!',
-                error,
             ).internalServerError();
         }
     };

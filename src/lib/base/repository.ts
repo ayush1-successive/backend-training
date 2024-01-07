@@ -17,10 +17,6 @@ class BaseRepository<T> {
         return result;
     };
 
-    removeAll = async (): Promise<void> => {
-        await this.model.deleteMany({});
-    };
-
     createOne = async (data: T): Promise<T> => {
         const result: T = await this.model.create(data);
         return result;

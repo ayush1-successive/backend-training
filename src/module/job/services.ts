@@ -3,6 +3,7 @@ import csv from 'csvtojson';
 import JobRepository from './repositories/repository';
 import IJobListing from './entities/IJobListing';
 import logger from '../../lib/logger';
+import jobListingData from '../../lib/jobListingData';
 
 class JobService {
     jobRepository: JobRepository;
@@ -11,25 +12,8 @@ class JobService {
         this.jobRepository = new JobRepository();
     }
 
-    getAll = async (): Promise<IJobListing[] | null> => {
-        const result: IJobListing[] | null = await this.jobRepository.findAll();
-        return result;
-    };
-
-    getByTitleAndCompany = async (
-        title: string,
-        company: string,
-    ): Promise<IJobListing | null> => {
-        const result: IJobListing | null = await this.jobRepository.findByTitleAndCompany(
-            title,
-            company,
-        );
-        return result;
-    };
-
-    // Seed all joblistings to database
-    seedAll = async (jobListings: IJobListing[]): Promise<void> => {
-        const tasks: Promise<void>[] = jobListings.map(
+    initialSeed = async (): Promise<void> => {
+        const tasks: Promise<void>[] = jobListingData.map(
             (job: IJobListing) => this.jobRepository.seed(job),
         );
         await Promise.all(tasks);
@@ -41,7 +25,7 @@ class JobService {
     };
 
     create = async (job: IJobListing): Promise<IJobListing> => {
-        const result = await this.jobRepository.create(job);
+        const result = await this.jobRepository.createOne(job);
         return result;
     };
 
@@ -55,7 +39,7 @@ class JobService {
             .subscribe(
                 (json) => new Promise((resolve) => {
                     this.jobRepository
-                        .create(json)
+                        .createOne(json)
                         .then(() => {
                             successEntries += 1;
                             resolve();
@@ -81,6 +65,10 @@ class JobService {
 
     deleteById = async (id: string): Promise<void> => {
         await this.jobRepository.deleteById(id);
+    };
+
+    deleteAll = async (): Promise<void> => {
+        await this.jobRepository.deleteAll();
     };
 }
 

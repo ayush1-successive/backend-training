@@ -24,13 +24,23 @@ class UserRouter {
     }
 
     private setupRoutes(): void {
-        this.router.get('/', UserController.index);
-        this.router.get('/getbyname/:username', this.userController.getByUserName);
-        this.router.get('/getbyemail/:email', this.userController.getByEmail);
-        this.router.get('/getAll', this.userController.getAll);
+        // Get all users
+        this.router.get('/', this.userController.getAll);
+
+        // Register new user
         this.router.post('/register', this.userController.register);
+
+        // Login existing user
         this.router.post('/login', this.userController.login);
-        this.router.get('/deleteAll', this.userController.deleteAll);
+
+        // Get user details by its emailId
+        this.router.get('/:emailId', this.userController.getByEmail);
+
+        // Update user details by this emailId
+        // this.router.put('/:emailId', this.userController.updateByEmail);
+
+        // Delete existing user by its emailId
+        this.router.delete('/:emailId', this.userController.deleteByEmail);
     }
 }
 

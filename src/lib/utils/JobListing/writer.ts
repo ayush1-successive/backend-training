@@ -1,7 +1,7 @@
 import { createObjectCsvWriter } from 'csv-writer';
 
-const csvWriter = createObjectCsvWriter({
-    path: 'job_listings_small.csv',
+const getCsvWriter = (csvPath: string) => createObjectCsvWriter({
+    path: csvPath,
     header: [
         { id: 'title', title: 'title' },
         { id: 'company', title: 'company' },
@@ -32,4 +32,4 @@ const csvWriter = createObjectCsvWriter({
     headerIdDelimiter: '.',
 });
 
-export default csvWriter;
+export default getCsvWriter;

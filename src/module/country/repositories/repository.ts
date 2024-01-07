@@ -26,30 +26,6 @@ class CountryRepository extends BaseRepository<ICountry> {
         const result = await this.model.findOne({ name });
         return result;
     };
-
-    // Add a country to the collection
-    create = async (country: ICountry): Promise<void> => {
-        const existingCountry: ICountry | null = await this.model.findOne({
-            name: country.name,
-        });
-
-        if (existingCountry) {
-            throw new Error(`Country '${country.name}' already exists in DB!`);
-        }
-
-        await this.createOne(country);
-    };
-
-    // Delete a country by its name
-    deleteByName = async (countryName: string): Promise<void> => {
-        const result: any = await this.model.deleteOne({
-            name: countryName,
-        });
-
-        if (result.deletedCount === 0) {
-            throw new Error(`Country with name ${countryName} not found.`);
-        }
-    };
 }
 
 export default CountryRepository;

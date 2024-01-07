@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { type IServerConfig } from './config';
+import { IServerConfig } from './config';
 import Database from './lib/database';
 import router from './routes';
 import logger from './lib/logger';
@@ -52,6 +52,10 @@ class Server {
 
     connectDB = async (): Promise<void> => {
         await this.database.connect();
+    };
+
+    disconnectDB = async (): Promise<void> => {
+        await this.database.disconnect();
     };
 
     run = async (): Promise<void> => {

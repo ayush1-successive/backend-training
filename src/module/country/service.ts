@@ -16,14 +16,6 @@ class CountryService {
         await Promise.all(tasks);
     };
 
-    // Seed all countries to database
-    seedAll = async (countryList: ICountry[]): Promise<void> => {
-        const tasks: Promise<void>[] = countryList.map(
-            (country: ICountry) => this.countryRepository.seed(country),
-        );
-        await Promise.all(tasks);
-    };
-
     getByName = async (countryName: string): Promise<ICountry | null> => {
         const result: ICountry | null = await this.countryRepository.getByName(countryName);
         return result;
@@ -39,11 +31,7 @@ class CountryService {
     };
 
     create = async (country: ICountry): Promise<void> => {
-        await this.countryRepository.create(country);
-    };
-
-    deleteByName = async (countryName: string): Promise<void> => {
-        await this.countryRepository.deleteByName(countryName);
+        await this.countryRepository.createOne(country);
     };
 }
 

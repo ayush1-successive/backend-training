@@ -7,13 +7,16 @@ class UserRepository extends BaseRepository<IUser> {
         super(userModel);
     }
 
-    getAll = async (): Promise<IUser[] | null> => {
-        const result = await this.findAll();
-        return result;
+    seed = async (user: IUser): Promise<void> => {
+        const existingUser: IUser | null = await this.getByEmail(user.email);
+
+        if (!existingUser) {
+            await this.createOne(user);
+        }
     };
 
-    getByUserName = async (username: string): Promise<IUser | null> => {
-        const result = await this.model.findOne({ username });
+    getAll = async (): Promise<IUser[] | null> => {
+        const result = await this.findAll();
         return result;
     };
 
@@ -27,12 +30,9 @@ class UserRepository extends BaseRepository<IUser> {
         return user;
     };
 
-    deleteByUserName = async (username: string): Promise<void> => {
-        await this.model.deleteOne({ username });
-    };
-
-    deleteAll = async (): Promise<void> => {
-        await this.removeAll();
+    deleteByEmail = async (email: string): Promise<any> => {
+        const result: any = await this.model.deleteOne({ email });
+        return result;
     };
 }
 

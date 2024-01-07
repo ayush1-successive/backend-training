@@ -21,7 +21,7 @@ const headerMiddleware: HeaderMiddleware = new HeaderMiddleware(
 
 const rateLimitMiddleware: RateLimitMiddleware = new RateLimitMiddleware(
     2,
-    5000,
+    3000,
 );
 
 // Home Page

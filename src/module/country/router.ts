@@ -28,8 +28,6 @@ class CountryRouter {
         this.router.get('/get/:name', this.countryController.getByName);
         this.router.get('/getAll', this.countryController.getAll);
         this.router.post('/create', this.countryController.create);
-
-        this.router.delete('/', this.countryController.deleteAll);
     }
 }
 

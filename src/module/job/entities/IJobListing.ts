@@ -5,21 +5,21 @@ import JobType from './JobType';
 interface IJobListing extends IBase {
   title: string;
   company: string;
-  logo: string;
-  openings: number;
-  address: IAddress;
-  jobType: JobType;
+  logo?: string;
+  openings?: number;
+  address?: IAddress;
+  jobType?: JobType;
   industry: string;
-  description: string;
-  requirements: string[];
-  responsibilities: string[];
-  qualifications: {
+  description?: string;
+  requirements?: string[];
+  responsibilities?: string[];
+  qualifications?: {
     education: string;
     minExperience: number;
     maxExperience: number;
     skills: string[];
   };
-  salary: {
+  salary?: {
     amount: number;
     currency: string;
     periodicity: 'Hourly' | 'Daily' | 'Weekly' | 'Monthly' | 'Annually';
@@ -27,7 +27,7 @@ interface IJobListing extends IBase {
   applicationDeadline: Date;
   isRemote: boolean;
   contactEmail: string;
-  applicationLink?: string;
+  applicationLink: string;
 }
 
 export default IJobListing;

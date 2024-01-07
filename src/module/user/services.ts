@@ -4,6 +4,7 @@ import JWT from 'jsonwebtoken';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 import UserRepository from './repositories/repository';
+import userData from '../../lib/userData';
 
 class UserService {
     userRepository: UserRepository;
@@ -12,9 +13,11 @@ class UserService {
         this.userRepository = new UserRepository();
     }
 
-    getByUserName = async (name: string): Promise<IUser | null> => {
-        const result = await this.userRepository.getByUserName(name);
-        return result;
+    initialSeed = async (): Promise<void> => {
+        const tasks: Promise<void>[] = userData.map(
+            (user: IUser) => this.userRepository.seed(user),
+        );
+        await Promise.all(tasks);
     };
 
     getByEmail = async (email: string): Promise<IUser | null> => {
@@ -36,12 +39,13 @@ class UserService {
         return result;
     };
 
-    deleteByUserName = async (username: string): Promise<void> => {
-        await this.userRepository.deleteByUserName(username);
-    };
-
     deleteAll = async (): Promise<void> => {
         await this.userRepository.deleteAll();
+    };
+
+    deleteByEmail = async (email: string): Promise<any> => {
+        const result = this.userRepository.deleteByEmail(email);
+        return result;
     };
 
     static verifyPassword = async (existingUser: IUser, currentUser: IUserLoginRequest):

@@ -1,16 +1,14 @@
 import { type IBase } from '../../../lib/base';
 
-// TODO: Add field to store resume.
-
 interface IUser extends IBase {
-  name: string;
-  email: string;
-  password: string;
-  dateOfBirth: string;
-  address: string;
-  phoneNumber: string;
-  isAdmin: boolean;
-  interests: string[];
+    name: string;
+    email: string;
+    password: string;
+    dateOfBirth?: string;
+    address?: string;
+    phoneNumber?: string;
+    isAdmin?: boolean;
+    interests?: string[];
 }
 
 /*
