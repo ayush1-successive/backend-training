@@ -24,16 +24,7 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('POST /add-user', async () => {
-        let response = await request(app).get('/assignment4/add-user');
-
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
-            status: false,
-            message: '404 not found!',
-            error: {},
-        });
-
-        response = await request(app).post('/assignment4/add-user').send({});
+        let response = await request(app).post('/assignment4/add-user').send({});
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({

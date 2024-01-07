@@ -26,13 +26,23 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock', async () => {
-        const response = await request(app).get('/assignment3/mock').set('Authorization', `Bearer ${token}`);
+        let response = await request(app).get('/assignment3/mock').set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             status: true,
             message: 'user list found!',
             data: expect.objectContaining([]),
+        });
+
+        // JWT token not provided
+        response = await request(app).get('/assignment3/mock').set('Authorization', 'Bearer');
+
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'user authentication failed!',
+            error: { name: 'JsonWebTokenError', message: 'jwt must be provided' },
         });
     });
 
