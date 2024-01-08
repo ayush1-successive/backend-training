@@ -1,24 +1,18 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response } from 'express';
+import { SystemResponse } from '../lib/response-handler';
 
-export class HomePageController {
-  assignment3 = (req: Request, res: Response): void => {
-    res.status(200).send({
-      status: true,
-      message: "Assignment-3 HomePage",
-    });
-  };
+class HomePageController {
+    static assignment3 = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'Assignment-3 HomePage', {}).ok();
+    };
 
-  assignment4 = (req: Request, res: Response): void => {
-    res.status(200).send({
-      status: true,
-      message: "Assignment-4 HomePage",
-    });
-  };
+    static assignment4 = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'Assignment-4 HomePage', {}).ok();
+    };
 
-  assignment5 = (req: Request, res: Response): void => {
-    res.status(200).send({
-      status: true,
-      message: "Assignment-5 HomePage",
-    });
-  };
+    static assignment5 = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'Assignment-5 HomePage', {}).ok();
+    };
 }
+
+export default HomePageController;

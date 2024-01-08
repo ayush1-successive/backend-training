@@ -1,76 +1,75 @@
-// server.ts
-
-import express, { type Request, type Response } from "express";
-import { type IServerConfig } from "./config";
-import Database from "./lib/database";
-
-import CountryController from "./api/controllers/CountryController";
-import healthController from "./controllers/healthController";
-import { ErrorHandlerMiddlerware } from "./middlewares/Assignment-3";
-import {
-  assignment3Router,
-  assignment4Router,
-  assignment5Router,
-  countryRouter,
-} from "./routes";
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import { IServerConfig } from './config';
+import Database from './lib/database';
+import router from './routes';
+import logger from './lib/logger';
+import CountryService from './module/country/service';
 
 class Server {
-  private readonly app: express.Application;
-  private readonly config: IServerConfig;
-  private readonly database: Database;
+    // eslint-disable-next-line no-use-before-define
+    private static instance: Server;
 
-  constructor(config: IServerConfig) {
-    this.config = config;
-    this.app = express();
-    this.database = new Database(this.config.mongoUrl);
+    private readonly app: express.Application;
 
-    this.configureMiddlewares();
-    this.configureRoutes();
-  }
+    private readonly config: IServerConfig;
 
-  private configureMiddlewares(): void {
-    this.app.use(express.json());
-  }
+    private readonly database: Database;
 
-  private configureRoutes(): void {
-    const errorHandler: ErrorHandlerMiddlerware = new ErrorHandlerMiddlerware();
+    private constructor(config: IServerConfig) {
+        this.app = express();
+        this.config = config;
+        this.database = Database.getInstance(this.config.mongoUrl);
+    }
 
-    // HomePage
-    this.app.get("/", (req: Request, res: Response): void => {
-      res.send("Home Page");
-    });
+    public static getInstance(config: IServerConfig): Server {
+        if (!Server.instance) {
+            Server.instance = new Server(config);
+            Server.instance.bootStrap();
+        }
+        return Server.instance;
+    }
 
-    // health-check
-    this.app.get("/health", healthController.check);
+    getApp(): express.Application {
+        return this.app;
+    }
 
-    // assignment-3
-    this.app.use("/assignment3", assignment3Router);
+    private bootStrap(): void {
+        this.configureMiddlewares();
+        this.configureRoutes();
+    }
 
-    // Assignment-4
-    this.app.use("/assignment4", assignment4Router);
+    private configureMiddlewares(): void {
+        this.app.use(express.json());
+        this.app.use(cors());
+        this.app.use(morgan('dev'));
+    }
 
-    // Assignment-5
-    this.app.use("/assignment5", assignment5Router);
+    private configureRoutes(): void {
+        this.app.use(router);
+    }
 
-    this.app.use("/country", countryRouter);
+    connectDB = async (): Promise<void> => {
+        await this.database.connect();
+    };
 
-    // Handles '404 not found'
-    this.app.use(errorHandler.notFound);
-  }
+    disconnectDB = async (): Promise<void> => {
+        await this.database.disconnect();
+    };
 
-  run = async (): Promise<void> => {
-    // Database connect
-    await this.database.connect();
+    run = async (): Promise<void> => {
+        // connect to DB
+        await this.connectDB();
 
-    const countryController: CountryController = new CountryController();
-    await countryController.seedCountries();
+        // seed the country database
+        const countryService: CountryService = new CountryService();
+        await countryService.initialSeed();
 
-    this.app.listen(this.config.port, () => {
-      console.log(
-        `Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`,
-      );
-    });
-  };
+        this.app.listen(this.config.port, () => {
+            logger.info(`Node Server Running In ${this.config.devMode} On Port http://localhost:${this.config.port}`);
+        });
+    };
 }
 
-export { Server };
+export default Server;

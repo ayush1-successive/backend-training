@@ -1,21 +1,10 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response } from 'express';
+import { SystemResponse } from '../lib/response-handler';
 
 class HealthController {
-  private static instance: HealthController;
-
-  static getInstance = (): HealthController => {
-    if (!HealthController.instance) {
-      HealthController.instance = new HealthController();
-    }
-    return HealthController.instance;
-  };
-
-  check = (req: Request, res: Response): void => {
-    res.send({
-      status: true,
-      message: "Health OK!",
-    });
-  };
+    static check = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'I am OK', {}).ok();
+    };
 }
 
-export default HealthController.getInstance();
+export default HealthController;
