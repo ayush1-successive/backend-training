@@ -4,6 +4,7 @@ import jobListingData from '../../lib/jobListingData';
 import logger from '../../lib/logger';
 import IJobListing from './entities/IJobListing';
 import JobRepository from './repositories/repository';
+import BulkUploadService from '../bulkupload/service';
 
 class JobService {
     jobRepository: JobRepository;
@@ -14,12 +15,12 @@ class JobService {
 
     static getFilters = async (queryObj: any): Promise<any> => {
     // QUERY FILTER
-        let filters = { ...queryObj };
+        let filters: any = { ...queryObj };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach((el) => delete filters[el]);
 
         // gt, lt manipulation
-        let queryStr = JSON.stringify(filters);
+        let queryStr: string = JSON.stringify(filters);
         queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
 
         filters = JSON.parse(queryStr);
@@ -45,12 +46,12 @@ class JobService {
         limit: number,
     ): Promise<IJobListing[] | null> => {
     // SORT
-        const sortBy = queryObj.sort
+        const sortBy: string = queryObj.sort
             ? (queryObj.sort as string).split(',').join(' ')
             : '-createdAt';
 
         // FIELD LIMITING
-        const fields = queryObj.fields
+        const fields: string = queryObj.fields
             ? (queryObj.fields as string).split(',').join(' ')
             : '-__v';
 
@@ -94,7 +95,7 @@ class JobService {
     };
 
     create = async (job: IJobListing): Promise<IJobListing> => {
-        const result = await this.jobRepository.createOne(job);
+        const result: IJobListing = await this.jobRepository.createOne(job);
         return result;
     };
 
@@ -125,37 +126,67 @@ class JobService {
         return result as IJobListing;
     };
 
-    processBatch = async (batch: any[]): Promise<void> => {
-        const jobs: IJobListing[] = batch.map((job: any) => JobService.transformEntry(job));
-
-        const bulkOps = jobs.map((job) => ({
-            updateOne: {
-                filter: {
-                    title: job.title,
-                    company: job.company,
-                },
-                update: { $set: job },
-                upsert: true,
-            },
-        }));
-
+    processBatch = async (
+        batch: any[],
+        uploadService: BulkUploadService,
+        uploadData: any,
+        recordId: string,
+        status: string,
+        startTime: number,
+    ): Promise<void> => {
         try {
+            const jobs: IJobListing[] = batch.map((job: any) => JobService.transformEntry(job));
+
+            const bulkOps = jobs.map((job) => ({
+                updateOne: {
+                    filter: {
+                        title: job.title,
+                        company: job.company,
+                    },
+                    update: { $set: job },
+                    upsert: true,
+                },
+            }));
+
             const result = await this.jobRepository.model.bulkWrite(bulkOps, {
                 ordered: false,
             });
+
             logger.info('batch process result', result);
+            const successfulEntries = result.modifiedCount + result.upsertedCount;
+
+            /* eslint-disable no-param-reassign */
+            uploadData.entriesCompleted += batch.length;
+            uploadData.successfulEntries += successfulEntries;
+            uploadData.failedEntries += batch.length - successfulEntries;
+
+            await uploadService.updateById(recordId, {
+                ...uploadData,
+                status,
+                time: performance.now() - startTime,
+            });
         } catch (error: unknown) {
             logger.error('error in batch process', error);
         }
     };
 
-    writeBulkData = async (filePath: string): Promise<void> => {
+    writeBulkData = async (filename: string, filePath: string): Promise<void> => {
         logger.info('csv write to mongodb started!');
 
         const csvReadStream = fs.createReadStream(filePath, 'utf-8');
         let batch: any[] = [];
 
-        const maxBatchSize = 10000;
+        const maxBatchSize: number = 10000;
+        const bulkUploadService: BulkUploadService = new BulkUploadService();
+        const hollowEntry: any = await bulkUploadService.generateHollowEntry(
+            filename,
+        );
+
+        // eslint-disable-next-line no-underscore-dangle
+        const { _id, ...uploadData } = hollowEntry._doc;
+        const recordId = _id.toString();
+
+        const startTime: number = performance.now();
 
         Papa.parse(csvReadStream, {
             header: true,
@@ -167,15 +198,45 @@ class JobService {
                 if (batch.length < maxBatchSize) return;
 
                 parser.pause();
-                await this.processBatch(batch);
+                await this.processBatch(
+                    batch,
+                    bulkUploadService,
+                    uploadData,
+                    recordId,
+                    'running',
+                    startTime,
+                );
                 batch = [];
                 parser.resume();
             },
             complete: async () => {
-                await this.processBatch(batch);
-                fs.unlinkSync(filePath);
+                await this.processBatch(
+                    batch,
+                    bulkUploadService,
+                    uploadData,
+                    recordId,
+                    'completed',
+                    startTime,
+                );
 
-                logger.info('Parsing complete');
+                csvReadStream.close();
+                fs.unlinkSync(filePath);
+                logger.info('csv parsing complete');
+            },
+            error: async () => {
+                batch = [];
+                await this.processBatch(
+                    batch,
+                    bulkUploadService,
+                    uploadData,
+                    recordId,
+                    'failed',
+                    startTime,
+                );
+
+                csvReadStream.close();
+                fs.unlinkSync(filePath);
+                logger.error('csv parsing failed!');
             },
         });
     };

@@ -186,8 +186,9 @@ class JobListingController {
     uploadByFile = async (req: Request, res: Response): Promise<void> => {
         try {
             const filePath: string = req.file?.path ?? '';
+            const filename: string = req.file?.originalname ?? '';
 
-            await this.jobListingService.writeBulkData(filePath);
+            await this.jobListingService.writeBulkData(filename, filePath);
             new SystemResponse(res, 'File uploaded successfully', req.file).created();
         } catch (error: unknown) {
             new SystemResponse(

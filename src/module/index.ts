@@ -1,5 +1,8 @@
+import bulkUploadRouter from './bulkupload';
 import countryRouter from './country';
 import jobListingRouter from './job';
 import userRouter from './user';
 
-export { countryRouter, jobListingRouter, userRouter };
+export {
+    bulkUploadRouter, countryRouter, jobListingRouter, userRouter,
+};
