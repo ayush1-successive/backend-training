@@ -7,8 +7,14 @@ class JobRepository extends BaseRepository<IJobListing> {
         super(jobListingModel);
     }
 
-    findByTitleAndCompany = async (title: string, company: string): Promise<IJobListing | null> => {
-        const result: IJobListing | null = await this.model.findOne({ title, company });
+    findByTitleAndCompany = async (
+        title: string,
+        company: string,
+    ): Promise<IJobListing | null> => {
+        const result: IJobListing | null = await this.model.findOne({
+            title,
+            company,
+        });
         return result;
     };
 
@@ -21,6 +27,35 @@ class JobRepository extends BaseRepository<IJobListing> {
         if (!existingJob) {
             await this.createOne(job);
         }
+    };
+
+    update = async (
+        id: string,
+        newData: IJobListing,
+    ): Promise<IJobListing | null> => {
+        const result: IJobListing | null = await this.model.findByIdAndUpdate(
+            id,
+            { $set: newData },
+            { new: true },
+        );
+        return result;
+    };
+
+    getAll = async (
+        filters: any,
+        sortBy: string,
+        fields: string,
+        page: number,
+        limit: number,
+    ): Promise<IJobListing[] | null> => {
+        const skip = (page - 1) * limit;
+        const result: IJobListing[] | null = await this.model
+            .find(filters)
+            .sort(sortBy)
+            .select(fields)
+            .skip(skip)
+            .limit(limit);
+        return result;
     };
 }
 
