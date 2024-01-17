@@ -7,10 +7,14 @@ const userSchema: mongoose.Schema<IUser> = new mongoose.Schema<IUser>(
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         dateOfBirth: { type: String },
-        address: { type: String },
+        gender: { type: String },
         phoneNumber: { type: String },
-        isAdmin: { type: Boolean },
-        interests: { type: [String], default: [] },
+
+        summary: { type: String },
+        skills: { type: [String] },
+        domains: { type: [String] },
+        achievements: { type: [String] },
+        resume: { type: Buffer },
     },
     { timestamps: true },
 );

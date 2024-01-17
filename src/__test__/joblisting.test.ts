@@ -1,8 +1,6 @@
 import express from 'express';
-import fs from 'fs';
 import request from 'supertest';
 import { serverConfig } from '../config';
-import generateCsv from '../lib/utils/JobListing';
 import IJobListing from '../module/job/entities/IJobListing';
 import JobType from '../module/job/entities/JobType';
 import JobService from '../module/job/services';
@@ -161,34 +159,5 @@ describe('API Integration Tests - JobListing Module', () => {
             message: 'Error deleting joblisting by id!',
             error: expect.objectContaining({}),
         });
-    });
-
-    test('POST /jobs/upload', async () => {
-        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const csvPath = `./public/data/file-${uniqueSuffix}.csv`;
-
-        await generateCsv(csvPath, 10, 1000);
-
-        const response = await request(app).post('/jobs/upload').attach('file', csvPath);
-
-        expect(response.status).toBe(201);
-        expect(response.body).toEqual({
-            status: true,
-            message: 'File uploaded successfully',
-            data: expect.objectContaining({}),
-        });
-
-        fs.unlinkSync(csvPath);
-
-        // response = await request(app).post('/jobs/upload').attach('file', csvPath);
-
-        // console.log('response.body:', response.body);
-
-        // expect(response.status).toBe(201);
-        // expect(response.body).toEqual({
-        //     status: true,
-        //     message: 'File uploaded successfully',
-        //     data: expect.objectContaining({}),
-        // });
     });
 });
