@@ -11,7 +11,7 @@ const jobValidation: ObjectSchema<IJobListing> = joi.object({
     requirements: joi.array(),
     responsibilities: joi.array(),
     qualifications: joi.object(),
-    salary: joi.object(),
+    salary: joi.number().integer(),
     applicationDeadline: joi.date(),
     isRemote: joi.boolean(),
     contactEmail: joi
