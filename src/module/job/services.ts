@@ -31,7 +31,14 @@ class JobService {
         );
 
         if (filters.title) {
-            filters.title = { $regex: filters.title[0], $options: 'i' };
+            const searchRegex = { $regex: filters.title[0], $options: 'i' };
+
+            filters.$or = [
+                { title: searchRegex },
+                { company: searchRegex },
+            ];
+
+            delete filters.title;
         }
 
         if (filters.salary) {
