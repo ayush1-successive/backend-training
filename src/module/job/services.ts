@@ -14,7 +14,7 @@ class JobService {
     }
 
     static getFilters = async (queryObj: any): Promise<any> => {
-    // QUERY FILTER
+        // QUERY FILTER
         let filters: any = { ...queryObj };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach((el) => delete filters[el]);
@@ -30,6 +30,16 @@ class JobService {
             (acc, [key, value]) => ({ ...acc, [key]: (value as string).split(',') }),
             {},
         );
+
+        if (filters.title) {
+            filters.title = { $regex: filters.title[0], $options: 'i' };
+        }
+
+        if (filters.salary) {
+            const minSalary: number = parseInt(filters.salary[0], 10) * 100000;
+            const maxSalary: number = parseInt(filters.salary[1], 10) * 100000;
+            filters.salary = { $gte: minSalary, $lte: maxSalary };
+        }
 
         return filters;
     };
