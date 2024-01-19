@@ -26,7 +26,7 @@ class JobListingController {
             const limit: number = parseInt((req.query.limit as string) ?? '10', 10);
             const skip: number = (page - 1) * limit;
 
-            if (skip >= total) {
+            if (skip >= total && total > 0) {
                 logger.error('error in getAll API');
                 new SystemResponse(res, 'This page doesn\'t exist!', {
                     total,
