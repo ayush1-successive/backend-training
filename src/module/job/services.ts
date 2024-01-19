@@ -31,13 +31,13 @@ class JobService {
         );
 
         if (filters.title) {
-            filters.title = { "$regex": filters.title[0], "$options": "i" };
+            filters.title = { $regex: filters.title[0], $options: 'i' };
         }
 
         if (filters.salary) {
             const minSalary: number = parseInt(filters.salary[0], 10) * 100000;
             const maxSalary: number = parseInt(filters.salary[1], 10) * 100000;
-            filters.salary =  { $gte: minSalary, $lte: maxSalary };
+            filters.salary = { $gte: minSalary, $lte: maxSalary };
         }
 
         return filters;
