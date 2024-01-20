@@ -1,4 +1,5 @@
-import { type IBase } from '../../../lib/base';
+import { IBase } from '../../../lib/base';
+import IErrorDetail from './IErrorDetail';
 
 interface IBulkUpload extends IBase {
   status: string;
@@ -9,6 +10,7 @@ interface IBulkUpload extends IBase {
   failedEntries: number;
   entriesCompleted: number;
   totalEntries: number;
+  errorDetails: IErrorDetail[];
 }
 
 export default IBulkUpload;

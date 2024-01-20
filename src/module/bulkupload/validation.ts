@@ -1,4 +1,4 @@
-import joi, { type ObjectSchema } from 'joi';
+import joi, { ObjectSchema } from 'joi';
 import IBulkUpload from './entities/IBulkUpload';
 
 const bulkUploadValidation: ObjectSchema<IBulkUpload> = joi.object({

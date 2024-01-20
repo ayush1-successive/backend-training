@@ -11,6 +11,10 @@ const bulkUploadSchema: mongoose.Schema<IBulkUpload> = new mongoose.Schema<IBulk
         failedEntries: { type: Number, required: true },
         entriesCompleted: { type: Number, required: true },
         totalEntries: { type: Number },
+        errorDetails: {
+            message: { type: [String] },
+            rowNumber: { type: Number },
+        },
     },
     { timestamps: true },
 );

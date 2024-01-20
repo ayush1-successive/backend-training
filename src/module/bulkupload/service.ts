@@ -1,4 +1,5 @@
 import IBulkUpload from './entities/IBulkUpload';
+import IErrorDetail from './entities/IErrorDetail';
 import BulkUploadRepository from './repositories/repository';
 
 class BulkUploadService {
@@ -22,7 +23,10 @@ class BulkUploadService {
         return result;
     };
 
-    getById = async (uploadId: string, fields: string): Promise<IBulkUpload | null> => {
+    getById = async (
+        uploadId: string,
+        fields: string,
+    ): Promise<IBulkUpload | null> => {
         const result: IBulkUpload | null = await this.bulkUploadRepository.getById(
             uploadId,
             fields,
@@ -30,12 +34,17 @@ class BulkUploadService {
         return result;
     };
 
-    updateById = async (uploadId: string, newData: IBulkUpload): Promise<IBulkUpload | null> => {
-        const result: IBulkUpload | null = await this.bulkUploadRepository.update(
+    updateById = async (
+        uploadId: string,
+        newData: IBulkUpload,
+        errorDetails: IErrorDetail[],
+    ): Promise<void> => {
+        await this.bulkUploadRepository.updateRecord(
             uploadId,
             newData,
         );
-        return result;
+
+        await this.bulkUploadRepository.updateErrorList(uploadId, errorDetails);
     };
 
     create = async (uploadData: IBulkUpload): Promise<IBulkUpload> => {
@@ -43,8 +52,8 @@ class BulkUploadService {
         return result;
     };
 
-    generateHollowEntry = async (filename: string) : Promise<IBulkUpload> => {
-        const hollowData:IBulkUpload = {
+    generateHollowEntry = async (filename: string): Promise<IBulkUpload> => {
+        const hollowData: IBulkUpload = {
             status: 'running',
             time: 0,
             filename,
@@ -52,6 +61,7 @@ class BulkUploadService {
             failedEntries: 0,
             entriesCompleted: 0,
             totalEntries: 0,
+            errorDetails: [],
         };
 
         const result: IBulkUpload = await this.create(hollowData);

@@ -1,10 +1,13 @@
 import fs from 'fs';
+import { ValidationResult } from 'joi';
 import Papa from 'papaparse';
 import jobListingData from '../../lib/jobListingData';
 import logger from '../../lib/logger';
+import IErrorDetail from '../bulkupload/entities/IErrorDetail';
+import BulkUploadService from '../bulkupload/service';
 import IJobListing from './entities/IJobListing';
 import JobRepository from './repositories/repository';
-import BulkUploadService from '../bulkupload/service';
+import jobValidation from './validation';
 
 class JobService {
     jobRepository: JobRepository;
@@ -34,10 +37,7 @@ class JobService {
         if (filters.title) {
             const searchRegex = { $regex: filters.title[0], $options: 'i' };
 
-            filters.$or = [
-                { title: searchRegex },
-                { company: searchRegex },
-            ];
+            filters.$or = [{ title: searchRegex }, { company: searchRegex }];
 
             delete filters.title;
         }
@@ -62,7 +62,7 @@ class JobService {
         page: number,
         limit: number,
     ): Promise<IJobListing[] | null> => {
-    // SORT
+        // SORT
         const sortBy: string = queryObj.sort
             ? (queryObj.sort as string).split(',').join(' ')
             : '-createdAt';
@@ -143,6 +143,31 @@ class JobService {
         return result as IJobListing;
     };
 
+    static validateEntries = async (
+        jobs: IJobListing[],
+        entriesCompleted: number,
+    ): Promise<{ passed: IJobListing[]; failed: IErrorDetail[] }> => {
+        const passed: IJobListing[] = [];
+        const failed: IErrorDetail[] = [];
+
+        jobs.forEach((job: any, index) => {
+            const validationResult: ValidationResult<IJobListing> = jobValidation.validate(job, {
+                abortEarly: false,
+            });
+
+            if (validationResult.error) {
+                failed.push({
+                    message: validationResult.error.message,
+                    rowNumber: entriesCompleted + index + 1,
+                });
+            } else {
+                passed.push(validationResult.value);
+            }
+        });
+
+        return { passed, failed };
+    };
+
     processBatch = async (
         batch: any[],
         uploadService: BulkUploadService,
@@ -152,9 +177,16 @@ class JobService {
         startTime: number,
     ): Promise<void> => {
         try {
-            const jobs: IJobListing[] = batch.map((job: any) => JobService.transformEntry(job));
+            const transformedJobs: IJobListing[] = batch.map(
+                (job: any) => JobService.transformEntry(job),
+            );
 
-            const bulkOps = jobs.map((job) => ({
+            const validatedJobs = await JobService.validateEntries(
+                transformedJobs,
+                uploadData.entriesCompleted,
+            );
+
+            const bulkOps = validatedJobs.passed.map((job) => ({
                 updateOne: {
                     filter: {
                         title: job.title,
@@ -170,6 +202,7 @@ class JobService {
             });
 
             logger.info('batch process result', result);
+
             const successfulEntries = result.modifiedCount + result.upsertedCount;
 
             /* eslint-disable no-param-reassign */
@@ -177,11 +210,15 @@ class JobService {
             uploadData.successfulEntries += successfulEntries;
             uploadData.failedEntries += batch.length - successfulEntries;
 
-            await uploadService.updateById(recordId, {
-                ...uploadData,
-                status,
-                time: performance.now() - startTime,
-            });
+            await uploadService.updateById(
+                recordId,
+                {
+                    ...uploadData,
+                    status,
+                    time: performance.now() - startTime,
+                },
+                validatedJobs.failed,
+            );
         } catch (error: unknown) {
             logger.error('error in batch process', error);
         }
