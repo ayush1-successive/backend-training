@@ -9,17 +9,32 @@ class BulkUploadService {
         this.bulkUploadRepository = new BulkUploadRepository();
     }
 
-    getAll = async (): Promise<IBulkUpload[] | null> => {
-        const fields = '_id filename status entriesCompleted totalEntries time';
+    countDocuments = async (): Promise<number> => {
+        const result: number = await this.bulkUploadRepository.countDocuments({});
+        return result;
+    };
 
-        let query = this.bulkUploadRepository.model.find();
-        query = query.select(fields);
-
+    getAll = async (
+        queryObj: any,
+        page: number,
+        limit: number,
+    ): Promise<IBulkUpload[] | null> => {
         // SORT
-        const sortBy = '-createdAt';
-        query = query.sort(sortBy);
+        const sortBy: string = queryObj.sort
+            ? (queryObj.sort as string).split(',').join(' ')
+            : '-createdAt';
 
-        const result: IBulkUpload[] | null = await query;
+        // FIELD LIMITING
+        const fields: string = queryObj.fields
+            ? (queryObj.fields as string).split(',').join(' ')
+            : '-__v';
+
+        const result: IBulkUpload[] | null = await this.bulkUploadRepository.getAll(
+            sortBy,
+            fields,
+            page,
+            limit,
+        );
         return result;
     };
 
@@ -39,10 +54,11 @@ class BulkUploadService {
         newData: IBulkUpload,
         errorDetails: IErrorDetail[],
     ): Promise<void> => {
-        await this.bulkUploadRepository.updateRecord(
-            uploadId,
-            newData,
-        );
+        const updatedRecord: IBulkUpload = newData.status === 'completed'
+            ? { ...newData, endedAt: new Date() }
+            : newData;
+
+        await this.bulkUploadRepository.updateRecord(uploadId, updatedRecord);
 
         await this.bulkUploadRepository.updateErrorList(uploadId, errorDetails);
     };

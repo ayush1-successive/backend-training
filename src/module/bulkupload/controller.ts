@@ -15,9 +15,32 @@ class BulkUploadController {
 
     getAll = async (req: Request, res: Response): Promise<void> => {
         try {
-            const result: IBulkUpload[] | null = await this.bulkUploadService.getAll();
+            const total: number = await this.bulkUploadService.countDocuments();
 
-            new SystemResponse(res, 'upload history found!', result).ok();
+            // PAGINATION
+            const page: number = parseInt((req.query.page as string) ?? '1', 10);
+            const limit: number = parseInt((req.query.limit as string) ?? '10', 10);
+            const skip: number = (page - 1) * limit;
+
+            if (skip >= total && total > 0) {
+                logger.error('error in getAll API');
+                new SystemResponse(res, 'This page doesn\'t exist!', {
+                    total,
+                    ...req.query,
+                }).badRequest();
+                return;
+            }
+
+            const result: IBulkUpload[] | null = await this.bulkUploadService.getAll(
+                req.query,
+                page,
+                limit,
+            );
+
+            new SystemResponse(res, 'upload history found!', {
+                total,
+                data: result,
+            }).ok();
         } catch (error: unknown) {
             logger.error('Error in getAll API', error);
             new SystemResponse(

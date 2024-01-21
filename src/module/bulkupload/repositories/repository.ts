@@ -9,6 +9,22 @@ class BulkUploadRepository extends BaseRepository<IBulkUpload> {
         super(bulkUploadModel);
     }
 
+    getAll = async (
+        sortBy: string,
+        fields: string,
+        page: number,
+        limit: number,
+    ): Promise<IBulkUpload[] | null> => {
+        const skip = (page - 1) * limit;
+        const result: IBulkUpload[] | null = await this.model
+            .find()
+            .sort(sortBy)
+            .select(fields)
+            .skip(skip)
+            .limit(limit);
+        return result;
+    };
+
     updateRecord = async (id: string, newData: IBulkUpload): Promise<IBulkUpload | null> => {
         const result: IBulkUpload | null = await this.model.findByIdAndUpdate(
             id,
