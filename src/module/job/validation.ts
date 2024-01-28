@@ -6,20 +6,20 @@ const jobValidation: ObjectSchema<IJobListing> = joi.object({
     company: joi.string().required(),
     address: joi.object(),
     jobType: joi.string().required(),
-    industry: joi.string(),
+    industry: joi.string().required(),
     description: joi.string(),
     requirements: joi.array(),
     responsibilities: joi.array(),
     qualifications: joi.object(),
     salary: joi.number().integer(),
-    applicationDeadline: joi.date(),
-    isRemote: joi.boolean(),
+    applicationDeadline: joi.date().required(),
+    isRemote: joi.boolean().required(),
     contactEmail: joi
         .string()
         .email({ tlds: { allow: false } })
         .trim()
         .required(),
-    applicationLink: joi.string(),
+    applicationLink: joi.string().required(),
 });
 
 export default jobValidation;
