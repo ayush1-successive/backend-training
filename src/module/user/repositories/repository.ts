@@ -30,15 +30,8 @@ class UserRepository extends BaseRepository<IUser> {
         return user;
     };
 
-    update = async (
-        id: string,
-        newData: IUser,
-    ): Promise<IUser | null> => {
-        const result: IUser | null = await this.model.findByIdAndUpdate(
-            id,
-            { $set: newData },
-            { new: true },
-        );
+    deleteByEmail = async (email: string): Promise<any> => {
+        const result: any = await this.model.deleteOne({ email });
         return result;
     };
 }

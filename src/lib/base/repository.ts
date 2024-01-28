@@ -12,8 +12,8 @@ class BaseRepository<T> {
         return result;
     };
 
-    getById = async (id: string, fields: string = '-__v'): Promise<T | null> => {
-        const result: T | null = await this.model.findById(id).select(fields) as T | null;
+    getById = async (id: string): Promise<T | null> => {
+        const result: T | null = await this.model.findById(id);
         return result;
     };
 

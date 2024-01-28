@@ -62,14 +62,6 @@ class SystemResponse {
         });
     };
 
-    conflict = (): void => {
-        this.res.status(HttpStatusCode.Confict).send({
-            status: false,
-            message: this.message,
-            error: this.data,
-        });
-    };
-
     tooManyRequests = (): void => {
         this.res.status(HttpStatusCode.TooManyRequests).send({
             status: false,

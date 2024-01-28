@@ -3,11 +3,11 @@ import { ValidationResult } from 'joi';
 import { serverConfig } from '../../config';
 import { SystemResponse } from '../../lib/response-handler';
 
-import logger from '../../lib/logger';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 import UserService from './services';
 import { userLoginRequestValidation, userValidation } from './validation';
+import logger from '../../lib/logger';
 
 class UserController {
     private readonly userService: UserService;
@@ -39,6 +39,28 @@ class UserController {
         }
     };
 
+    deleteByEmail = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { emailId } = req.params;
+
+            const result = await this.userService.deleteByEmail(emailId);
+
+            if (result.deletedCount === 0) {
+                logger.error(`User with email '${emailId}' doesn't exists!`);
+
+                new SystemResponse(res, `User with email '${emailId}' doesn't exists!`, req.params).notFound();
+                return;
+            }
+
+            logger.info('user deleted successfully!');
+            new SystemResponse(res, 'user deleted successfully!', result).ok();
+        } catch (error: unknown) {
+            logger.info('error in deleteByEmail API', error);
+
+            new SystemResponse(res, 'error deleting user!', error).internalServerError();
+        }
+    };
+
     getAll = async (req: Request, res: Response): Promise<void> => {
         try {
             const userList: IUser[] | null = await this.userService.getAll();
@@ -59,7 +81,7 @@ class UserController {
             const newUser: IUser = req.body;
             const validationResult: ValidationResult = userValidation.validate(
                 newUser,
-                { abortEarly: false, context: { mode: 'create' } },
+                { abortEarly: false },
             );
 
             if (validationResult.error) {
@@ -77,7 +99,7 @@ class UserController {
             );
 
             if (existingUser) {
-                new SystemResponse(res, 'User already exists!', newUser).conflict();
+                new SystemResponse(res, 'User already exists!', newUser).badRequest();
                 return;
             }
 
@@ -138,105 +160,6 @@ class UserController {
                 res,
                 'error logging existing user!',
                 error.message,
-            ).internalServerError();
-        }
-    };
-
-    getByToken = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { userId } = req.body;
-            const fields = '_id email';
-            const user: IUser | null = await this.userService.getById(userId, fields);
-
-            if (!user) {
-                new SystemResponse(res, 'User not found!', req.headers).notFound();
-                return;
-            }
-
-            new SystemResponse(res, 'User found!', user).ok();
-        } catch (error: unknown) {
-            logger.error('error in getByToken API', error);
-
-            new SystemResponse(
-                res,
-                'error retrieving user by token!',
-                error,
-            ).internalServerError();
-        }
-    };
-
-    getById = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { userId } = req.params;
-            const fields = '-__v';
-            const user: IUser | null = await this.userService.getById(userId, fields);
-
-            if (!user) {
-                new SystemResponse(res, 'No user found for the provided ID!', {
-                    userId,
-                }).notFound();
-                return;
-            }
-
-            new SystemResponse(res, 'User found successfully!', user).ok();
-        } catch (error: unknown) {
-            logger.error('error in getById', error);
-
-            new SystemResponse(
-                res,
-                'Error retrieving user by userId.',
-                error,
-            ).internalServerError();
-        }
-    };
-
-    updateById = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { userId } = req.params;
-            const newUser: IUser = req.body;
-
-            const validationResult: ValidationResult = userValidation.validate(
-                newUser,
-                { abortEarly: false, context: { mode: 'update' } },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'updated user validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
-
-            await this.userService.updateById(userId, newUser);
-            new SystemResponse(res, `user with id:${userId} updated!`, newUser).ok();
-        } catch (error: any) {
-            new SystemResponse(
-                res,
-                'error updating user!',
-                error,
-            ).internalServerError();
-        }
-    };
-
-    deleteById = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { userId } = req.params;
-            await this.userService.deleteById(userId);
-
-            logger.info(`user with id:${userId} deleted!`);
-
-            new SystemResponse(res, 'User deleted successfully!', {
-                userId,
-            }).ok();
-        } catch (error: unknown) {
-            logger.error('error in deleteById API', error);
-
-            new SystemResponse(
-                res,
-                'Error deleting user by id!',
-                error,
             ).internalServerError();
         }
     };

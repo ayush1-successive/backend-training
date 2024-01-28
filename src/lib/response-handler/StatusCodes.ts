@@ -1,3 +1,5 @@
+//! eslint-config not working with enums
+
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 enum HttpStatusCode {
@@ -8,7 +10,6 @@ enum HttpStatusCode {
   Unauthorized = 401,
   Forbidden = 403,
   NotFound = 404,
-  Confict = 409,
   TooManyRequests = 429,
 
   InternalServerError = 500,

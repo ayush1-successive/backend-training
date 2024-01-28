@@ -59,12 +59,12 @@ describe('API Integration Tests - User Module', () => {
         });
     });
 
-    test('GET /users/email/{emailId}', async () => {
+    test('GET /users/{emailId}', async () => {
         const invalidEmail = 'abc@xyz.com';
         const validEmail = 'john.doe@example.com';
 
         // user not found
-        let response = await request(app).get(`/users/email/${invalidEmail}`);
+        let response = await request(app).get(`/users/${invalidEmail}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
@@ -74,7 +74,7 @@ describe('API Integration Tests - User Module', () => {
         });
 
         // user found
-        response = await request(app).get(`/users/email/${validEmail}`);
+        response = await request(app).get(`/users/${validEmail}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -85,12 +85,47 @@ describe('API Integration Tests - User Module', () => {
 
         // Internal server error
         await server.disconnectDB();
-        response = await request(app).get(`/users/email/${validEmail}`);
+        response = await request(app).get(`/users/${validEmail}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
             status: false,
             message: 'error retrieving user by email!',
+            error: expect.objectContaining({}),
+        });
+    });
+
+    test('DELETE /users/{emailId}', async () => {
+        const emailId = 'john.doe@example.com';
+
+        // user found and deleted
+        let response = await request(app).delete(`/users/${emailId}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            status: true,
+            message: 'user deleted successfully!',
+            data: { acknowledged: true, deletedCount: 1 },
+        });
+
+        // user not found
+        response = await request(app).delete(`/users/${emailId}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({
+            status: false,
+            message: `User with email '${emailId}' doesn't exists!`,
+            error: expect.objectContaining({ emailId }),
+        });
+
+        // Internal server error
+        await server.disconnectDB();
+        response = await request(app).delete(`/users/${emailId}`);
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'error deleting user!',
             error: expect.objectContaining({}),
         });
     });
@@ -131,7 +166,7 @@ describe('API Integration Tests - User Module', () => {
         // User already exists
         response = await request(app).post('/users/register').send(testUser);
 
-        expect(response.status).toBe(409);
+        expect(response.status).toBe(400);
         expect(response.body).toEqual({
             status: false,
             message: 'User already exists!',

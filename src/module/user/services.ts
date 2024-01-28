@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
 
-import userData from '../../lib/userData';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 import UserRepository from './repositories/repository';
+import userData from '../../lib/userData';
 
 class UserService {
     userRepository: UserRepository;
@@ -18,16 +18,6 @@ class UserService {
             (user: IUser) => this.userRepository.seed(user),
         );
         await Promise.all(tasks);
-    };
-
-    getById = async (userId: string, fields: string): Promise<IUser | null> => {
-        const result = await this.userRepository.getById(userId, fields);
-        return result;
-    };
-
-    updateById = async (jobId: string, newData: IUser): Promise<IUser | null> => {
-        const result: IUser | null = await this.userRepository.update(jobId, newData);
-        return result;
     };
 
     getByEmail = async (email: string): Promise<IUser | null> => {
@@ -49,12 +39,13 @@ class UserService {
         return result;
     };
 
-    deleteById = async (id: string): Promise<void> => {
-        await this.userRepository.deleteById(id);
-    };
-
     deleteAll = async (): Promise<void> => {
         await this.userRepository.deleteAll();
+    };
+
+    deleteByEmail = async (email: string): Promise<any> => {
+        const result = this.userRepository.deleteByEmail(email);
+        return result;
     };
 
     static verifyPassword = async (existingUser: IUser, currentUser: IUserLoginRequest):
@@ -71,8 +62,7 @@ class UserService {
         jwtSecret: string,
     ): Promise<string> => {
         const token: string = JWT.sign(
-            // eslint-disable-next-line no-underscore-dangle
-            { userId: (existingUser as any)?._id },
+            { userId: existingUser?.email },
             jwtSecret,
             { expiresIn: '1d' },
         );
