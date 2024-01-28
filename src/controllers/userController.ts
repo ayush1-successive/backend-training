@@ -1,34 +1,43 @@
-import { type Request, type Response } from "express";
-import { type ValidationResult } from "joi";
-import { userSchema } from "../models/userModel";
-import { type IUser, userData } from "../utils/mockData";
+import { type Request, type Response } from 'express';
+import { type ValidationResult } from 'joi';
 
-export class UserController {
-  getData = (req: Request, res: Response): void => {
-    res.status(200).json(userData);
-  };
+import userData from '../lib/userData';
+import IUser from '../module/user/entities/IUser';
+import { userValidation } from '../module/user/validation';
+import { SystemResponse } from '../lib/response-handler';
 
-  addUser = (req: Request, res: Response): void => {
-    const newUser: IUser = req.body;
-    userData.push(newUser);
-    res.status(201).json(userData);
-  };
+class UserController {
+    static getData = (req: Request, res: Response): void => {
+        new SystemResponse(res, 'user list found!', userData).ok();
+    };
 
-  addValidatedUser = async (req: Request, res: Response): Promise<void> => {
-    const newUser: IUser = req.body;
-    const validationResult: ValidationResult = userSchema.validate(newUser, {
-      abortEarly: false,
-    });
+    static addUser = (req: Request, res: Response): void => {
+        const newUser: IUser = req.body;
+        userData.push(newUser);
+        new SystemResponse(res, 'new user created!', newUser).created();
+    };
 
-    if (validationResult.error) {
-      res.status(400).json({
-        status: "Validation failed",
-        error: validationResult.error.message,
-      });
-      return;
-    }
+    static addValidatedUser = (req: Request, res: Response): void => {
+        const newUser: IUser = req.body;
+        const validationResult: ValidationResult = userValidation.validate(
+            newUser,
+            {
+                abortEarly: false,
+            },
+        );
 
-    userData.push(newUser);
-    res.status(201).json(userData);
-  };
+        if (validationResult.error) {
+            new SystemResponse(
+                res,
+                'new user validation failed!',
+                validationResult.error,
+            ).badRequest();
+            return;
+        }
+
+        userData.push(newUser);
+        new SystemResponse(res, 'new user created!', userData).created();
+    };
 }
+
+export default UserController;
