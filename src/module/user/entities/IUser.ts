@@ -5,26 +5,14 @@ interface IUser extends IBase {
     email: string;
     password: string;
     dateOfBirth?: string;
-    address?: string;
+    gender?: 'male' | 'female' | 'other';
     phoneNumber?: string;
-    isAdmin?: boolean;
-    interests?: string[];
-}
 
-/*
- * Fields
- * Name
- * Email
- * Password
- * PhoneNumber
- * dateOfBirth
- * Address
- * Summary
- * Work Experience
- * Skills
- * Accomplishments
- * Resume
- * Interests
-*/
+    summary?: string,
+    skills?: string[],
+    domains?: string[],
+    achievements?: string[],
+    resume?: Buffer
+}
 
 export default IUser;
