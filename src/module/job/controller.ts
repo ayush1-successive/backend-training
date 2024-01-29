@@ -88,8 +88,8 @@ class JobListingController {
                 return;
             }
 
-            await this.jobListingService.create(newJobListing);
-            new SystemResponse(res, 'new job added!', newJobListing).created();
+            const result: IJobListing = await this.jobListingService.create(newJobListing);
+            new SystemResponse(res, 'new job added!', result).created();
         } catch (error: any) {
             new SystemResponse(
                 res,
