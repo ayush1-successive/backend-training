@@ -1,19 +1,16 @@
-import request from 'supertest';
 import express from 'express';
-import Server from '../server';
+import request from 'supertest';
 import { serverConfig } from '../config';
+import IUser from '../module/user/entities/IUser';
 import UserService from '../module/user/services';
+import Server from '../server';
 
 describe('API Integration Tests - User Module', () => {
     let server: Server;
     let app: express.Application;
     let userService: UserService;
-
-    const testUser = {
-        name: 'Ayush Sinha',
-        email: 'ayush@gmail.com',
-        password: 'pass@1234',
-    };
+    let userToken: string;
+    let testUser: IUser;
 
     beforeAll(async () => {
         server = Server.getInstance(serverConfig);
@@ -22,6 +19,12 @@ describe('API Integration Tests - User Module', () => {
 
         userService = new UserService();
         userService.deleteAll();
+
+        testUser = {
+            name: 'Test User',
+            email: `user@test-${Date.now()}.com`,
+            password: 'pass@1234',
+        };
     });
 
     afterAll(async () => {
@@ -30,6 +33,7 @@ describe('API Integration Tests - User Module', () => {
 
     beforeEach(async () => {
         await userService.initialSeed();
+        userToken = await UserService.generateLoginToken(testUser, serverConfig.jwtSecret);
     });
 
     afterEach(async () => {
@@ -38,7 +42,7 @@ describe('API Integration Tests - User Module', () => {
     });
 
     test('GET /users', async () => {
-        let response = await request(app).get('/users');
+        let response = await request(app).get('/users').set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -49,7 +53,7 @@ describe('API Integration Tests - User Module', () => {
 
         // Internal server error
         await server.disconnectDB();
-        response = await request(app).get('/users');
+        response = await request(app).get('/users').set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -64,7 +68,7 @@ describe('API Integration Tests - User Module', () => {
         const validEmail = 'john.doe@example.com';
 
         // user not found
-        let response = await request(app).get(`/users/email/${invalidEmail}`);
+        let response = await request(app).get(`/users/email/${invalidEmail}`).set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
@@ -74,7 +78,7 @@ describe('API Integration Tests - User Module', () => {
         });
 
         // user found
-        response = await request(app).get(`/users/email/${validEmail}`);
+        response = await request(app).get(`/users/email/${validEmail}`).set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -85,7 +89,7 @@ describe('API Integration Tests - User Module', () => {
 
         // Internal server error
         await server.disconnectDB();
-        response = await request(app).get(`/users/email/${validEmail}`);
+        response = await request(app).get(`/users/email/${validEmail}`).set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -178,7 +182,7 @@ describe('API Integration Tests - User Module', () => {
 
         // Invalid credentials
         response = await request(app).post('/users/login').send({
-            email: 'ayush@gmail.com',
+            email: testUser.email,
             password: 'password123',
         });
 
@@ -191,7 +195,7 @@ describe('API Integration Tests - User Module', () => {
 
         // Successful login
         response = await request(app).post('/users/login').send({
-            email: 'ayush@gmail.com',
+            email: testUser.email,
             password: 'pass@1234',
         });
 
@@ -205,7 +209,7 @@ describe('API Integration Tests - User Module', () => {
         // Internal server error
         await server.disconnectDB();
         response = await request(app).post('/users/login').send({
-            email: 'ayush@gmail.com',
+            email: testUser.email,
             password: 'pass@1234',
         });
 

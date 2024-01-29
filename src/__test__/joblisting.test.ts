@@ -6,12 +6,16 @@ import generateCsv from '../lib/utils/JobListing';
 import IJobListing from '../module/job/entities/IJobListing';
 import JobType from '../module/job/entities/JobType';
 import JobService from '../module/job/services';
+import IUser from '../module/user/entities/IUser';
+import UserService from '../module/user/services';
 import Server from '../server';
 
 describe('API Integration Tests - JobListing Module', () => {
     let server: Server;
     let app: express.Application;
     let jobService: JobService;
+    let userToken: string;
+    let testUser: IUser;
 
     const testJob: IJobListing = {
         title: 'Software Developer',
@@ -31,6 +35,12 @@ describe('API Integration Tests - JobListing Module', () => {
         jobService = new JobService();
 
         await jobService.deleteAll();
+
+        testUser = {
+            name: 'Test User',
+            email: `user@test-${Date.now()}.com`,
+            password: 'pass@1234',
+        };
     });
 
     afterAll(async () => {
@@ -39,6 +49,7 @@ describe('API Integration Tests - JobListing Module', () => {
 
     beforeEach(async () => {
         await jobService.initialSeed();
+        userToken = await UserService.generateLoginToken(testUser, serverConfig.jwtSecret);
     });
 
     afterEach(async () => {
@@ -142,7 +153,7 @@ describe('API Integration Tests - JobListing Module', () => {
         const testJobId = result._id.toString();
 
         // Job deleted successfully
-        let response = await request(app).delete(`/jobs/${testJobId}`);
+        let response = await request(app).delete(`/jobs/${testJobId}`).set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -153,7 +164,7 @@ describe('API Integration Tests - JobListing Module', () => {
 
         // Internal server error
         await server.disconnectDB();
-        response = await request(app).delete(`/jobs/${testJobId}`);
+        response = await request(app).delete(`/jobs/${testJobId}`).set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({

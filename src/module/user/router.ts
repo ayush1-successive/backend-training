@@ -1,5 +1,5 @@
 import express from 'express';
-import { AuthMiddleware } from '../../lib/middlewares/Assignment-3';
+import { AuthMiddleware } from '../../lib/middlewares';
 import upload from '../job/helpers';
 import UserController from './controller';
 
@@ -30,7 +30,7 @@ class UserRouter {
 
     private setupRoutes(): void {
         // Get all users
-        this.router.get('/', this.userController.getAll);
+        this.router.get('/', this.authMiddleware.authenticate, this.userController.getAll);
 
         // Get user by token in req.header
         this.router.get('/token', this.authMiddleware.authenticate, this.userController.getByToken);
@@ -42,16 +42,16 @@ class UserRouter {
         this.router.post('/login', this.userController.login);
 
         // Get user details by its emailId
-        this.router.get('/email/:emailId', this.userController.getByEmail);
+        this.router.get('/email/:emailId', this.authMiddleware.authenticate, this.userController.getByEmail);
 
         // Get job listing by id
-        this.router.get('/:userId', this.userController.getById);
+        this.router.get('/:userId', this.authMiddleware.authenticate, this.userController.getById);
 
         // Update job listing by id
-        this.router.put('/:userId', upload.single('file'), this.userController.updateById);
+        this.router.put('/:userId', this.authMiddleware.authenticate, upload.single('file'), this.userController.updateById);
 
         // Delete job listing by id
-        this.router.delete('/:userId', this.userController.deleteById);
+        this.router.delete('/:userId', this.authMiddleware.authenticate, this.userController.deleteById);
     }
 }
 

@@ -1,4 +1,5 @@
 import express from 'express';
+import { AuthMiddleware } from '../../lib/middlewares';
 import JobListingController from './controller';
 import upload from './helpers';
 
@@ -10,9 +11,12 @@ class JobListingRouter {
 
     private readonly jobListingController: JobListingController;
 
+    private readonly authMiddleware: AuthMiddleware;
+
     private constructor() {
         this.router = express.Router();
         this.jobListingController = new JobListingController();
+        this.authMiddleware = new AuthMiddleware();
         this.setupRoutes();
     }
 
@@ -41,10 +45,10 @@ class JobListingRouter {
         this.router.get('/:jobId', this.jobListingController.getById);
 
         // Update job listing by id
-        this.router.put('/:jobId', this.jobListingController.updateById);
+        this.router.put('/:jobId', this.authMiddleware.authenticate, this.jobListingController.updateById);
 
         // Delete job listing by id
-        this.router.delete('/:jobId', this.jobListingController.deleteById);
+        this.router.delete('/:jobId', this.authMiddleware.authenticate, this.jobListingController.deleteById);
     }
 }
 
