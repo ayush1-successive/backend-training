@@ -42,7 +42,7 @@ class UserRouter {
         this.router.post('/login', this.userController.login);
 
         // Get user details by its emailId
-        this.router.get('/email/:emailId', this.authMiddleware.authenticate, this.userController.getByEmail);
+        this.router.get('/email/:emailId', this.userController.getByEmail);
 
         // Get job listing by id
         this.router.get('/:userId', this.authMiddleware.authenticate, this.userController.getById);
