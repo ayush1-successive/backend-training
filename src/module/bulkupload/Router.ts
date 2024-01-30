@@ -1,5 +1,5 @@
 import express from 'express';
-import BulkUploadController from './controller';
+import BulkUploadController from './Controller';
 import { AuthMiddleware } from '../../lib/middlewares';
 
 class BulkUploadRouter {

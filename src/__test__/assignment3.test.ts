@@ -1,6 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import Server from '../server';
+import Server from '../Server';
 import { serverConfig } from '../config';
 
 const token: string = serverConfig.dummyToken;

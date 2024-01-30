@@ -1,6 +1,6 @@
 import IBulkUpload from './entities/IBulkUpload';
 import IErrorDetail from './entities/IErrorDetail';
-import BulkUploadRepository from './repositories/repository';
+import BulkUploadRepository from './repositories/Repository';
 
 class BulkUploadService {
     bulkUploadRepository: BulkUploadRepository;

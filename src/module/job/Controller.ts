@@ -4,7 +4,7 @@ import logger from '../../lib/logger';
 
 import { SystemResponse } from '../../lib/response-handler';
 import IJobListing from './entities/IJobListing';
-import JobService from './services';
+import JobService from './Services';
 import jobValidation from './validation';
 
 class JobListingController {

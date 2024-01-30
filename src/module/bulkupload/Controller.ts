@@ -3,7 +3,7 @@ import { ValidationResult } from 'joi';
 import logger from '../../lib/logger';
 import { SystemResponse } from '../../lib/response-handler';
 import IBulkUpload from './entities/IBulkUpload';
-import BulkUploadService from './service';
+import BulkUploadService from './Service';
 import bulkUploadValidation from './validation';
 
 class BulkUploadController {

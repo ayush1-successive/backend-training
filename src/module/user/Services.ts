@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken';
 import userData from '../../lib/userData';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
-import UserRepository from './repositories/repository';
+import UserRepository from './repositories/Repository';
 
 class UserService {
     userRepository: UserRepository;

@@ -1,5 +1,5 @@
 import type IBase from './interface';
-import BaseRepository from './repository';
+import BaseRepository from './Repository';
 import baseSchema from './schema';
 
 export { IBase, BaseRepository, baseSchema };

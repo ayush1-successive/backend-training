@@ -1,6 +1,6 @@
 import express from 'express';
 import { AuthMiddleware } from '../../lib/middlewares';
-import JobListingController from './controller';
+import JobListingController from './Controller';
 import upload from './helpers';
 
 class JobListingRouter {

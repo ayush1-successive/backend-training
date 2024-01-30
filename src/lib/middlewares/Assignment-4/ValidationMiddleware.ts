@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { type ValidationResult } from 'joi';
-import validationConfig from '../../utils/ValidationConfig';
+import validationConfig from '../../utils/validationConfig';
 import { SystemResponse } from '../../response-handler';
 import logger from '../../logger';
 

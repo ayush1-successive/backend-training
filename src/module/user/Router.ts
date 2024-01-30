@@ -1,7 +1,7 @@
 import express from 'express';
 import { AuthMiddleware } from '../../lib/middlewares';
 import upload from '../job/helpers';
-import UserController from './controller';
+import UserController from './Controller';
 
 class UserRouter {
     // eslint-disable-next-line no-use-before-define

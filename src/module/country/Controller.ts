@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express';
 import { type ValidationResult } from 'joi';
 
 import type ICountry from './entities/ICountry';
-import CountryService from './service';
+import CountryService from './Service';
 import countryValidation from './validation';
 import { SystemResponse } from '../../lib/response-handler';
 import logger from '../../lib/logger';

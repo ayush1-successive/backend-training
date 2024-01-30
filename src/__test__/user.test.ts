@@ -2,8 +2,8 @@ import express from 'express';
 import request from 'supertest';
 import { serverConfig } from '../config';
 import IUser from '../module/user/entities/IUser';
-import UserService from '../module/user/services';
-import Server from '../server';
+import UserService from '../module/user/Services';
+import Server from '../Server';
 
 describe('API Integration Tests - User Module', () => {
     let server: Server;

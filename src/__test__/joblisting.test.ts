@@ -5,10 +5,10 @@ import { serverConfig } from '../config';
 import generateCsv from '../lib/utils/JobListing';
 import IJobListing from '../module/job/entities/IJobListing';
 import JobType from '../module/job/entities/JobType';
-import JobService from '../module/job/services';
+import JobService from '../module/job/Services';
 import IUser from '../module/user/entities/IUser';
-import UserService from '../module/user/services';
-import Server from '../server';
+import UserService from '../module/user/Services';
+import Server from '../Server';
 
 describe('API Integration Tests - JobListing Module', () => {
     let server: Server;

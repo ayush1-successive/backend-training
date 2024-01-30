@@ -1,6 +1,6 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
-import healthController from './controllers/healthController';
+import healthController from './controllers/HealthController';
 import { ErrorHandlerMiddlerware } from './lib/middlewares/Assignment-3';
 import swaggerSpec from './lib/swagger';
 import {

@@ -4,9 +4,9 @@ import Papa from 'papaparse';
 import jobListingData from '../../lib/jobListingData';
 import logger from '../../lib/logger';
 import IErrorDetail from '../bulkupload/entities/IErrorDetail';
-import BulkUploadService from '../bulkupload/service';
+import BulkUploadService from '../bulkupload/Service';
 import IJobListing from './entities/IJobListing';
-import JobRepository from './repositories/repository';
+import JobRepository from './repositories/Repository';
 import jobValidation from './validation';
 
 class JobService {

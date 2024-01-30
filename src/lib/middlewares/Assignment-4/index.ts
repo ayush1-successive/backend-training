@@ -1,4 +1,4 @@
-import IpMiddleware from './ipMiddleware';
-import ValidationMiddleware from './validationMiddleware';
+import IpMiddleware from './IpMiddleware';
+import ValidationMiddleware from './ValidationMiddleware';
 
 export { IpMiddleware, ValidationMiddleware };

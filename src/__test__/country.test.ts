@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
-import CountryService from '../module/country/service';
-import Server from '../server';
+import CountryService from '../module/country/Service';
+import Server from '../Server';
 import { serverConfig } from '../config';
 
 describe('API Integration Tests - Country Module', () => {

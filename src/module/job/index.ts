@@ -1,3 +1,3 @@
-import jobListingRouter from './router';
+import jobListingRouter from './Router';
 
 export default jobListingRouter;

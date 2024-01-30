@@ -6,7 +6,7 @@ import { SystemResponse } from '../../lib/response-handler';
 import logger from '../../lib/logger';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
-import UserService from './services';
+import UserService from './Services';
 import { userLoginRequestValidation, userValidation } from './validation';
 
 class UserController {
