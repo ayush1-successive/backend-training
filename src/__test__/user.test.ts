@@ -161,14 +161,14 @@ describe('API Integration Tests - User Module', () => {
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             status: false,
-            message: 'new user validation failed!',
+            message: 'login validation failed!',
             error: expect.objectContaining({}),
         });
 
         // No existing user
         response = await request(app).post('/users/login').send({
             email: 'abc@xyz.com',
-            password: '1234',
+            password: '123456780',
         });
 
         expect(response.status).toBe(404);

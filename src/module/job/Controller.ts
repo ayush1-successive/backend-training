@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import { ValidationResult } from 'joi';
 import logger from '../../lib/logger';
 
 import { SystemResponse } from '../../lib/response-handler';
 import IJobListing from './entities/IJobListing';
 import JobService from './Services';
-import jobValidation from './validation';
 
 class JobListingController {
     private readonly jobListingService: JobService;
@@ -190,20 +188,6 @@ class JobListingController {
     create = async (req: Request, res: Response): Promise<void> => {
         try {
             const newJobListing: IJobListing = req.body;
-            const validationResult: ValidationResult = jobValidation.validate(
-                newJobListing,
-                { abortEarly: false },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'new job listing validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
-
             const result: IJobListing = await this.jobListingService.create(
                 newJobListing,
             );
@@ -362,20 +346,6 @@ class JobListingController {
         try {
             const { jobId } = req.params;
             const updatedJobListing: IJobListing = req.body;
-
-            const validationResult: ValidationResult = jobValidation.validate(
-                updatedJobListing,
-                { abortEarly: false },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'updated job listing validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
 
             await this.jobListingService.updateById(jobId, updatedJobListing);
             new SystemResponse(

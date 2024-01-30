@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ValidationResult } from 'joi';
 import { serverConfig } from '../../config';
 import { SystemResponse } from '../../lib/response-handler';
 
@@ -7,7 +6,6 @@ import logger from '../../lib/logger';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
 import UserService from './Services';
-import { userLoginRequestValidation, userValidation } from './validation';
 
 class UserController {
     private readonly userService: UserService;
@@ -62,9 +60,8 @@ class UserController {
      */
     getByEmail = async (req: Request, res: Response): Promise<void> => {
         try {
-            const user: IUser | null = await this.userService.getByEmail(
-                req.params.emailId,
-            );
+            const { emailId } = req.params;
+            const user: IUser | null = await this.userService.getByEmail(emailId);
 
             if (!user) {
                 new SystemResponse(res, 'User not found!', req.params).notFound();
@@ -185,19 +182,6 @@ class UserController {
     register = async (req: Request, res: Response): Promise<void> => {
         try {
             const newUser: IUser = req.body;
-            const validationResult: ValidationResult = userValidation.validate(
-                newUser,
-                { abortEarly: false, context: { mode: 'create' } },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'new user validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
 
             // Check for existing user
             const existingUser: IUser | null = await this.userService.getByEmail(
@@ -288,20 +272,6 @@ class UserController {
     login = async (req: Request, res: Response): Promise<void> => {
         try {
             const user: IUserLoginRequest = req.body;
-
-            const validationResult: ValidationResult = userLoginRequestValidation.validate(
-                user,
-                { abortEarly: false },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'new user validation failed!',
-                    validationResult.error.message,
-                ).badRequest();
-                return;
-            }
 
             // User exist check
             const existingUser: IUser | null = await this.userService.getByEmail(user.email);
@@ -544,20 +514,6 @@ class UserController {
         try {
             const { userId } = req.params;
             const newUser: IUser = req.body;
-
-            const validationResult: ValidationResult = userValidation.validate(
-                newUser,
-                { abortEarly: false, context: { mode: 'update' } },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'updated user validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
 
             await this.userService.updateById(userId, newUser);
             new SystemResponse(res, `user with id:${userId} updated!`, newUser).ok();

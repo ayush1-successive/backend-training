@@ -137,7 +137,8 @@ describe('API Integration Tests - JobListing Module', () => {
         });
 
         // Internal server error
-        response = await request(app).get('/jobs/invalid-id');
+        await server.disconnectDB();
+        response = await request(app).get(`/jobs/${testJobId}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({

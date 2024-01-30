@@ -7,7 +7,7 @@ import IErrorDetail from '../bulkupload/entities/IErrorDetail';
 import BulkUploadService from '../bulkupload/Service';
 import IJobListing from './entities/IJobListing';
 import JobRepository from './repositories/Repository';
-import jobValidation from './validation';
+import { jobValidation } from './Validation';
 
 class JobService {
     jobRepository: JobRepository;

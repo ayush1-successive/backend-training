@@ -2,6 +2,7 @@ import express from 'express';
 import { AuthMiddleware } from '../../lib/middlewares';
 import upload from '../job/helpers';
 import UserController from './Controller';
+import UserValiation from './Validation';
 
 class UserRouter {
     // eslint-disable-next-line no-use-before-define
@@ -29,29 +30,61 @@ class UserRouter {
     }
 
     private setupRoutes(): void {
-        // Get all users
-        this.router.get('/', this.authMiddleware.authenticate, this.userController.getAll);
+    // Get all users
+        this.router.get(
+            '/',
+            this.authMiddleware.authenticate,
+            this.userController.getAll,
+        );
 
         // Get user by token in req.header
-        this.router.get('/token', this.authMiddleware.authenticate, this.userController.getByToken);
+        this.router.get(
+            '/token',
+            this.authMiddleware.authenticate,
+            this.userController.getByToken,
+        );
 
         // Register new user
-        this.router.post('/register', this.userController.register);
+        this.router.post(
+            '/register',
+            UserValiation.register,
+            this.userController.register,
+        );
 
         // Login existing user
-        this.router.post('/login', this.userController.login);
+        this.router.post('/login', UserValiation.login, this.userController.login);
 
         // Get user details by its emailId
-        this.router.get('/email/:emailId', this.userController.getByEmail);
+        this.router.get(
+            '/email/:emailId',
+            UserValiation.email,
+            this.userController.getByEmail,
+        );
 
         // Get job listing by id
-        this.router.get('/:userId', this.authMiddleware.authenticate, this.userController.getById);
+        this.router.get(
+            '/:userId',
+            UserValiation.id,
+            this.authMiddleware.authenticate,
+            this.userController.getById,
+        );
 
         // Update job listing by id
-        this.router.put('/:userId', this.authMiddleware.authenticate, upload.single('file'), this.userController.updateById);
+        this.router.put(
+            '/:userId',
+            UserValiation.id,
+            this.authMiddleware.authenticate,
+            upload.single('file'),
+            this.userController.updateById,
+        );
 
         // Delete job listing by id
-        this.router.delete('/:userId', this.authMiddleware.authenticate, this.userController.deleteById);
+        this.router.delete(
+            '/:userId',
+            UserValiation.id,
+            this.authMiddleware.authenticate,
+            this.userController.deleteById,
+        );
     }
 }
 

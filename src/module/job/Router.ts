@@ -2,6 +2,7 @@ import express from 'express';
 import { AuthMiddleware } from '../../lib/middlewares';
 import JobListingController from './Controller';
 import upload from './helpers';
+import JobListingValidation from './Validation';
 
 class JobListingRouter {
     // eslint-disable-next-line no-use-before-define
@@ -29,26 +30,49 @@ class JobListingRouter {
     }
 
     private setupRoutes(): void {
-        // Get all joblistings according to filters
+    // Get all joblistings according to filters
         this.router.get('/', this.jobListingController.getAll);
 
         // Get a count of all joblistings
         this.router.get('/count', this.jobListingController.countAll);
 
         // Create job listing
-        this.router.post('/', this.jobListingController.create);
+        this.router.post(
+            '/',
+            JobListingValidation.create,
+            this.jobListingController.create,
+        );
 
         // Upload a job through csv
-        this.router.post('/upload', upload.single('file'), this.jobListingController.uploadByFile);
+        this.router.post(
+            '/upload',
+            upload.single('file'),
+            this.jobListingController.uploadByFile,
+        );
 
         // Get job listing by id
-        this.router.get('/:jobId', this.jobListingController.getById);
+        this.router.get(
+            '/:jobId',
+            JobListingValidation.id,
+            this.jobListingController.getById,
+        );
 
         // Update job listing by id
-        this.router.put('/:jobId', this.authMiddleware.authenticate, this.jobListingController.updateById);
+        this.router.put(
+            '/:jobId',
+            this.authMiddleware.authenticate,
+            JobListingValidation.id,
+            JobListingValidation.create,
+            this.jobListingController.updateById,
+        );
 
         // Delete job listing by id
-        this.router.delete('/:jobId', this.authMiddleware.authenticate, this.jobListingController.deleteById);
+        this.router.delete(
+            '/:jobId',
+            this.authMiddleware.authenticate,
+            JobListingValidation.id,
+            this.jobListingController.deleteById,
+        );
     }
 }
 
