@@ -43,6 +43,7 @@ class JobListingValidation {
                 new SystemResponse(res, failedMsg, validationResult.error).badRequest();
                 return;
             }
+            logger.info('jobId validation success!', value);
             next();
         } catch (error: unknown) {
             logger.error(failedMsg, error);

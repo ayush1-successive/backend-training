@@ -26,8 +26,8 @@ class UserRepository extends BaseRepository<IUser> {
     };
 
     create = async (user: IUser): Promise<IUser> => {
-        await this.createOne(user);
-        return user;
+        const result: IUser = await this.createOne(user);
+        return result;
     };
 
     update = async (

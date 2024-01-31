@@ -49,7 +49,10 @@ describe('API Integration Tests - JobListing Module', () => {
 
     beforeEach(async () => {
         await jobService.initialSeed();
-        userToken = await UserService.generateLoginToken(testUser, serverConfig.jwtSecret);
+        userToken = await UserService.generateLoginToken(
+            testUser,
+            serverConfig.jwtSecret,
+        );
     });
 
     afterEach(async () => {
@@ -115,8 +118,20 @@ describe('API Integration Tests - JobListing Module', () => {
         // eslint-disable-next-line no-underscore-dangle
         const testJobId = result._id.toString();
 
+        // jobId validation failed
+        let response = await request(app)
+            .get('/jobs/invalid-id')
+            .set('Authorization', `Bearer ${userToken}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'jobId validation failed!',
+            error: expect.objectContaining({}),
+        });
+
         // Job found
-        let response = await request(app).get(`/jobs/${testJobId}`);
+        response = await request(app).get(`/jobs/${testJobId}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -148,13 +163,82 @@ describe('API Integration Tests - JobListing Module', () => {
         });
     });
 
+    test('PUT /jobs/{jobId}', async () => {
+        const result: any = await jobService.create(testJob);
+        // eslint-disable-next-line no-underscore-dangle
+        const testJobId = result._id.toString();
+
+        // No JWT-token provided
+        let response = await request(app).put(`/jobs/${testJobId}`);
+
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'user authentication failed!',
+            error: expect.objectContaining({ message: 'jwt must be provided' }),
+        });
+
+        // Malformed JWT-token
+        response = await request(app)
+            .put(`/jobs/${testJobId}`)
+            .set('Authorization', 'Bearer malformed-token');
+
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'user authentication failed!',
+            error: expect.objectContaining({ message: 'jwt malformed' }),
+        });
+
+        // job listing validation failed
+        response = await request(app)
+            .put(`/jobs/${testJobId}`)
+            .set('Authorization', `Bearer ${userToken}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'new job listing validation failed!',
+            error: expect.objectContaining({}),
+        });
+
+        // job listing update success
+        response = await request(app)
+            .put(`/jobs/${testJobId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ ...testJob, industry: 'Hardware' });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            status: true,
+            message: `job with id:${testJobId} updated!`,
+            data: expect.objectContaining({}),
+        });
+
+        // internal server error
+        await server.disconnectDB();
+        response = await request(app)
+            .put(`/jobs/${testJobId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ ...testJob, industry: 'Hardware' });
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'error updating job listing!',
+            error: expect.objectContaining({}),
+        });
+    });
+
     test('DELETE /jobs/{jobId}', async () => {
         const result: any = await jobService.create(testJob);
         // eslint-disable-next-line no-underscore-dangle
         const testJobId = result._id.toString();
 
         // Job deleted successfully
-        let response = await request(app).delete(`/jobs/${testJobId}`).set('Authorization', `Bearer ${userToken}`);
+        let response = await request(app)
+            .delete(`/jobs/${testJobId}`)
+            .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -165,7 +249,9 @@ describe('API Integration Tests - JobListing Module', () => {
 
         // Internal server error
         await server.disconnectDB();
-        response = await request(app).delete(`/jobs/${testJobId}`).set('Authorization', `Bearer ${userToken}`);
+        response = await request(app)
+            .delete(`/jobs/${testJobId}`)
+            .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -181,7 +267,9 @@ describe('API Integration Tests - JobListing Module', () => {
 
         await generateCsv(csvPath, 10, 1000);
 
-        const response = await request(app).post('/jobs/upload').attach('file', csvPath);
+        const response = await request(app)
+            .post('/jobs/upload')
+            .attach('file', csvPath);
 
         expect(response.status).toBe(201);
         expect(response.body).toEqual({

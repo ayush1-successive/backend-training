@@ -30,7 +30,7 @@ class UserRouter {
     }
 
     private setupRoutes(): void {
-    // Get all users
+        // Get all users
         this.router.get(
             '/',
             this.authMiddleware.authenticate,
@@ -41,6 +41,7 @@ class UserRouter {
         this.router.get(
             '/token',
             this.authMiddleware.authenticate,
+            AuthMiddleware.extractUser,
             this.userController.getByToken,
         );
 
@@ -64,16 +65,17 @@ class UserRouter {
         // Get job listing by id
         this.router.get(
             '/:userId',
-            UserValiation.id,
             this.authMiddleware.authenticate,
+            UserValiation.id,
             this.userController.getById,
         );
 
         // Update job listing by id
         this.router.put(
             '/:userId',
-            UserValiation.id,
             this.authMiddleware.authenticate,
+            UserValiation.id,
+            UserValiation.update,
             upload.single('file'),
             this.userController.updateById,
         );
@@ -81,8 +83,8 @@ class UserRouter {
         // Delete job listing by id
         this.router.delete(
             '/:userId',
-            UserValiation.id,
             this.authMiddleware.authenticate,
+            UserValiation.id,
             this.userController.deleteById,
         );
     }

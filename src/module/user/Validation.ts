@@ -30,7 +30,7 @@ class UserValiation {
 
     static id = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const idValidator: ObjectSchema<any> = joi.object({
-            jobId: joi.string().hex().length(24).required(),
+            userId: joi.string().hex().length(24).required(),
         });
 
         UserValiation.validate(res, next, idValidator, req.params, 'userId validation failed!');
@@ -98,11 +98,6 @@ class UserValiation {
     static update = (req: Request, res: Response, next: NextFunction): void => {
         const updateValidator: ObjectSchema<IUser> = joi.object({
             name: joi.string().min(3).max(30).trim()
-                .required(),
-            email: joi
-                .string()
-                .email({ tlds: { allow: false } })
-                .trim()
                 .required(),
             dateOfBirth: joi.date(),
             gender: joi.string(),
