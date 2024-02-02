@@ -24,6 +24,8 @@ export const jobValidation: ObjectSchema<IJobListing> = joi.object({
         .trim()
         .required(),
     applicationLink: joi.string().required(),
+    createdBy: joi.string().hex().length(24),
+    updatedBy: joi.string().hex().length(24),
 });
 
 class JobListingValidation {

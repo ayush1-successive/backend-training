@@ -24,10 +24,20 @@ const jobListingSchema: mongoose.Schema<IJobListing> = new mongoose.Schema<IJobL
         isRemote: { type: Boolean, required: true },
         contactEmail: { type: String, required: true },
         applicationLink: { type: String, required: true },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        updatedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     { timestamps: true },
 );
 
+jobListingSchema.index({ jobType: 1 });
+jobListingSchema.index({ createdAt: 1 });
 jobListingSchema.index({ title: 1, company: 1 }, { unique: true });
 
 export default jobListingSchema;
