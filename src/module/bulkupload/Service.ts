@@ -68,7 +68,7 @@ class BulkUploadService {
         return result;
     };
 
-    generateHollowEntry = async (filename: string): Promise<IBulkUpload> => {
+    generateHollowEntry = async (filename: string, totalEntries: number): Promise<IBulkUpload> => {
         const hollowData: IBulkUpload = {
             status: 'running',
             time: 0,
@@ -76,12 +76,16 @@ class BulkUploadService {
             successfulEntries: 0,
             failedEntries: 0,
             entriesCompleted: 0,
-            totalEntries: 0,
+            totalEntries,
             errorDetails: [],
         };
 
         const result: IBulkUpload = await this.create(hollowData);
         return result;
+    };
+
+    deleteAll = async (): Promise<void> => {
+        await this.bulkUploadRepository.deleteAll();
     };
 }
 

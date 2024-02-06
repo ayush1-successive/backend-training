@@ -8,6 +8,7 @@ import BulkUploadService from '../bulkupload/Service';
 import IJobListing from './entities/IJobListing';
 import JobRepository from './repositories/Repository';
 import { jobValidation } from './Validation';
+import IBulkUpload from '../bulkupload/entities/IBulkUpload';
 
 class JobService {
     jobRepository: JobRepository;
@@ -43,8 +44,8 @@ class JobService {
         }
 
         if (filters.salary) {
-            const minSalary: number = parseInt(filters.salary[0], 10) * 100000;
-            const maxSalary: number = parseInt(filters.salary[1], 10) * 100000;
+            const minSalary: number = parseInt(filters.salary[0], 10);
+            const maxSalary: number = parseInt(filters.salary[1], 10);
             filters.salary = { $gte: minSalary, $lte: maxSalary };
         }
 
@@ -61,7 +62,7 @@ class JobService {
         filters: any,
         page: number,
         limit: number,
-    ): Promise<IJobListing[] | null> => {
+    ): Promise<IJobListing[] > => {
         // SORT
         const sortBy: string = queryObj.sort
             ? (queryObj.sort as string).split(',').join(' ')
@@ -72,7 +73,7 @@ class JobService {
             ? (queryObj.fields as string).split(',').join(' ')
             : '-__v';
 
-        const jobs: IJobListing[] | null = await this.jobRepository.getAll(
+        const jobs: IJobListing[] = await this.jobRepository.getAll(
             filters,
             sortBy,
             fields,
@@ -168,6 +169,21 @@ class JobService {
         return { passed, failed };
     };
 
+    static countRows = async (filePath: string): Promise<number> => new Promise((resolve) => {
+        const readStream: fs.ReadStream = fs.createReadStream(filePath, 'utf-8');
+        let rows = 0;
+        Papa.parse(readStream, {
+            header: true,
+            skipEmptyLines: true,
+            step: () => {
+                rows += 1;
+            },
+            complete: () => {
+                resolve(rows);
+            },
+        });
+    });
+
     processBatch = async (
         batch: any[],
         uploadService: BulkUploadService,
@@ -224,21 +240,24 @@ class JobService {
         }
     };
 
-    writeBulkData = async (filename: string, filePath: string): Promise<void> => {
+    writeBulkData = async (filename: string, filePath: string): Promise<string> => {
         logger.info('csv write to mongodb started!');
 
-        const csvReadStream = fs.createReadStream(filePath, 'utf-8');
+        const csvReadStream: fs.ReadStream = fs.createReadStream(filePath, 'utf-8');
+        const totalRows = await JobService.countRows(filePath);
+
         let batch: any[] = [];
 
         const maxBatchSize: number = 10000;
         const bulkUploadService: BulkUploadService = new BulkUploadService();
-        const hollowEntry: any = await bulkUploadService.generateHollowEntry(
+        const hollowEntry: IBulkUpload = await bulkUploadService.generateHollowEntry(
             filename,
+            totalRows,
         );
 
         // eslint-disable-next-line no-underscore-dangle
-        const { _id, ...uploadData } = hollowEntry._doc;
-        const recordId = _id.toString();
+        const { _id, ...uploadData } = (hollowEntry as any)._doc;
+        const recordId: string = _id.toString();
 
         const startTime: number = performance.now();
 
@@ -277,22 +296,9 @@ class JobService {
                 fs.unlinkSync(filePath);
                 logger.info('csv parsing complete');
             },
-            error: async () => {
-                batch = [];
-                await this.processBatch(
-                    batch,
-                    bulkUploadService,
-                    uploadData,
-                    recordId,
-                    'failed',
-                    startTime,
-                );
-
-                csvReadStream.close();
-                fs.unlinkSync(filePath);
-                logger.error('csv parsing failed!');
-            },
         });
+
+        return recordId;
     };
 
     deleteById = async (id: string): Promise<void> => {

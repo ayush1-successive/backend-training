@@ -24,6 +24,7 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('POST /add-user', async () => {
+        // Validation failed
         let response = await request(app).post('/assignment4/add-user').send({});
 
         expect(response.status).toBe(400);
@@ -33,6 +34,26 @@ describe('API Integration Tests - Assignment4', () => {
             error: expect.objectContaining([]),
         });
 
+        // Password length check failed
+        response = await request(app).post('/assignment4/add-user').send({
+            name: 'Ayush',
+            email: 'ayush@gmail.com',
+            password: 'pas@123',
+            phoneNumber: '123456',
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'new user validation failed!',
+            error: expect.objectContaining({
+                details: expect.objectContaining([
+                    expect.objectContaining({ message: 'Password must be at least 8 characters long' }),
+                ]),
+            }),
+        });
+
+        // User successfully added
         response = await request(app).post('/assignment4/add-user').send({
             name: 'Ayush',
             email: 'ayush@gmail.com',
@@ -114,7 +135,7 @@ describe('API Integration Tests - Assignment4', () => {
         // Non-numeric fields
         response = await request(app).post('/assignment4/add-item').query({
             name: 'Phone',
-            quantity: '100a',
+            quantity: [1, 2, 3],
             price: 'some big amount!',
         });
 
@@ -141,13 +162,24 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('GET /ip', async () => {
-        const response = await request(app).get('/assignment4/ip');
+        // Ip validtion failed
+        let response = await request(app).get('/assignment4/ip');
 
         expect(response.status).toBe(403);
         expect(response.body).toEqual({
             status: false,
             message: 'access denied! invalid IP address.',
             error: {},
+        });
+
+        // Ip validation successful
+        app.enable('trust proxy');
+        response = await request(app).get('/assignment4/ip').set('X-Forwarded-For', '::1');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            status: true,
+            message: 'IP test completed!',
         });
     });
 

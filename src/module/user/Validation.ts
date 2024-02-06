@@ -1,41 +1,9 @@
-import joi, { ValidationResult, type ObjectSchema } from 'joi';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import joi, { ObjectSchema } from 'joi';
+import { BaseValidation } from '../../lib/base';
 import IUser from './entities/IUser';
-import { SystemResponse } from '../../lib/response-handler';
-import logger from '../../lib/logger';
 
-class UserValiation {
-    static validate = (
-        res: Response,
-        next: NextFunction,
-        validator: ObjectSchema<any>,
-        value: any,
-        failedMsg: string,
-    ) => {
-        try {
-            const validationResult: ValidationResult<any> = validator.validate(
-                value,
-                { abortEarly: false },
-            );
-            if (validationResult.error) {
-                new SystemResponse(res, failedMsg, validationResult.error).badRequest();
-                return;
-            }
-            next();
-        } catch (error: unknown) {
-            logger.error(failedMsg, error);
-            new SystemResponse(res, failedMsg, error).internalServerError();
-        }
-    };
-
-    static id = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const idValidator: ObjectSchema<any> = joi.object({
-            userId: joi.string().hex().length(24).required(),
-        });
-
-        UserValiation.validate(res, next, idValidator, req.params, 'userId validation failed!');
-    };
-
+class UserValiation extends BaseValidation {
     static email = (req: Request, res: Response, next: NextFunction) => {
         const emailValidator: ObjectSchema<any> = joi.object({
             emailId: joi

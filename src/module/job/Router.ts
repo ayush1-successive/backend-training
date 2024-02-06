@@ -14,10 +14,13 @@ class JobListingRouter {
 
     private readonly authMiddleware: AuthMiddleware;
 
+    private readonly jobListingValidation: JobListingValidation;
+
     private constructor() {
         this.router = express.Router();
         this.jobListingController = new JobListingController();
         this.authMiddleware = new AuthMiddleware();
+        this.jobListingValidation = new JobListingValidation('jobId');
         this.setupRoutes();
     }
 
@@ -30,7 +33,7 @@ class JobListingRouter {
     }
 
     private setupRoutes(): void {
-    // Get all joblistings according to filters
+        // Get all joblistings according to filters
         this.router.get('/', this.jobListingController.getAll);
 
         // Get a count of all joblistings
@@ -53,7 +56,7 @@ class JobListingRouter {
         // Get job listing by id
         this.router.get(
             '/:jobId',
-            JobListingValidation.id,
+            this.jobListingValidation.id,
             this.jobListingController.getById,
         );
 
@@ -61,7 +64,7 @@ class JobListingRouter {
         this.router.put(
             '/:jobId',
             this.authMiddleware.authenticate,
-            JobListingValidation.id,
+            this.jobListingValidation.id,
             JobListingValidation.create,
             this.jobListingController.updateById,
         );
@@ -70,7 +73,7 @@ class JobListingRouter {
         this.router.delete(
             '/:jobId',
             this.authMiddleware.authenticate,
-            JobListingValidation.id,
+            this.jobListingValidation.id,
             this.jobListingController.deleteById,
         );
     }

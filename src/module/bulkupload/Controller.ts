@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import { ValidationResult } from 'joi';
 import logger from '../../lib/logger';
 import { SystemResponse } from '../../lib/response-handler';
 import IBulkUpload from './entities/IBulkUpload';
 import BulkUploadService from './Service';
-import bulkUploadValidation from './validation';
 
 class BulkUploadController {
     private readonly bulkUploadService: BulkUploadService;
@@ -45,7 +43,7 @@ class BulkUploadController {
             logger.error('Error in getAll API', error);
             new SystemResponse(
                 res,
-                'Error retrieving bulk upload history!',
+                'error retrieving bulk upload history!',
                 error,
             ).internalServerError();
         }
@@ -80,7 +78,7 @@ class BulkUploadController {
 
             new SystemResponse(
                 res,
-                'Error retrieving upload history by jobId.',
+                'error retrieving upload history by uploadId!',
                 error,
             ).internalServerError();
         }
@@ -89,20 +87,6 @@ class BulkUploadController {
     create = async (req: Request, res: Response): Promise<void> => {
         try {
             const newUploadData: IBulkUpload = req.body;
-            const validationResult: ValidationResult = bulkUploadValidation.validate(
-                newUploadData,
-                { abortEarly: false },
-            );
-
-            if (validationResult.error) {
-                new SystemResponse(
-                    res,
-                    'new bulk upload data validation failed!',
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
-
             const result: IBulkUpload | null = await this.bulkUploadService.create(
                 newUploadData,
             );

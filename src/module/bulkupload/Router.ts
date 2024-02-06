@@ -1,6 +1,7 @@
 import express from 'express';
 import BulkUploadController from './Controller';
 import { AuthMiddleware } from '../../lib/middlewares';
+import BulkUploadValidation from './validation';
 
 class BulkUploadRouter {
     // eslint-disable-next-line no-use-before-define
@@ -10,11 +11,14 @@ class BulkUploadRouter {
 
     private readonly bulkUploadController: BulkUploadController;
 
+    private readonly bulkUploadValidation: BulkUploadValidation;
+
     private readonly authMiddleware: AuthMiddleware;
 
     private constructor() {
         this.router = express.Router();
         this.bulkUploadController = new BulkUploadController();
+        this.bulkUploadValidation = new BulkUploadValidation('uploadId');
         this.authMiddleware = new AuthMiddleware();
         this.setupRoutes();
     }
@@ -31,10 +35,11 @@ class BulkUploadRouter {
         // Get all upload history
         this.router.get('/', this.authMiddleware.authenticate, this.bulkUploadController.getAll);
 
-        this.router.post('/', this.bulkUploadController.create);
+        // Create upload record
+        this.router.post('/', BulkUploadValidation.create, this.bulkUploadController.create);
 
         // Get a upload history by its id
-        this.router.get('/:uploadId', this.authMiddleware.authenticate, this.bulkUploadController.getById);
+        this.router.get('/:uploadId', this.authMiddleware.authenticate, this.bulkUploadValidation.id, this.bulkUploadController.getById);
     }
 }
 

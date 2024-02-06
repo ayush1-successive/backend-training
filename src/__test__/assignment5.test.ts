@@ -35,6 +35,7 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('POST /param-validation', async () => {
+        // Validation failed
         let response = await request(app).post('/assignment5/param-validation');
 
         expect(response.status).toBe(400);
@@ -42,6 +43,24 @@ describe('API Integration Tests - Assignment5', () => {
             status: false,
             message: 'Validation error!',
             error: expect.objectContaining([]),
+        });
+
+        // Password length check failed
+        response = await request(app).post('/assignment5/param-validation').send({
+            name: 'ayushsinha',
+            email: 'ayush@gmail.com',
+            password: 'pas@123',
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'Validation error!',
+            error: expect.objectContaining({
+                details: expect.objectContaining([
+                    expect.objectContaining({ message: 'Password must be at least 8 characters long' }),
+                ]),
+            }),
         });
 
         // Successful validation

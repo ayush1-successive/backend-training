@@ -36,35 +36,25 @@ class ValidationMiddleware {
         res: Response,
         next: NextFunction,
     ): Promise<void> => {
-        try {
-            const param: string = req.url.slice(1);
-            const validationResult: ValidationResult = validationConfig[
-                param
-            ].validate(req.body, {
-                abortEarly: false,
-            });
+        const param: string = req.url.slice(1);
+        const validationResult: ValidationResult = validationConfig[
+            param
+        ].validate(req.body, {
+            abortEarly: false,
+        });
 
-            if (validationResult.error) {
-                logger.error('dynamic validation error!', validationResult.error);
-
-                new SystemResponse(
-                    res,
-                    `error occured in ${param} validation!`,
-                    validationResult.error,
-                ).badRequest();
-                return;
-            }
-
-            next();
-        } catch (error: unknown) {
-            logger.error('dynamic validation error!', error);
+        if (validationResult.error) {
+            logger.error('dynamic validation error!', validationResult.error);
 
             new SystemResponse(
                 res,
-                'error occured in validation!',
-                error,
-            ).internalServerError();
+                `error occured in ${param} validation!`,
+                validationResult.error,
+            ).badRequest();
+            return;
         }
+
+        next();
     };
 
     static inputValidation = async (
@@ -72,43 +62,37 @@ class ValidationMiddleware {
         res: Response,
         next: NextFunction,
     ): Promise<void> => {
-        try {
-            const { name, email, password } = req.body;
+        const { name, email, password } = req.body;
 
-            if (!name || !email || !password) {
-                new SystemResponse(
-                    res,
-                    'Validation failed! All fields are required.',
-                    req.body,
-                ).badRequest();
-                return;
-            }
-
-            if (!ValidationMiddleware.isStrongPassword(password)) {
-                new SystemResponse(
-                    res,
-                    'Weak password! It should have at least 8 characters, including uppercase, lowercase, and numbers',
-                    req.body,
-                ).badRequest();
-                return;
-            }
-
-            if (!ValidationMiddleware.correctEmailFormat(email)) {
-                new SystemResponse(
-                    res,
-                    'Incorrect email format!',
-                    req.body,
-                ).badRequest();
-                return;
-            }
-
-            logger.info('input validation successful!');
-            next();
-        } catch (error) {
-            logger.error('error in input validation', error);
-
-            new SystemResponse(res, 'Validation error!', error).badRequest();
+        if (!name || !email || !password) {
+            new SystemResponse(
+                res,
+                'Validation failed! All fields are required.',
+                req.body,
+            ).badRequest();
+            return;
         }
+
+        if (!ValidationMiddleware.isStrongPassword(password)) {
+            new SystemResponse(
+                res,
+                'Weak password! It should have at least 8 characters, including uppercase, lowercase, and numbers',
+                req.body,
+            ).badRequest();
+            return;
+        }
+
+        if (!ValidationMiddleware.correctEmailFormat(email)) {
+            new SystemResponse(
+                res,
+                'Incorrect email format!',
+                req.body,
+            ).badRequest();
+            return;
+        }
+
+        logger.info('input validation successful!');
+        next();
     };
 
     static numericParamsValidation = async (
@@ -116,35 +100,29 @@ class ValidationMiddleware {
         res: Response,
         next: NextFunction,
     ): Promise<void> => {
-        try {
-            const { name, quantity, price }: IProductQueryParams = req.query;
+        const { name, quantity, price }: IProductQueryParams = req.query;
 
-            if (!name || !quantity || !price) {
-                new SystemResponse(
-                    res,
-                    'Numeric validation failed! All fields are required.',
-                    req.query,
-                ).badRequest();
-                return;
-            }
-
-            if (!ValidationMiddleware.isNumeric(quantity)
-             || !ValidationMiddleware.isNumeric(price)) {
-                new SystemResponse(
-                    res,
-                    'Invalid input. Quantity and price must be numeric values.',
-                    req.query,
-                ).badRequest();
-                return;
-            }
-
-            logger.info('Numeric validation successful!');
-            next();
-        } catch (error) {
-            logger.error('error in numeric validation!', error);
-
-            new SystemResponse(res, 'Numeric validation failed!', error).badRequest();
+        if (!name || !quantity || !price) {
+            new SystemResponse(
+                res,
+                'Numeric validation failed! All fields are required.',
+                req.query,
+            ).badRequest();
+            return;
         }
+
+        if (!ValidationMiddleware.isNumeric(quantity)
+             || !ValidationMiddleware.isNumeric(price)) {
+            new SystemResponse(
+                res,
+                'Invalid input. Quantity and price must be numeric values.',
+                req.query,
+            ).badRequest();
+            return;
+        }
+
+        logger.info('Numeric validation successful!');
+        next();
     };
 }
 

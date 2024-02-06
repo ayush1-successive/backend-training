@@ -14,7 +14,7 @@ describe('API Integration Tests - User Module', () => {
 
     beforeAll(async () => {
         server = Server.getInstance(serverConfig);
-        server.connectDB();
+        await server.connectDB();
         app = server.getApp();
 
         userService = new UserService();

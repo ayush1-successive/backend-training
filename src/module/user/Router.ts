@@ -14,10 +14,13 @@ class UserRouter {
 
     private readonly authMiddleware: AuthMiddleware;
 
+    private readonly userValidation: UserValiation;
+
     private constructor() {
         this.router = express.Router();
         this.userController = new UserController();
         this.authMiddleware = new AuthMiddleware();
+        this.userValidation = new UserValiation('userId');
         this.setupRoutes();
     }
 
@@ -66,7 +69,7 @@ class UserRouter {
         this.router.get(
             '/:userId',
             this.authMiddleware.authenticate,
-            UserValiation.id,
+            this.userValidation.id,
             this.userController.getById,
         );
 
@@ -74,7 +77,7 @@ class UserRouter {
         this.router.put(
             '/:userId',
             this.authMiddleware.authenticate,
-            UserValiation.id,
+            this.userValidation.id,
             UserValiation.update,
             upload.single('file'),
             this.userController.updateById,
@@ -84,7 +87,7 @@ class UserRouter {
         this.router.delete(
             '/:userId',
             this.authMiddleware.authenticate,
-            UserValiation.id,
+            this.userValidation.id,
             this.userController.deleteById,
         );
     }

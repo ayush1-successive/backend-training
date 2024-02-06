@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
 import logger from '../../lib/logger';
-
 import { SystemResponse } from '../../lib/response-handler';
-import IJobListing from './entities/IJobListing';
 import JobService from './Services';
+import IJobListing from './entities/IJobListing';
 
 class JobListingController {
     private readonly jobListingService: JobService;
@@ -80,7 +79,7 @@ class JobListingController {
                 return;
             }
 
-            const jobs: IJobListing[] | null = await this.jobListingService.getAll(
+            const jobs: IJobListing[] = await this.jobListingService.getAll(
                 req.query,
                 filters,
                 page,
@@ -89,7 +88,7 @@ class JobListingController {
 
             new SystemResponse(res, 'Job listing found!', {
                 total,
-                count: jobs?.length,
+                count: jobs.length,
                 data: jobs,
             }).ok();
         } catch (error: unknown) {
@@ -480,8 +479,8 @@ class JobListingController {
             const filePath: string = req.file?.path ?? '';
             const filename: string = req.file?.originalname ?? '';
 
-            await this.jobListingService.writeBulkData(filename, filePath);
-            new SystemResponse(res, 'File uploaded successfully', req.file).created();
+            const recordId: string = await this.jobListingService.writeBulkData(filename, filePath);
+            new SystemResponse(res, 'File uploaded successfully', { recordId, file: req.file }).created();
         } catch (error: unknown) {
             new SystemResponse(
                 res,

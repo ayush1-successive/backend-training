@@ -1,14 +1,16 @@
 import express from 'express';
 import fs from 'fs';
 import request from 'supertest';
+import Server from '../Server';
 import { serverConfig } from '../config';
 import generateCsv from '../lib/utils/JobListing';
+import BulkUploadService from '../module/bulkupload/Service';
+import IBulkUpload from '../module/bulkupload/entities/IBulkUpload';
+import JobService from '../module/job/Services';
 import IJobListing from '../module/job/entities/IJobListing';
 import JobType from '../module/job/entities/JobType';
-import JobService from '../module/job/Services';
-import IUser from '../module/user/entities/IUser';
 import UserService from '../module/user/Services';
-import Server from '../Server';
+import IUser from '../module/user/entities/IUser';
 
 describe('API Integration Tests - JobListing Module', () => {
     let server: Server;
@@ -61,6 +63,7 @@ describe('API Integration Tests - JobListing Module', () => {
     });
 
     test('GET /jobs', async () => {
+        // Found all jobs
         let response = await request(app).get('/jobs');
 
         expect(response.status).toBe(200);
@@ -70,6 +73,38 @@ describe('API Integration Tests - JobListing Module', () => {
             data: expect.objectContaining({}),
         });
 
+        // skip and limit exceeded total entries
+        response = await request(app).get('/jobs').query({ page: '100', limit: '100' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'This page doesn\'t exist!',
+            error: { total: 5, page: '100', limit: '100' },
+        });
+
+        // Apply filters
+        response = await request(app).get('/jobs').query({
+            page: '1',
+            limit: '5',
+            title: 'engineer',
+            salary: '300000,2000000',
+            sort: 'salary',
+            fields: 'title, company, jobType, -_id',
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            status: true,
+            message: 'Job listing found!',
+            data: {
+                total: 1,
+                count: 1,
+                data: [{ title: 'DevOps Engineer', company: 'IBM', jobType: 'Full-time' }],
+            },
+        });
+
+        // Internal server error
         await server.disconnectDB();
         response = await request(app).get('/jobs');
 
@@ -77,6 +112,29 @@ describe('API Integration Tests - JobListing Module', () => {
         expect(response.body).toEqual({
             status: false,
             message: 'Error retrieving job listings!',
+            error: expect.objectContaining({}),
+        });
+    });
+
+    test('GET /jobs', async () => {
+        // Found job count
+        let response = await request(app).get('/jobs/count');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            status: true,
+            message: 'Job listing count!',
+            data: { count: 5 },
+        });
+
+        // Internal server error
+        await server.disconnectDB();
+        response = await request(app).get('/jobs/count');
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'Error retrieving job listings count!',
             error: expect.objectContaining({}),
         });
     });
@@ -264,12 +322,29 @@ describe('API Integration Tests - JobListing Module', () => {
     test('POST /jobs/upload', async () => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
         const csvPath = `./public/data/file-${uniqueSuffix}.csv`;
+        const bulkUploadService = new BulkUploadService();
 
-        await generateCsv(csvPath, 10, 1000);
+        await generateCsv(csvPath, 10010, 20000);
 
+        // Successful upload
         const response = await request(app)
             .post('/jobs/upload')
             .attach('file', csvPath);
+
+        const { recordId } = response.body.data;
+        let result: IBulkUpload | null = null;
+
+        /* eslint-disable no-await-in-loop */
+        while (result?.status !== 'completed') {
+            result = await bulkUploadService.getById(recordId, 'status');
+            // Cause a delay between each fetch
+            await new Promise((resolve) => {
+                setTimeout(() => resolve(1), 800);
+            });
+        }
+
+        // Delete history record
+        await bulkUploadService.deleteAll();
 
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
@@ -279,5 +354,5 @@ describe('API Integration Tests - JobListing Module', () => {
         });
 
         fs.unlinkSync(csvPath);
-    });
+    }, 30000);
 });

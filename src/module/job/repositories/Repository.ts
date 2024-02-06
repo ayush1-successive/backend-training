@@ -47,9 +47,9 @@ class JobRepository extends BaseRepository<IJobListing> {
         fields: string,
         page: number,
         limit: number,
-    ): Promise<IJobListing[] | null> => {
+    ): Promise<IJobListing[]> => {
         const skip = (page - 1) * limit;
-        const result: IJobListing[] | null = await this.model
+        const result: IJobListing[] = await this.model
             .find(filters)
             .sort(sortBy)
             .select(fields)
