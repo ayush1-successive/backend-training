@@ -17,20 +17,16 @@ class BaseValidation {
         value: any,
         failedMsg: string,
     ) => {
-        try {
-            const validationResult: ValidationResult<any> = validator.validate(
-                value,
-                { abortEarly: false },
-            );
-            if (validationResult.error) {
-                new SystemResponse(res, failedMsg, validationResult.error).badRequest();
-                return;
-            }
-            next();
-        } catch (error: unknown) {
-            logger.error(failedMsg, error);
-            new SystemResponse(res, failedMsg, error).internalServerError();
+        const validationResult: ValidationResult<any> = validator.validate(
+            value,
+            { abortEarly: false },
+        );
+        if (validationResult.error) {
+            logger.error(failedMsg, validationResult.error);
+            new SystemResponse(res, failedMsg, validationResult.error).badRequest();
+            return;
         }
+        next();
     };
 
     id = async (

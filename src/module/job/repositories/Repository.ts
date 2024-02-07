@@ -7,17 +7,6 @@ class JobRepository extends BaseRepository<IJobListing> {
         super(jobListingModel);
     }
 
-    findByTitleAndCompany = async (
-        title: string,
-        company: string,
-    ): Promise<IJobListing | null> => {
-        const result: IJobListing | null = await this.model.findOne({
-            title,
-            company,
-        });
-        return result;
-    };
-
     seed = async (job: IJobListing): Promise<void> => {
         const existingJob: IJobListing | null = await this.model.findOne({
             title: job.title,

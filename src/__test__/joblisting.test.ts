@@ -327,7 +327,7 @@ describe('API Integration Tests - JobListing Module', () => {
         await generateCsv(csvPath, 10010, 20000);
 
         // Successful upload
-        const response = await request(app)
+        let response = await request(app)
             .post('/jobs/upload')
             .attach('file', csvPath);
 
@@ -351,6 +351,19 @@ describe('API Integration Tests - JobListing Module', () => {
             status: true,
             message: 'File uploaded successfully',
             data: expect.objectContaining({}),
+        });
+
+        // Internal server error
+        await server.disconnectDB();
+        response = await request(app)
+            .post('/jobs/upload')
+            .attach('file', csvPath);
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'error uploading joblistings by csv file!',
+            error: expect.objectContaining({}),
         });
 
         fs.unlinkSync(csvPath);

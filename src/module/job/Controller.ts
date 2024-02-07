@@ -484,7 +484,7 @@ class JobListingController {
         } catch (error: unknown) {
             new SystemResponse(
                 res,
-                'Internal Server Error!',
+                'error uploading joblistings by csv file!',
                 error,
             ).internalServerError();
         }

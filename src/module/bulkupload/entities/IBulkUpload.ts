@@ -10,7 +10,7 @@ interface IBulkUpload extends IBase {
   failedEntries: number;
   entriesCompleted: number;
   totalEntries: number;
-  errorDetails: IErrorDetail[];
+  errorDetails?: IErrorDetail[];
 }
 
 export default IBulkUpload;

@@ -1,5 +1,14 @@
 import mongoose from 'mongoose';
 import IBulkUpload from '../entities/IBulkUpload';
+import IErrorDetail from '../entities/IErrorDetail';
+
+const errorDetailSchema = new mongoose.Schema<IErrorDetail>(
+    {
+        message: { type: String, required: true },
+        rowNumber: { type: Number, required: true },
+    },
+    { _id: false }, // Disable _id for embedded subdocuments
+);
 
 const bulkUploadSchema: mongoose.Schema<IBulkUpload> = new mongoose.Schema<IBulkUpload>(
     {
@@ -11,10 +20,7 @@ const bulkUploadSchema: mongoose.Schema<IBulkUpload> = new mongoose.Schema<IBulk
         failedEntries: { type: Number, required: true },
         entriesCompleted: { type: Number, required: true },
         totalEntries: { type: Number },
-        errorDetails: {
-            message: { type: [String] },
-            rowNumber: { type: Number },
-        },
+        errorDetails: { type: [errorDetailSchema], default: [] },
     },
     { timestamps: true },
 );

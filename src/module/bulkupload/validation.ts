@@ -5,6 +5,11 @@ import { BaseValidation } from '../../lib/base';
 
 class BulkUploadValidation extends BaseValidation {
     static create = (req: Request, res: Response, next: NextFunction): void => {
+        const errorDetailSchema = joi.object({
+            message: joi.string().required(),
+            rowNumber: joi.number().integer().required(),
+        });
+
         const createValidator: ObjectSchema<IBulkUpload> = joi.object({
             status: joi.string().required(),
             endedAt: joi.date(),
@@ -16,7 +21,7 @@ class BulkUploadValidation extends BaseValidation {
             totalEntries: joi.number().integer().required(),
             createdBy: joi.string().hex().length(24),
             updatedBy: joi.string().hex().length(24),
-            errorDetails: joi.array(),
+            errorDetails: joi.array().items(errorDetailSchema),
         });
 
         BulkUploadValidation.validate(res, next, createValidator, req.body, 'bulk-record validation failed!');
