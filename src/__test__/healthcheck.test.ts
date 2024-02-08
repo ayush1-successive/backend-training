@@ -1,4 +1,4 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
 import Server from '../Server';
 import { serverConfig } from '../config';
@@ -13,7 +13,7 @@ describe('API Integration Tests', () => {
     });
 
     test('GET /health', async () => {
-        const response = await request(app).get('/health');
+        const response: Response = await request(app).get('/health');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -24,7 +24,7 @@ describe('API Integration Tests', () => {
     });
 
     test('GET /not-found', async () => {
-        const response = await request(app).get('/not-found');
+        const response: Response = await request(app).get('/not-found');
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({

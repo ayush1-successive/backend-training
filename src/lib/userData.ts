@@ -1,6 +1,6 @@
 import IUser from '../module/user/entities/IUser';
 
-const randomPassword = () => Math.random().toString(36).slice(-8);
+const randomPassword = (): string => Math.random().toString(36).slice(-8);
 
 const userData: IUser[] = [
     {

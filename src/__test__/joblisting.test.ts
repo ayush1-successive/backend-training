@@ -1,6 +1,6 @@
 import express from 'express';
 import fs from 'fs';
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import Server from '../Server';
 import { serverConfig } from '../config';
 import generateCsv from '../lib/utils/JobListing';
@@ -64,7 +64,7 @@ describe('API Integration Tests - JobListing Module', () => {
 
     test('GET /jobs', async () => {
         // Found all jobs
-        let response = await request(app).get('/jobs');
+        let response: Response = await request(app).get('/jobs');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -118,7 +118,7 @@ describe('API Integration Tests - JobListing Module', () => {
 
     test('GET /jobs', async () => {
         // Found job count
-        let response = await request(app).get('/jobs/count');
+        let response: Response = await request(app).get('/jobs/count');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -141,7 +141,7 @@ describe('API Integration Tests - JobListing Module', () => {
 
     test('POST /jobs', async () => {
         // Validation fail
-        let response = await request(app).post('/jobs');
+        let response: Response = await request(app).post('/jobs');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -174,10 +174,10 @@ describe('API Integration Tests - JobListing Module', () => {
     test('GET /jobs/{jobId}', async () => {
         const result: any = await jobService.create(testJob);
         // eslint-disable-next-line no-underscore-dangle
-        const testJobId = result._id.toString();
+        const testJobId: string = result._id.toString();
 
         // jobId validation failed
-        let response = await request(app)
+        let response: Response = await request(app)
             .get('/jobs/invalid-id')
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -224,10 +224,10 @@ describe('API Integration Tests - JobListing Module', () => {
     test('PUT /jobs/{jobId}', async () => {
         const result: any = await jobService.create(testJob);
         // eslint-disable-next-line no-underscore-dangle
-        const testJobId = result._id.toString();
+        const testJobId: string = result._id.toString();
 
         // No JWT-token provided
-        let response = await request(app).put(`/jobs/${testJobId}`);
+        let response: Response = await request(app).put(`/jobs/${testJobId}`);
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({
@@ -289,12 +289,12 @@ describe('API Integration Tests - JobListing Module', () => {
     });
 
     test('DELETE /jobs/{jobId}', async () => {
-        const result: any = await jobService.create(testJob);
+        const result: IJobListing = await jobService.create(testJob);
         // eslint-disable-next-line no-underscore-dangle
-        const testJobId = result._id.toString();
+        const testJobId: string = (result as any)._id.toString();
 
         // Job deleted successfully
-        let response = await request(app)
+        let response: Response = await request(app)
             .delete(`/jobs/${testJobId}`)
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -320,14 +320,14 @@ describe('API Integration Tests - JobListing Module', () => {
     });
 
     test('POST /jobs/upload', async () => {
-        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const csvPath = `./public/data/file-${uniqueSuffix}.csv`;
-        const bulkUploadService = new BulkUploadService();
+        const uniqueSuffix: string = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        const csvPath: string = `./public/data/file-${uniqueSuffix}.csv`;
+        const bulkUploadService: BulkUploadService = new BulkUploadService();
 
         await generateCsv(csvPath, 10010, 20000);
 
         // Successful upload
-        let response = await request(app)
+        let response: Response = await request(app)
             .post('/jobs/upload')
             .attach('file', csvPath);
 
@@ -338,7 +338,7 @@ describe('API Integration Tests - JobListing Module', () => {
         while (result?.status !== 'completed') {
             result = await bulkUploadService.getById(recordId, 'status');
             // Cause a delay between each fetch
-            await new Promise((resolve) => {
+            await new Promise<number>((resolve) => {
                 setTimeout(() => resolve(1), 800);
             });
         }

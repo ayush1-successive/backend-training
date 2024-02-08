@@ -64,7 +64,7 @@ class BulkUploadService {
     };
 
     create = async (uploadData: IBulkUpload): Promise<IBulkUpload> => {
-        const result = await this.bulkUploadRepository.createOne(uploadData);
+        const result: IBulkUpload = await this.bulkUploadRepository.createOne(uploadData);
         return result;
     };
 

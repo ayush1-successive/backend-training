@@ -1,11 +1,12 @@
-import joi, { ObjectSchema } from 'joi';
 import { NextFunction, Request, Response } from 'express';
-import IBulkUpload from './entities/IBulkUpload';
+import joi, { ObjectSchema } from 'joi';
 import { BaseValidation } from '../../lib/base';
+import IBulkUpload from './entities/IBulkUpload';
+import IErrorDetail from './entities/IErrorDetail';
 
 class BulkUploadValidation extends BaseValidation {
     static create = (req: Request, res: Response, next: NextFunction): void => {
-        const errorDetailSchema = joi.object({
+        const errorDetailSchema: ObjectSchema<IErrorDetail> = joi.object({
             message: joi.string().required(),
             rowNumber: joi.number().integer().required(),
         });

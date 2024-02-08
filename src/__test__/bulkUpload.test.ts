@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import express from 'express';
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import Server from '../Server';
 import { serverConfig } from '../config';
 import UserService from '../module/user/Services';
@@ -46,7 +46,7 @@ describe('API Integration Tests - User Module', () => {
 
     test('GET /bulk-upload', async () => {
         // No JWT-token provided
-        let response = await request(app).get('/bulk-upload');
+        let response: Response = await request(app).get('/bulk-upload');
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({
@@ -117,10 +117,10 @@ describe('API Integration Tests - User Module', () => {
             100,
         );
         // eslint-disable-next-line no-underscore-dangle
-        const testuploadId = (result as any)._id.toString();
+        const testuploadId: string = (result as any)._id.toString();
 
         // upload record found
-        let response = await request(app)
+        let response: Response = await request(app)
             .get(`/bulk-upload/${testuploadId}`)
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -165,7 +165,7 @@ describe('API Integration Tests - User Module', () => {
         } = (hollowEntry as any)._doc;
 
         // Validation failed
-        let response = await request(app).post('/bulk-upload');
+        let response: Response = await request(app).post('/bulk-upload');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({

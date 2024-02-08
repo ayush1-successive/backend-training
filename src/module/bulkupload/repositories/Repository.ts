@@ -15,7 +15,7 @@ class BulkUploadRepository extends BaseRepository<IBulkUpload> {
         page: number,
         limit: number,
     ): Promise<IBulkUpload[] | null> => {
-        const skip = (page - 1) * limit;
+        const skip: number = (page - 1) * limit;
         const result: IBulkUpload[] | null = await this.model
             .find()
             .sort(sortBy)
@@ -35,7 +35,7 @@ class BulkUploadRepository extends BaseRepository<IBulkUpload> {
     };
 
     updateErrorList = async (recordId: string, errorList: IErrorDetail[]): Promise<void> => {
-        const bulkOps = errorList.map((errorDetail) => ({
+        const bulkOps = errorList.map((errorDetail: IErrorDetail) => ({
             updateOne: {
                 filter: { _id: new Types.ObjectId(recordId) },
                 update: { $push: { errorDetails: errorDetail } },

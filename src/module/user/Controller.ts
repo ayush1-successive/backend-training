@@ -282,7 +282,7 @@ class UserController {
             }
 
             // Correct password check
-            const comparePassword = await UserService.verifyPassword(existingUser, user);
+            const comparePassword: boolean = await UserService.verifyPassword(existingUser, user);
             if (!comparePassword) {
                 new SystemResponse(res, 'Invalid credentials!', user).unauthorized();
                 return;
@@ -350,7 +350,7 @@ class UserController {
     getByToken = async (req: Request, res: Response): Promise<void> => {
         try {
             const { userId } = req.body;
-            const fields = '_id email';
+            const fields: string = '_id email';
             const user: IUser | null = await this.userService.getById(userId, fields);
 
             if (!user) {
@@ -427,7 +427,7 @@ class UserController {
     getById = async (req: Request, res: Response): Promise<void> => {
         try {
             const { userId } = req.params;
-            const fields = '-__v';
+            const fields: string = '-__v';
             const user: IUser | null = await this.userService.getById(userId, fields);
 
             if (!user) {

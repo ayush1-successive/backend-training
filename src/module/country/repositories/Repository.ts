@@ -23,7 +23,7 @@ class CountryRepository extends BaseRepository<ICountry> {
 
     // Get a country by its name
     getByName = async (name: string): Promise<ICountry | null> => {
-        const result = await this.model.findOne({ name });
+        const result: ICountry | null = await this.model.findOne({ name });
         return result;
     };
 }

@@ -79,5 +79,5 @@ class JobListingRouter {
     }
 }
 
-const routerInstance = JobListingRouter.getInstance().router;
+const routerInstance: express.Router = JobListingRouter.getInstance().router;
 export default routerInstance;

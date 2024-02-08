@@ -1,4 +1,4 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
 import Server from '../Server';
 import { serverConfig } from '../config';
@@ -13,7 +13,7 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('GET /', async () => {
-        const response = await request(app).get('/assignment4');
+        const response: Response = await request(app).get('/assignment4');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -25,7 +25,7 @@ describe('API Integration Tests - Assignment4', () => {
 
     test('POST /add-user', async () => {
         // Validation failed
-        let response = await request(app).post('/assignment4/add-user').send({});
+        let response: Response = await request(app).post('/assignment4/add-user').send({});
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -71,7 +71,7 @@ describe('API Integration Tests - Assignment4', () => {
 
     test('POST /register', async () => {
         // Insufficient fields
-        let response = await request(app).post('/assignment4/register');
+        let response: Response = await request(app).post('/assignment4/register');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -123,7 +123,7 @@ describe('API Integration Tests - Assignment4', () => {
 
     test('POST /add-item', async () => {
         // Insufficient fields
-        let response = await request(app).post('/assignment4/add-item');
+        let response: Response = await request(app).post('/assignment4/add-item');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -163,7 +163,7 @@ describe('API Integration Tests - Assignment4', () => {
 
     test('GET /ip', async () => {
         // Ip validtion failed
-        let response = await request(app).get('/assignment4/ip');
+        let response: Response = await request(app).get('/assignment4/ip');
 
         expect(response.status).toBe(403);
         expect(response.body).toEqual({
@@ -184,7 +184,7 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('GET /registration', async () => {
-        let response = await request(app).get('/assignment4/registration');
+        let response: Response = await request(app).get('/assignment4/registration');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -206,7 +206,7 @@ describe('API Integration Tests - Assignment4', () => {
     });
 
     test('GET /product', async () => {
-        let response = await request(app).get('/assignment4/product');
+        let response: Response = await request(app).get('/assignment4/product');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({

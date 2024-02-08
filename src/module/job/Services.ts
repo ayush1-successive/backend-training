@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import fs from 'fs';
 import { ValidationResult } from 'joi';
 import Papa from 'papaparse';
@@ -20,12 +21,12 @@ class JobService {
     static getFilters = async (queryObj: any): Promise<any> => {
         // QUERY FILTER
         let filters: any = { ...queryObj };
-        const excludedFields = ['page', 'sort', 'limit', 'fields'];
-        excludedFields.forEach((el) => delete filters[el]);
+        const excludedFields: string[] = ['page', 'sort', 'limit', 'fields'];
+        excludedFields.forEach((el: string) => delete filters[el]);
 
         // gt, lt manipulation
         let queryStr: string = JSON.stringify(filters);
-        queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
+        queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match: string) => `$${match}`);
 
         filters = JSON.parse(queryStr);
 
@@ -36,7 +37,7 @@ class JobService {
         );
 
         if (filters.title) {
-            const searchRegex = { $regex: filters.title[0], $options: 'i' };
+            const searchRegex: { $regex: string, $options: string } = { $regex: filters.title[0], $options: 'i' };
 
             filters.$or = [{ title: searchRegex }, { company: searchRegex }];
 
@@ -151,7 +152,7 @@ class JobService {
         const passed: IJobListing[] = [];
         const failed: IErrorDetail[] = [];
 
-        jobs.forEach((job: any, index) => {
+        jobs.forEach((job: any, index: number) => {
             const validationResult: ValidationResult<IJobListing> = jobValidation.validate(job, {
                 abortEarly: false,
             });
@@ -171,7 +172,7 @@ class JobService {
 
     static countRows = async (filePath: string): Promise<number> => new Promise((resolve) => {
         const readStream: fs.ReadStream = fs.createReadStream(filePath, 'utf-8');
-        let rows = 0;
+        let rows: number = 0;
         Papa.parse(readStream, {
             header: true,
             skipEmptyLines: true,
@@ -202,7 +203,7 @@ class JobService {
                 uploadData.entriesCompleted,
             );
 
-            const bulkOps = validatedJobs.passed.map((job) => ({
+            const bulkOps = validatedJobs.passed.map((job: IJobListing) => ({
                 updateOne: {
                     filter: {
                         title: job.title,
@@ -219,9 +220,8 @@ class JobService {
 
             logger.info('batch process result', result);
 
-            const successfulEntries = result.modifiedCount + result.upsertedCount;
+            const successfulEntries: number = result.modifiedCount + result.upsertedCount;
 
-            /* eslint-disable no-param-reassign */
             uploadData.entriesCompleted += batch.length;
             uploadData.successfulEntries += successfulEntries;
             uploadData.failedEntries += batch.length - successfulEntries;
@@ -244,7 +244,7 @@ class JobService {
         logger.info('csv write to mongodb started!');
 
         const csvReadStream: fs.ReadStream = fs.createReadStream(filePath, 'utf-8');
-        const totalRows = await JobService.countRows(filePath);
+        const totalRows: number = await JobService.countRows(filePath);
 
         let batch: any[] = [];
 

@@ -25,7 +25,7 @@ class UserValiation extends BaseValidation {
                 .required(),
             password: joi
                 .string()
-                .custom((value, helper) => {
+                .custom((value: string, helper: joi.CustomHelpers<any>) => {
                     if (value.length < 8) {
                         return helper.message({
                             custom: 'Password must be at least 8 characters long',
@@ -49,7 +49,7 @@ class UserValiation extends BaseValidation {
                 .required(),
             password: joi
                 .string()
-                .custom((value, helper) => {
+                .custom((value: string, helper: joi.CustomHelpers<any>) => {
                     if (value.length < 8) {
                         return helper.message({
                             custom: 'Password must be at least 8 characters long',

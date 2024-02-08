@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import IBulkUpload from '../entities/IBulkUpload';
 import IErrorDetail from '../entities/IErrorDetail';
 
-const errorDetailSchema = new mongoose.Schema<IErrorDetail>(
+const errorDetailSchema: mongoose.Schema<IErrorDetail> = new mongoose.Schema<IErrorDetail>(
     {
         message: { type: String, required: true },
         rowNumber: { type: Number, required: true },

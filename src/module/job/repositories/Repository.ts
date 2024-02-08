@@ -37,7 +37,7 @@ class JobRepository extends BaseRepository<IJobListing> {
         page: number,
         limit: number,
     ): Promise<IJobListing[]> => {
-        const skip = (page - 1) * limit;
+        const skip: number = (page - 1) * limit;
         const result: IJobListing[] = await this.model
             .find(filters)
             .sort(sortBy)

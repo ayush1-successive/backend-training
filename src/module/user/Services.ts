@@ -21,22 +21,28 @@ class UserService {
     };
 
     getById = async (userId: string, fields: string): Promise<IUser | null> => {
-        const result = await this.userRepository.getById(userId, fields);
+        const result: IUser | null = await this.userRepository.getById(
+            userId,
+            fields,
+        );
         return result;
     };
 
     updateById = async (jobId: string, newData: IUser): Promise<IUser | null> => {
-        const result: IUser | null = await this.userRepository.update(jobId, newData);
+        const result: IUser | null = await this.userRepository.update(
+            jobId,
+            newData,
+        );
         return result;
     };
 
     getByEmail = async (email: string): Promise<IUser | null> => {
-        const result = await this.userRepository.getByEmail(email);
+        const result: IUser | null = await this.userRepository.getByEmail(email);
         return result;
     };
 
     getAll = async (): Promise<IUser[] | null> => {
-        const result = await this.userRepository.getAll();
+        const result: IUser[] | null = await this.userRepository.getAll();
         return result;
     };
 
@@ -45,7 +51,10 @@ class UserService {
         const salt: string = await bcrypt.genSalt(10);
         const hashedPassword: string = await bcrypt.hash(user.password, salt);
 
-        const result = await this.userRepository.create({ ...user, password: hashedPassword });
+        const result: IUser = await this.userRepository.create({
+            ...user,
+            password: hashedPassword,
+        });
         return result;
     };
 
@@ -57,8 +66,10 @@ class UserService {
         await this.userRepository.deleteAll();
     };
 
-    static verifyPassword = async (existingUser: IUser, currentUser: IUserLoginRequest):
-        Promise<boolean> => {
+    static verifyPassword = async (
+        existingUser: IUser,
+        currentUser: IUserLoginRequest,
+    ): Promise<boolean> => {
         const result: boolean = await bcrypt.compare(
             currentUser.password,
             existingUser.password,

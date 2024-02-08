@@ -16,7 +16,7 @@ class BaseValidation {
         validator: ObjectSchema<any>,
         value: any,
         failedMsg: string,
-    ) => {
+    ): void => {
         const validationResult: ValidationResult<any> = validator.validate(
             value,
             { abortEarly: false },

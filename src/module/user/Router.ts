@@ -93,5 +93,5 @@ class UserRouter {
     }
 }
 
-const routerInstance = UserRouter.getInstance().router;
+const routerInstance: express.Router = UserRouter.getInstance().router;
 export default routerInstance;

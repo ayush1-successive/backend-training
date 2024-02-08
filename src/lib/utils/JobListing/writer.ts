@@ -1,6 +1,8 @@
 import { createObjectCsvWriter } from 'csv-writer';
+import { CsvWriter } from 'csv-writer/src/lib/csv-writer';
+import { ObjectMap } from 'csv-writer/src/lib/lang/object';
 
-const getCsvWriter = (csvPath: string) => createObjectCsvWriter({
+const getCsvWriter = (csvPath: string): CsvWriter<ObjectMap<any>> => createObjectCsvWriter({
     path: csvPath,
     header: [
         { id: 'title', title: 'title' },

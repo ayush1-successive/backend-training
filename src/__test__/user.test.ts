@@ -1,5 +1,5 @@
 import express from 'express';
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import { serverConfig } from '../config';
 import IUser from '../module/user/entities/IUser';
 import UserService from '../module/user/Services';
@@ -46,7 +46,7 @@ describe('API Integration Tests - User Module', () => {
 
     test('GET /users', async () => {
         // No JWT-token provided
-        let response = await request(app).get('/users');
+        let response: Response = await request(app).get('/users');
         expect(response.status).toBe(401);
         expect(response.body).toEqual({
             status: false,
@@ -93,11 +93,11 @@ describe('API Integration Tests - User Module', () => {
     });
 
     test('GET /users/email/{emailId}', async () => {
-        const invalidEmail = 'abc@xyz.com';
-        const validEmail = 'john.doe@example.com';
+        const invalidEmail: string = 'abc@xyz.com';
+        const validEmail: string = 'john.doe@example.com';
 
         // user not found
-        let response = await request(app)
+        let response: Response = await request(app)
             .get(`/users/email/${invalidEmail}`)
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -137,12 +137,12 @@ describe('API Integration Tests - User Module', () => {
     test('GET users/token', async () => {
         const result: IUser = await userService.create(testUser);
         // eslint-disable-next-line no-underscore-dangle
-        const testUserId = (result as any)._id.toString();
+        const testUserId: string = (result as any)._id.toString();
 
         userToken = await UserService.generateLoginToken(result, serverConfig.jwtSecret);
 
         // user found
-        let response = await request(app)
+        let response: Response = await request(app)
             .get('/users/token')
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -182,7 +182,7 @@ describe('API Integration Tests - User Module', () => {
 
     test('POST /users/register', async () => {
         // Validation error
-        let response = await request(app).post('/users/register');
+        let response: Response = await request(app).post('/users/register');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -237,7 +237,7 @@ describe('API Integration Tests - User Module', () => {
 
     test('POST users/login', async () => {
         // Validation error
-        let response = await request(app).post('/users/login');
+        let response: Response = await request(app).post('/users/login');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
@@ -305,10 +305,10 @@ describe('API Integration Tests - User Module', () => {
     test('GET users/{userId}', async () => {
         const result: IUser = await userService.create(testUser);
         // eslint-disable-next-line no-underscore-dangle
-        const testUserId = (result as any)._id.toString();
+        const testUserId: string = (result as any)._id.toString();
 
         // userId validation failed
-        let response = await request(app)
+        let response: Response = await request(app)
             .get('/users/invalid-id')
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -361,10 +361,10 @@ describe('API Integration Tests - User Module', () => {
     test('PUT users/{userId}', async () => {
         const result: IUser = await userService.create(testUser);
         // eslint-disable-next-line no-underscore-dangle
-        const testUserId = (result as any)._id.toString();
+        const testUserId: string = (result as any)._id.toString();
 
         // updated user validation failed
-        let response = await request(app)
+        let response: Response = await request(app)
             .put(`/users/${testUserId}`)
             .set('Authorization', `Bearer ${userToken}`);
 
@@ -434,10 +434,10 @@ describe('API Integration Tests - User Module', () => {
     test('DELETE users/{userId}', async () => {
         const result: IUser = await userService.create(testUser);
         // eslint-disable-next-line no-underscore-dangle
-        const testUserId = (result as any)._id.toString();
+        const testUserId: string = (result as any)._id.toString();
 
         // user deleted successfully
-        let response = await request(app)
+        let response: Response = await request(app)
             .delete(`/users/${testUserId}`)
             .set('Authorization', `Bearer ${userToken}`);
 

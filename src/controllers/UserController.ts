@@ -20,7 +20,7 @@ class UserController {
         const userValidation: ObjectSchema<any> = joi.object({
             name: joi.string().min(3).trim().required(),
             email: joi.string().email().required(),
-            password: joi.string().custom((value, helper) => {
+            password: joi.string().custom((value: string, helper: joi.CustomHelpers<any>) => {
                 if (value.length < 8) {
                     return helper.message({
                         custom: 'Password must be at least 8 characters long',

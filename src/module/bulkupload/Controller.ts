@@ -53,7 +53,7 @@ class BulkUploadController {
         try {
             const { uploadId } = req.params;
 
-            const fields = '-__v';
+            const fields: string = '-__v';
             const uploadHistory: IBulkUpload | null = await this.bulkUploadService.getById(
                 uploadId,
                 fields,

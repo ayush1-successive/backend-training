@@ -1,4 +1,4 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
 import Server from '../Server';
 import { serverConfig } from '../config';
@@ -13,7 +13,7 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('GET /', async () => {
-        const response = await request(app).get('/assignment5');
+        const response: Response = await request(app).get('/assignment5');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -24,7 +24,7 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('GET /async-route', async () => {
-        const response = await request(app).get('/assignment5/async-route');
+        const response: Response = await request(app).get('/assignment5/async-route');
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -36,7 +36,7 @@ describe('API Integration Tests - Assignment5', () => {
 
     test('POST /param-validation', async () => {
         // Validation failed
-        let response = await request(app).post('/assignment5/param-validation');
+        let response: Response = await request(app).post('/assignment5/param-validation');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({

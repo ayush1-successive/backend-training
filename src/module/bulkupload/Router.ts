@@ -43,5 +43,5 @@ class BulkUploadRouter {
     }
 }
 
-const routerInstance = BulkUploadRouter.getInstance().router;
+const routerInstance: express.Router = BulkUploadRouter.getInstance().router;
 export default routerInstance;

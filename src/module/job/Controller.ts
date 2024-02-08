@@ -60,7 +60,7 @@ class JobListingController {
    */
     getAll = async (req: Request, res: Response): Promise<void> => {
         try {
-            const filters = await JobService.getFilters(req.query);
+            const filters: any = await JobService.getFilters(req.query);
             const total: number = await this.jobListingService.countDocuments(
                 filters,
             );
@@ -130,7 +130,7 @@ class JobListingController {
      */
     countAll = async (req: Request, res: Response): Promise<void> => {
         try {
-            const total = await this.jobListingService.countDocuments({});
+            const total: number = await this.jobListingService.countDocuments({});
             new SystemResponse(res, 'Job listing count!', { count: total }).ok();
         } catch (error: unknown) {
             logger.error('error in countAll API', error);
@@ -248,7 +248,7 @@ class JobListingController {
         try {
             const { jobId } = req.params;
 
-            const fields = '-__v';
+            const fields: string = '-__v';
             const job: IJobListing | null = await this.jobListingService.getById(
                 jobId,
                 fields,

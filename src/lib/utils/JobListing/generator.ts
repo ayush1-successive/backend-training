@@ -6,8 +6,8 @@ import IJobListing from '../../../module/job/entities/IJobListing';
 
 // Generate fake JobListing data using @faker-js/faker
 const generateFakeJobListing = (): IJobListing => {
-    const minExperience = faker.number.int({ min: 0, max: 10 });
-    const maxExperience = faker.number.int({ min: minExperience, max: 15 });
+    const minExperience: number = faker.number.int({ min: 0, max: 10 });
+    const maxExperience: number = faker.number.int({ min: minExperience, max: 15 });
 
     return {
         title: faker.person.jobTitle(),
