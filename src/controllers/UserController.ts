@@ -1,9 +1,8 @@
 import { type Request, type Response } from 'express';
-import { type ValidationResult } from 'joi';
+import joi, { type ValidationResult, ObjectSchema } from 'joi';
 
 import userData from '../lib/userData';
 import IUser from '../module/user/entities/IUser';
-import { userValidation } from '../module/user/validation';
 import { SystemResponse } from '../lib/response-handler';
 
 class UserController {
@@ -18,7 +17,22 @@ class UserController {
     };
 
     static addValidatedUser = (req: Request, res: Response): void => {
+        const userValidation: ObjectSchema<any> = joi.object({
+            name: joi.string().min(3).trim().required(),
+            email: joi.string().email().required(),
+            password: joi.string().custom((value: string, helper: joi.CustomHelpers<any>) => {
+                if (value.length < 8) {
+                    return helper.message({
+                        custom: 'Password must be at least 8 characters long',
+                    });
+                }
+                return value;
+            }).required(),
+            phoneNumber: joi.string().allow(''),
+        });
+
         const newUser: IUser = req.body;
+
         const validationResult: ValidationResult = userValidation.validate(
             newUser,
             {

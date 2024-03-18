@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
 
+import userData from '../../lib/userData';
 import IUser from './entities/IUser';
 import IUserLoginRequest from './entities/IUserLoginRequest';
-import UserRepository from './repositories/repository';
-import userData from '../../lib/userData';
+import UserRepository from './repositories/Repository';
 
 class UserService {
     userRepository: UserRepository;
@@ -20,13 +20,29 @@ class UserService {
         await Promise.all(tasks);
     };
 
+    getById = async (userId: string, fields: string): Promise<IUser | null> => {
+        const result: IUser | null = await this.userRepository.getById(
+            userId,
+            fields,
+        );
+        return result;
+    };
+
+    updateById = async (jobId: string, newData: IUser): Promise<IUser | null> => {
+        const result: IUser | null = await this.userRepository.update(
+            jobId,
+            newData,
+        );
+        return result;
+    };
+
     getByEmail = async (email: string): Promise<IUser | null> => {
-        const result = await this.userRepository.getByEmail(email);
+        const result: IUser | null = await this.userRepository.getByEmail(email);
         return result;
     };
 
     getAll = async (): Promise<IUser[] | null> => {
-        const result = await this.userRepository.getAll();
+        const result: IUser[] | null = await this.userRepository.getAll();
         return result;
     };
 
@@ -35,21 +51,25 @@ class UserService {
         const salt: string = await bcrypt.genSalt(10);
         const hashedPassword: string = await bcrypt.hash(user.password, salt);
 
-        const result = await this.userRepository.create({ ...user, password: hashedPassword });
+        const result: IUser = await this.userRepository.create({
+            ...user,
+            password: hashedPassword,
+        });
         return result;
+    };
+
+    deleteById = async (id: string): Promise<void> => {
+        await this.userRepository.deleteById(id);
     };
 
     deleteAll = async (): Promise<void> => {
         await this.userRepository.deleteAll();
     };
 
-    deleteByEmail = async (email: string): Promise<any> => {
-        const result = this.userRepository.deleteByEmail(email);
-        return result;
-    };
-
-    static verifyPassword = async (existingUser: IUser, currentUser: IUserLoginRequest):
-        Promise<boolean> => {
+    static verifyPassword = async (
+        existingUser: IUser,
+        currentUser: IUserLoginRequest,
+    ): Promise<boolean> => {
         const result: boolean = await bcrypt.compare(
             currentUser.password,
             existingUser.password,
@@ -62,7 +82,8 @@ class UserService {
         jwtSecret: string,
     ): Promise<string> => {
         const token: string = JWT.sign(
-            { userId: existingUser?.email },
+            // eslint-disable-next-line no-underscore-dangle
+            { userId: (existingUser as any)?._id },
             jwtSecret,
             { expiresIn: '1d' },
         );

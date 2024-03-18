@@ -1,7 +1,7 @@
 import express from 'express';
 
 import HomePageController from '../controllers/HomePageController';
-import UserController from '../controllers/userController';
+import UserController from '../controllers/UserController';
 
 import {
     AuthMiddleware,

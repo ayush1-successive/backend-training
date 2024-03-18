@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from 'express';
 
-import UserController from '../controllers/userController';
+import UserController from '../controllers/UserController';
 import HomePageController from '../controllers/HomePageController';
 import {
     IpMiddleware,

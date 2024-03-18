@@ -1,13 +1,11 @@
 import { IBase } from '../../../lib/base';
-import IAddress from './IAddress';
 import JobType from './JobType';
 
 interface IJobListing extends IBase {
   title: string;
   company: string;
   logo?: string;
-  openings?: number;
-  address?: IAddress;
+  address?: { city: string, state: string };
   jobType?: JobType;
   industry: string;
   description?: string;
@@ -19,11 +17,7 @@ interface IJobListing extends IBase {
     maxExperience: number;
     skills: string[];
   };
-  salary?: {
-    amount: number;
-    currency: string;
-    periodicity: 'Hourly' | 'Daily' | 'Weekly' | 'Monthly' | 'Annually';
-  };
+  salary?: number;
   applicationDeadline: Date;
   isRemote: boolean;
   contactEmail: string;

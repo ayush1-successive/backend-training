@@ -1,6 +1,6 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
-import Server from '../server';
+import Server from '../Server';
 import { serverConfig } from '../config';
 
 describe('API Integration Tests - Assignment5', () => {
@@ -13,7 +13,7 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('GET /', async () => {
-        const response = await request(app).get('/assignment5');
+        const response: Response = await request(app).get('/assignment5');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -24,7 +24,7 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('GET /async-route', async () => {
-        const response = await request(app).get('/assignment5/async-route');
+        const response: Response = await request(app).get('/assignment5/async-route');
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -35,13 +35,32 @@ describe('API Integration Tests - Assignment5', () => {
     });
 
     test('POST /param-validation', async () => {
-        let response = await request(app).post('/assignment5/param-validation');
+        // Validation failed
+        let response: Response = await request(app).post('/assignment5/param-validation');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
             status: false,
             message: 'Validation error!',
             error: expect.objectContaining([]),
+        });
+
+        // Password length check failed
+        response = await request(app).post('/assignment5/param-validation').send({
+            name: 'ayushsinha',
+            email: 'ayush@gmail.com',
+            password: 'pas@123',
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            status: false,
+            message: 'Validation error!',
+            error: expect.objectContaining({
+                details: expect.objectContaining([
+                    expect.objectContaining({ message: 'Password must be at least 8 characters long' }),
+                ]),
+            }),
         });
 
         // Successful validation

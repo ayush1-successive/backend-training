@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { CsvWriter } from 'csv-writer/src/lib/csv-writer';
+import { ObjectMap } from 'csv-writer/src/lib/lang/object';
 import IJobListing from '../../../module/job/entities/IJobListing';
 import generateFakeJobListing from './generator';
 import getCsvWriter from './writer';
@@ -34,12 +36,12 @@ const generateCsv = async (
 ): Promise<void> => {
     console.time('generateData');
 
-    const csvWriter = getCsvWriter(csvPath);
-    let recordsGenerated = 0;
+    const csvWriter: CsvWriter<ObjectMap<any>> = getCsvWriter(csvPath);
+    let recordsGenerated: number = 0;
 
     /* eslint-disable no-await-in-loop */
     while (recordsGenerated < totalRecords) {
-        const length = Math.min(batchSize, totalRecords - recordsGenerated);
+        const length: number = Math.min(batchSize, totalRecords - recordsGenerated);
 
         await generateRecords(csvWriter, length);
 
@@ -63,7 +65,7 @@ const generateCsv = async (
     const csvName: string = process.argv[4] ?? 'job_listing';
 
     const csvPath: string = `../../../../public/data/${csvName}.csv`;
-    const batchSize = 25000;
+    const batchSize: number = 25000;
 
     await generateCsv(csvPath, numberOfJobListings, batchSize);
 })();

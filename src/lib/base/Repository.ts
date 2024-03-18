@@ -1,4 +1,4 @@
-import { type Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 
 class BaseRepository<T> {
     model: Model<T>;
@@ -7,13 +7,18 @@ class BaseRepository<T> {
         this.model = model;
     }
 
+    countDocuments = async (filters: FilterQuery<T>): Promise<number> => {
+        const result: number = await this.model.countDocuments(filters);
+        return result;
+    };
+
     findAll = async (): Promise<T[] | null> => {
         const result: T[] | null = await this.model.find({});
         return result;
     };
 
-    getById = async (id: string): Promise<T | null> => {
-        const result: T | null = await this.model.findById(id);
+    getById = async (id: string, fields: string): Promise<T | null> => {
+        const result: T | null = await this.model.findById(id).select(fields) as T | null;
         return result;
     };
 

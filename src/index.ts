@@ -1,5 +1,5 @@
 import { serverConfig } from './config';
-import Server from './server';
+import Server from './Server';
 
 const server: Server = Server.getInstance(serverConfig);
 server.run();

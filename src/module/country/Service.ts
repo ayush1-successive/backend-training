@@ -1,6 +1,6 @@
 import countryData from '../../lib/countryData';
 import type ICountry from './entities/ICountry';
-import CountryRepository from './repositories/repository';
+import CountryRepository from './repositories/Repository';
 
 class CountryService {
     countryRepository: CountryRepository;

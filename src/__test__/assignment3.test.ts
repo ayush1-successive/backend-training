@@ -1,6 +1,6 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
-import Server from '../server';
+import Server from '../Server';
 import { serverConfig } from '../config';
 
 const token: string = serverConfig.dummyToken;
@@ -15,7 +15,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /', async () => {
-        const response = await request(app).get('/assignment3');
+        const response: Response = await request(app).get('/assignment3');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -26,7 +26,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock', async () => {
-        let response = await request(app).get('/assignment3/mock').set('Authorization', `Bearer ${token}`);
+        let response: Response = await request(app).get('/assignment3/mock').set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -47,7 +47,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('POST /add-user', async () => {
-        const response = await request(app).post('/assignment3/add-user');
+        const response: Response = await request(app).post('/assignment3/add-user');
 
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
@@ -58,7 +58,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock-log', async () => {
-        const response = await request(app).get('/assignment3/mock-log');
+        const response: Response = await request(app).get('/assignment3/mock-log');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -69,7 +69,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /example', async () => {
-        const response = await request(app).get('/assignment3/example');
+        const response: Response = await request(app).get('/assignment3/example');
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -80,7 +80,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock-log-auth', async () => {
-        const response = await request(app).get('/assignment3/mock-log-auth').set('Authorization', `Bearer ${token}`);
+        const response: Response = await request(app).get('/assignment3/mock-log-auth').set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -91,7 +91,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock-header', async () => {
-        const response = await request(app).get('/assignment3/mock-header');
+        const response: Response = await request(app).get('/assignment3/mock-header');
 
         expect(response.get('author')).toEqual('Ayush Sinha');
 
@@ -104,7 +104,7 @@ describe('API Integration Tests - Assignment3', () => {
     });
 
     test('GET /mock-rate', async () => {
-        let response = await request(app).get('/assignment3/mock-rate');
+        let response: Response = await request(app).get('/assignment3/mock-rate');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({

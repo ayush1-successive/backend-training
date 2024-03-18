@@ -1,8 +1,9 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express from 'express';
-import CountryService from '../module/country/service';
-import Server from '../server';
+import CountryService from '../module/country/Service';
+import Server from '../Server';
 import { serverConfig } from '../config';
+import ICountry from '../module/country/entities/ICountry';
 
 describe('API Integration Tests - Country Module', () => {
     let server: Server;
@@ -30,7 +31,7 @@ describe('API Integration Tests - Country Module', () => {
     });
 
     test('GET /country', async () => {
-        const response = await request(app).get('/country');
+        const response: Response = await request(app).get('/country');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -41,7 +42,7 @@ describe('API Integration Tests - Country Module', () => {
     });
 
     test('GET country/:name', async () => {
-        let response = await request(app).get('/country/get/some-country');
+        let response: Response = await request(app).get('/country/get/some-country');
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
@@ -72,7 +73,7 @@ describe('API Integration Tests - Country Module', () => {
     });
 
     test('GET country/getAll', async () => {
-        let response = await request(app).get('/country/getAll');
+        let response: Response = await request(app).get('/country/getAll');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -94,7 +95,7 @@ describe('API Integration Tests - Country Module', () => {
     });
 
     test('POST country/create', async () => {
-        const testCountry = {
+        const testCountry: ICountry = {
             name: 'Test Country',
             code: 'TS',
             continent: 'Test Continent',
@@ -104,7 +105,7 @@ describe('API Integration Tests - Country Module', () => {
         };
 
         // Validation fail test
-        let response = await request(app).post('/country/create');
+        let response: Response = await request(app).post('/country/create');
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({

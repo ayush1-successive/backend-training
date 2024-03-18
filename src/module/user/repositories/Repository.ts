@@ -16,22 +16,29 @@ class UserRepository extends BaseRepository<IUser> {
     };
 
     getAll = async (): Promise<IUser[] | null> => {
-        const result = await this.findAll();
+        const result: IUser[] | null = await this.findAll();
         return result;
     };
 
     getByEmail = async (email: string): Promise<IUser | null> => {
-        const result = await this.model.findOne({ email });
+        const result: IUser | null = await this.model.findOne({ email });
         return result;
     };
 
     create = async (user: IUser): Promise<IUser> => {
-        await this.createOne(user);
-        return user;
+        const result: IUser = await this.createOne(user);
+        return result;
     };
 
-    deleteByEmail = async (email: string): Promise<any> => {
-        const result: any = await this.model.deleteOne({ email });
+    update = async (
+        id: string,
+        newData: IUser,
+    ): Promise<IUser | null> => {
+        const result: IUser | null = await this.model.findByIdAndUpdate(
+            id,
+            { $set: newData },
+            { new: true },
+        );
         return result;
     };
 }
