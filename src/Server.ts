@@ -5,7 +5,7 @@ import { IServerConfig } from './config';
 import Database from './lib/database';
 import router from './routes';
 import logger from './lib/logger';
-import CountryService from './module/country/service';
+import CountryService from './module/country/Service';
 
 class Server {
     // eslint-disable-next-line no-use-before-define

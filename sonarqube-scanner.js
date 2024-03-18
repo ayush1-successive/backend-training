@@ -1,6 +1,6 @@
 const scanner = require('sonarqube-scanner');
 
-const userToken = 'squ_5856d7aba811ebd4acd98617218cfad0d419a142';
+const userToken = 'squ_8491bb2f5a60b389bf2c6dfb3159cbc7276a6302';
 
 scanner(
     {
@@ -8,7 +8,7 @@ scanner(
         token: userToken,
         options: {
             'sonar.sources': './src',
-            'sonar.exclusions': '**/__test__/**',
+            'sonar.exclusions': '**/__test__/**, **/index.ts',
         },
     },
     () => process.exit(),

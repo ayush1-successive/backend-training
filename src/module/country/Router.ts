@@ -1,5 +1,5 @@
 import express from 'express';
-import CountryController from './controller';
+import CountryController from './Controller';
 
 class CountryRouter {
     // eslint-disable-next-line no-use-before-define

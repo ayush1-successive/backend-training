@@ -82,3 +82,6 @@ dist
 
 # SonarQube scanner result
 .scannerwork
+
+# any csv file
+*.csv

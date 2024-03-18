@@ -1,3 +1,3 @@
-import countryRouter from './router';
+import countryRouter from './Router';
 
 export default countryRouter;
