@@ -482,6 +482,8 @@ class JobListingController {
             const recordId: string = await this.jobListingService.writeBulkData(filename, filePath);
             new SystemResponse(res, 'File uploaded successfully', { recordId, file: req.file }).created();
         } catch (error: unknown) {
+            logger.error('error in uploadByFile API', error);
+
             new SystemResponse(
                 res,
                 'error uploading joblistings by csv file!',
